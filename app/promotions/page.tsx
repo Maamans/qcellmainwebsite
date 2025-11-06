@@ -73,7 +73,9 @@ export default function Promotions () {
               <div className="w-16 h-1 bg-[#F98F1F] rounded mb-6"></div>
               <p className="text-gray-800 text-lg md:text-2xl mb-8 leading-relaxed max-w-xl">
                 <span className="font-semibold text-[#F98F1F]">Experience</span> all our promotions and manage your account easily with the <span className="font-semibold text-[#F98F1F]">QCell Mobile App</span>.<br className="hidden md:block" />
-                <span className="text-[#222] font-semibold">Download now</span> and enjoy <span className="text-[#F98F1F] font-semibold">exclusive features</span> at your fingertips!
+                <span className="text-[#222] font-semibold">Download now</span>
+                <span className="inline-block align-middle ml-2 px-4 py-1 rounded-full bg-gradient-to-r from-[#F98F1F] to-[#FFB347] text-white font-extrabold text-base md:text-lg shadow-md border-2 border-[#F98F1F] animate-pulse" style={{verticalAlign:'middle'}}>Get 1GB Free</span>
+                <span className="text-[#222] font-semibold"> and enjoy </span><span className="text-[#F98F1F] font-semibold">exclusive features</span> at your fingertips!
               </p>
               <div className="flex gap-4 mt-2">
                 <a href="https://play.google.com/store" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-lg shadow hover:bg-[#F98F1F]/90 transition bg-[#222] text-white">
@@ -87,13 +89,13 @@ export default function Promotions () {
               </div>
             </div>
             <div className="flex-1 flex justify-end items-center mt-8 md:mt-0 relative">
-              <div className="relative p-3">
+              <div className="relative p-3 flex flex-col items-center w-full">
                 <Image src="/qcell-mobile-app.png" alt="QCell App" width={260} height={400} className="rounded-2xl shadow-2xl border-2 border-[#F98F1F]/30 transform rotate-[12deg] hover:rotate-[8deg] transition-transform duration-300 bg-white" />
                 {/* Redesigned floating labels for a cleaner look */}
                 {/* Top-left */}
                 <div className="absolute -top-4 -left-8 z-10 bg-[#F98F1F] text-white px-4 py-1.5 rounded-xl shadow font-semibold text-xs md:text-sm border border-white rotate-[-10deg] opacity-90">Seamless Experience</div>
                 {/* Top-right */}
-                <div className="absolute top-2 right-0 z-10 bg-[#F98F1F] text-white px-4 py-1.5 rounded-xl shadow font-semibold text-xs md:text-sm border border-white rotate-[8deg] opacity-90">All-in-One App</div>
+                <div className="absolute top-2 right-0 z-10 bg-[#F98F1F] text-white px-4 py-1.5 rounded-xl shadow font-semibold text-xs md:text-sm border border-white rotate[8deg] opacity-90">All-in-One App</div>
                 {/* Bottom-left */}
                 <div className="absolute bottom-4 -left-6 z-10 bg-[#F98F1F] text-white px-4 py-1.5 rounded-xl shadow font-semibold text-xs md:text-sm border border-white rotate-[-8deg] opacity-80">Stay Connected</div>
                 {/* Bottom-right */}

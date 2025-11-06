@@ -24,15 +24,13 @@ export default function CareersPage() {
     <>
       {/* Navigation */}
       <Navigation page="Ineternt"/>
-      <header className="min-h-screen bg-black text-white">
-
+      <header className="min-h-screen text-white">
         {/* Hero Content */}
         <div className="relative z-40 min-h-screen">
             <Image src={"/images/qcell-network-two.png"} alt="Careers at Qcell" fill className="absolute inset-0 w-full h-full object-center" />
-            <div className="absolute inset-0 bg-[#F98F1F] mix-blend-overlay"></div>
+            {/* Removed dark overlay */}
           {/* Content */}
           <div ref={sectionRef} className="relative z-10 flex min-h-screen flex-col justify-center items-center px-6 py-24 md:px-12">
-
             <div className="relative flex flex-col items-center justify-center text-center md:mt-20 md:items-start md:text-left">
               <motion.h1
                 initial={{ opacity: 0, y: 30 }}
@@ -42,7 +40,6 @@ export default function CareersPage() {
               >
                 Speed. Freedom. Connection.
               </motion.h1>
-
             <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -51,16 +48,7 @@ export default function CareersPage() {
             >
                 Unlock your world with powerful internet — anytime, anywhere.
             </motion.p>
-
-            {/*<motion.button
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.6, delay: 0.8 }}
-                onClick={openVideoModal}
-                className="flex items-center justify-center mx-auto px-12 py-3 text-base font-medium text-white bg-[#F98F1F65] rounded-full hover:bg-[#F98F1F95] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#F98F1F] transition-all">
-                    View Plans
-            </motion.button>*/}
-
+            {/*<motion.button ...>View Plans</motion.button>*/}
             <motion.div
                 className="mx-auto absolute cursor-pointer -bottom-10 left-[37%] md:left-[45%] text-white text-sm flex flex-col items-center"
                 animate={isInView ? { y: [0, 10, 0], opacity: 1 } : { y: [0, 0, 0], opacity: 0}}
@@ -81,21 +69,9 @@ export default function CareersPage() {
           </div>          
         </div>        
       </header>
-
       <main>
-        
       </main>
-
       <Footer />
-
-      {typeof window !== "undefined" && (
-      <div
-        className="hidden backdrop-filter z-40 bg-black/40 absolute inset-0 transition-all"
-        style={{ height: `${document.body.scrollHeight}px` }}
-      ></div>
-    )}
-
-
     </>
 
     
