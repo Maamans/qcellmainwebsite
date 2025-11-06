@@ -154,16 +154,6 @@ export default function Footer() {
         background: "linear-gradient(135deg, #ffffff 0%, #f9f9f9 50%, #f5f5f5 100%)",
       }}
     >
-      {/* QCell Mobile App Promo */}
-      <div className="w-full flex flex-col items-center justify-center py-10 px-4 bg-gradient-to-r from-[#F98F1F] to-[#FFB347] mb-8 shadow-lg rounded-xl">
-        <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 text-center">Experience all our promotions and manage your account easily with the QCell Mobile App.</h2>
-        <p className="text-lg md:text-xl text-white mb-4 text-center">Download now and enjoy exclusive features at your fingertips!</p>
-        <div className="flex flex-col md:flex-row items-center gap-4">
-          <a href="#" className="inline-block px-8 py-3 bg-white text-[#F98F1F] font-bold rounded-full text-lg shadow-md hover:bg-[#FFF3E0] transition-all border-2 border-[#F98F1F] animate-bounce">
-            Download Now &amp; Get <span className="font-extrabold">1GB Free</span>
-          </a>
-        </div>
-      </div>
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div

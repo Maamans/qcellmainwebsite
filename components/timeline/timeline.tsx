@@ -36,7 +36,7 @@ interface TimelineItemsInterface {
 const timelineItems: TimelineItemsInterface = { items: [
     {
         date: '2019',
-        text: ["Qcell launches operations in Sierra Leone, bringing innovative telecommunications services to connect communities across the nation."],
+        text: ["QCell launches operations in Sierra Leone, bringing innovative telecommunications services to connect communities across the nation."],
         image: '/images/timeline/2019-launch.jpg',
         link: {
             url: "",
@@ -45,7 +45,7 @@ const timelineItems: TimelineItemsInterface = { items: [
         detailText: ["Established our first network infrastructure and began serving customers in Freetown and surrounding areas."],
         quote: {
             text: "We saw an opportunity to transform telecommunications in Sierra Leone and bring world-class connectivity to our people.",
-            author: "Dr. Mohamed Kallon, CEO",
+            author: "Jayamani Karthick, CEO",
             authorImage: "/images/management/ceo.jpg"
         },
         definition: {
@@ -54,117 +54,7 @@ const timelineItems: TimelineItemsInterface = { items: [
             meaning: "",
             partOfSpeech: ""
         },
-        milestone: "🚀 Qcell Founded",
-    },
-    {
-        date: '2020',
-        text: ["Expanded network coverage across major cities and launched our first mobile money service, Qcell Mobile Money."],
-        image: '/images/timeline/2020-expansion.jpg',
-        link: {
-            url: "",
-            text: "",
-        },
-        detailText: ["Despite global challenges, we continued to invest in infrastructure and launched digital financial services to empower our customers."],
-        quote: {
-            text: "2020 taught us resilience. We didn't just survive the challenges; we used them as opportunities to innovate and serve our community better.",
-            author: "Sarah Johnson, CTO",
-            authorImage: "/images/management/cto.jpg"
-        },
-        definition: {
-            term: "",
-            pronunciation: "",
-            meaning: "",
-            partOfSpeech: ""
-        },
-        milestone: "📱 Mobile Money Launch",
-    },
-    {
-        date: '2021',
-        text: ["Achieved 4G/LTE network deployment and reached 1 million customers milestone across Sierra Leone."],
-        image: '/images/timeline/2021-4g.jpg',
-        link: {
-            url: "",
-            text: "",
-        },
-        detailText: ["Launched high-speed internet services and expanded our customer base significantly, becoming a leading telecom provider."],
-        quote: {
-            text: "Reaching 1 million customers was more than a number; it represented our commitment to connecting every Sierra Leonean.",
-            author: "Fatima Bangura, COO",
-            authorImage: "/images/management/coo.jpg"
-        },
-        definition: {
-            term: "",
-            pronunciation: "",
-            meaning: "",
-            partOfSpeech: ""
-        },
-        milestone: "📊 1M Customers",
-    },
-    {
-        date: '2022',
-        text: ["Launched QFiber broadband services and introduced innovative data bundles for businesses and individuals."],
-        image: '/images/timeline/2022-qfiber.jpg',
-        link: {
-            url: "",
-            text: "",
-        },
-        detailText: ["Expanded into fiber-optic services, providing high-speed internet to homes and businesses across major urban centers."],
-        quote: {
-            text: "QFiber represents our vision of a fully connected Sierra Leone, where every business and home has access to world-class internet.",
-            author: "James Kamara, Network Director",
-            authorImage: "/images/management/network-director.jpg"
-        },
-        definition: {
-            term: "",
-            pronunciation: "",
-            meaning: "",
-            partOfSpeech: ""
-        },
-        milestone: "🌐 QFiber Launch",
-    },
-    {
-        date: '2023',
-        text: ["Expanded to 95% network coverage across Sierra Leone and launched enterprise solutions for businesses."],
-        image: '/images/timeline/2023-coverage.jpg',
-        link: {
-            url: "",
-            text: "",
-        },
-        detailText: ["Achieved comprehensive network coverage and introduced specialized business solutions, including corporate accounts and enterprise connectivity."],
-        quote: {
-            text: "Our enterprise solutions help businesses grow and compete in the digital economy, driving Sierra Leone's economic development.",
-            author: "David Conteh, Sales Director",
-            authorImage: "/images/management/sales-director.jpg"
-        },
-        definition: {
-            term: "",
-            pronunciation: "",
-            meaning: "",
-            partOfSpeech: ""
-        },
-        milestone: "🏢 Enterprise Solutions",
-    },
-    {
-        date: '2024',
-        text: ["Launched 5G-ready infrastructure and introduced AI-powered customer service, setting new standards for telecom innovation in West Africa."],
-        image: '/images/timeline/2024-5g.jpg',
-        link: {
-            url: "",
-            text: "",
-        },
-        detailText: ["Prepared for the future with 5G infrastructure and implemented cutting-edge AI technology to enhance customer experience."],
-        quote: {
-            text: "We're not just keeping up with technology; we're leading it. Our 5G-ready network positions Sierra Leone at the forefront of digital innovation.",
-            author: "Aminata Sesay, CMO",
-            authorImage: "/images/management/cmo.jpg"
-        },
-        definition: {
-            term: "",
-            pronunciation: "",
-            meaning: "",
-            partOfSpeech: ""
-        },
-        milestone: "⚡ 5G Ready",
+        milestone: "🚀 QCELL FOUNDED",
     },
     {
         date: 'Current',
@@ -177,7 +67,7 @@ const timelineItems: TimelineItemsInterface = { items: [
         detailText: ["Focusing on digital inclusion, sustainable growth, and preparing Sierra Leone for the digital future with cutting-edge telecommunications solutions."],
         quote: {
             text: "Our journey continues as we build the digital foundation for Sierra Leone's future, connecting every citizen and empowering every business.",
-            author: "Dr. Mohamed Kallon, CEO",
+            author: "Jayamani Karthick, CEO",
             authorImage: "/images/management/ceo.jpg"
         },
         definition: {
@@ -186,7 +76,7 @@ const timelineItems: TimelineItemsInterface = { items: [
             meaning: "",
             partOfSpeech: ""
         },
-        milestone: "🚀 Future Ready",
+        milestone: "🚀 FUTURE READY",
     }
 ]};
 
