@@ -158,6 +158,7 @@ export default function AboutPage() {
         <div className="absolute inset-0 bg-[#F98F1F] opacity-25"></div>
       </section>
 
+<<<<<<< HEAD
   {/* Hero Section End */}
 
   {/* QCell About Section */}
@@ -165,6 +166,50 @@ export default function AboutPage() {
 
   {/* Timeline Section */}
   <Timeline />
+=======
+      {/* Hero Section End */}
+
+      {/* About QCell Section */}
+      <section className="relative py-20 px-4 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">About QCell</h2>
+            <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
+              <p>
+                QCell is Sierra Leone&apos;s only African-owned telecom company, pioneering mobile and internet services nationwide.
+              </p>
+              <p>
+                QCell is the very first Mobile company to conduct a soft launch by offering services not only in the capital city Freetown but also to all provincial district headquarter towns with 3G mobile internet service as well as enhanced voice and SMS services.
+              </p>
+              <p>
+                QCell has coverage presence in all 16 districts in the country today offering 3G/4G services across the country. 5G roll out is on the cards as few deployment sites are currently been on trial.
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="mt-12 pt-12 border-t border-gray-200"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">Salone Pride</h3>
+            <p className="text-lg text-gray-700 leading-relaxed">
+              Salone pride is the QCell philosophy meaning &apos;ours&apos; in Krio language. We believe that QCell is of Sierra Leoneans, for Sierra Leoneans and by Sierra Leoneans. Salone Pride is Sierra Leoneans uniting our nation and supporting each other&apos;s growth.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Timeline Section */}
+      <Timeline />
+>>>>>>> 52ce566381541a68d2b084f980316576549c79aa
 
     {/*<VerticalAccordion />*/}
     {/*<WhatDrivesUs />*/}
