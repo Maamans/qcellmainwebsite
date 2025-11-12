@@ -195,12 +195,22 @@ export default function DownloadApp() {
                 Mobile Experience
               </motion.span>
               <h2 className="text-3xl font-bold tracking-tighter text-gray-900 sm:text-4xl md:text-5xl">
-                Download the Qcell mobile app today.
+                Ready to experience the Qcell difference?
               </h2>
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <p className="text-lg text-gray-700 md:text-xl">
+              <motion.div
+                className="inline-block rounded-lg bg-gradient-to-r from-[#F98F1F] to-[#CD7F32] px-6 py-3 mb-4"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+              >
+                <p className="text-lg font-bold text-white md:text-xl">
+                  Download and get 1GB Free
+                </p>
+              </motion.div>
+              <p className="text-lg text-gray-700 md:text-xl mt-4">
                 Everything you need at your fingertips. Manage your account, buy bundles, check balance, and enjoy
                 exclusive offers with the Qcell app.
               </p>
