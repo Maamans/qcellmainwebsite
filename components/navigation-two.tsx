@@ -88,7 +88,7 @@ const navItems = [
     href: 'about-us'
   },
     {
-        title: "Tariff",
+        title: "Tariffs",
         href: 'tariffs'
     },
     {
