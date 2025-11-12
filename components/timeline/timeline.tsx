@@ -39,7 +39,7 @@ const timelineItems: TimelineItemsInterface = { items: [
         text: [
             "QCell launches operations in Sierra Leone, bringing innovative telecommunications services to connect communities across the nation.",
         ],
-        image: '/images/timeline/2019-launch.jpg',
+        image: '/images/qcell-network.png',
         link: {
             url: "",
             text: "",
@@ -50,7 +50,7 @@ const timelineItems: TimelineItemsInterface = { items: [
         quote: {
             text: "We saw an opportunity to transform telecommunications in Sierra Leone and bring world-class connectivity to our people.",
             author: "Jayamani Karthick, CEO",
-            authorImage: "/images/management/ceo.jpg"
+            authorImage: "/images/team.jpg"
         },
         milestone: "🚀 QCELL FOUNDED",
     },
@@ -59,7 +59,7 @@ const timelineItems: TimelineItemsInterface = { items: [
         text: [
             "Continuing to innovate with next-generation services, expanding digital inclusion programs, and preparing for future technological advancements.",
         ],
-        image: '/images/timeline/current-innovation.jpg',
+        image: '/images/qcell-network-two.png',
         link: {
             url: "",
             text: "",
@@ -70,7 +70,7 @@ const timelineItems: TimelineItemsInterface = { items: [
         quote: {
             text: "Our journey continues as we build the digital foundation for Sierra Leone's future, connecting every citizen and empowering every business.",
             author: "Jayamani Karthick, CEO",
-            authorImage: "/images/management/ceo.jpg"
+            authorImage: "/images/team.jpg"
         },
         milestone: "🚀 FUTURE READY",
     }

@@ -10,8 +10,12 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "source.unsplash.com" },
       { protocol: "https", hostname: "unsplash.com" },
       { protocol: "https", hostname: "images.unsplash.com" },
-    ], // Add the domain here
+    ],
+    // For Netlify, we can use unoptimized images or let Next.js handle it
+    unoptimized: process.env.NODE_ENV === "production" ? false : false,
   },
+  // Output configuration for static export if needed
+  output: "standalone",
 };
 
 export default nextConfig;
