@@ -177,7 +177,7 @@ export default function InfiniteSlider() {
   }, [isPaused, isHovered])
 
   return (
-    <div className="relative h-[380px] pt-5 w-screen overflow-hidden bg-white/90 shadow-lg backdrop-blur-sm">
+    <div className="relative h-[380px] pt-5 w-screen overflow-hidden bg-white">
       <motion.div
         className="flex gap-4"
         style={{

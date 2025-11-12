@@ -462,7 +462,7 @@ export default function EnhancedCoverageMap() {
   }, [isInView])
 
   return (
-    <div ref={containerRef} className="relative h-[600px] w-full overflow-hidden bg-[#1a1a1a] lg:w-full xl:h-[800px]"> {/* rounded-xl */}
+    <div ref={containerRef} className="relative h-[600px] w-full overflow-hidden bg-gray-50 lg:w-full xl:h-[800px] rounded-2xl shadow-sm"> {/* rounded-xl */}
       <style jsx global>{`
         .coverage-marker {
           width: 30px;

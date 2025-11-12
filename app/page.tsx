@@ -64,33 +64,27 @@ export default function Home() {
           >
             
             <Cursor />
-            <section className="relative w-full">
+            <section className="relative w-full bg-white">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.5 }}
-                className="w-full py-10" // px-4 py-16
+                className="w-full py-16 md:py-24"
               >
-                {/*<div className="mb-12 text-center">
-                  <h2 className="text-4xl font-bold text-gray-900">Network Coverage</h2>
-                  <p className="mt-4 text-lg text-gray-600">
-                    Explore our extensive network coverage across Sierra Leone
-                  </p>
-                </div>*/}
                 <EnhancedCoverageMap />
               </motion.div>
             </section>
 
-            <section className="py-0">
+            <section className="py-16 md:py-24 bg-gray-50">
               <OfferingsSlider />
             </section>
-            <section className="py-0">
+            <section className="py-16 md:py-24 bg-white">
               <InfiniteSlider />
             </section>
-            <section>
+            <section className="bg-white">
               <DownloadApp />
             </section>
-            <section className="py-0">
+            <section className="bg-gray-50">
               <Footer />
             </section>
           </motion.div>

@@ -95,68 +95,33 @@ export default function AboutPage() {
     
       <Navigation page="about-us"/>
       {/* Hero Section */}
-      <section className="relative h-[100vh] w-full overflow-hidden bg-gradient-to-b from-sky-300 to-sky-500">
-        {/* Clouds Background */}
-
-        {/** mobile */}
-        {/*<div className="sm:hidden absolute inset-0 bg-[url('/images/clouds-and-baloon-bg.png')] bg-cover bg-center opacity-100"></div>
-        {/** desktop 
-        <div className="hidden sm:block absolute inset-0 bg-[url('/images/clouds-and-baloon-bg-desktop.png')] bg-cover bg-center opacity-100"></div>*/}
-
-        {/** mobile */}
-        <div className="sm:hidden absolute inset-0 bg-[url('/images/clouds-bg.png')] bg-cover bg-center opacity-100"></div>
-        {/** desktop */}
-        <div className="hidden sm:block absolute inset-0 bg-[url('/images/clouds-bg.png')] bg-cover bg-center opacity-100"></div>
-
-
-        {/*<div className="absolute inset-0 z-0">
-          <video
-            className="h-full w-full object-contain"
-            poster="/images/clouds-and-baloon-bg.png"
-            loop
-            muted
-            playsInline
-            autoPlay
-          >
-            <source src="/videos/balloon-video-1.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          {/* Overlay
-          <div className="absolute inset-0 bg-[#ff8400] opacity-25"></div>
-        </div>*/}
+      <section className="relative h-[90vh] w-full overflow-hidden bg-gradient-to-br from-white via-blue-50 to-sky-100">
+        {/* Clean, bright background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-sky-50/50 to-white/80"></div>
+        
+        {/* Subtle cloud background with reduced opacity */}
+        <div className="absolute inset-0 bg-[url('/images/clouds-bg.png')] bg-cover bg-center opacity-20"></div>
 
         {/* Text Overlay */}
-        <div className="absolute inset-0 top-36 flex flex-col justify-center items-center text-white text-center z-20 px-4">
+        <div className="absolute inset-0 flex flex-col justify-center items-center text-center z-20 px-4">
           <motion.h1
-            className="text-4xl text-[#d9d9d9] md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-lg"
+            className="text-5xl text-gray-900 md:text-6xl lg:text-7xl font-bold mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
             Salone Pride
           </motion.h1>
-            {/**We&apos;re More than a telecom provider */}
-          {/*<motion.h2
-            className="text-2xl md:text-3xl lg:text-4xl font-semibold mb-4 drop-shadow-lg"
+
+          <motion.p
+            className="text-xl md:text-2xl lg:text-3xl max-w-3xl text-gray-700 font-light"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
-            We&apos;re More than a telecom provider<br/>
-            We&apos;re a technology company
-          </motion.h2>*/}
-
-          <motion.p
-            className="text-xl md:text-2xl max-w-3xl drop-shadow-lg"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-          >
             Rooted in our people, our culture, and our future
           </motion.p>
         </div>
-
-        <div className="absolute inset-0 bg-[#F98F1F] opacity-25"></div>
       </section>
 
   {/* Hero Section End */}

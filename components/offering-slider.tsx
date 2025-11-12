@@ -37,8 +37,7 @@ export default function OfferingsSlider({ offerings: offeringsProp }: OfferingsS
   const scrollNext = () => emblaApi?.scrollNext()
 
   return (
-    <div className="relative w-full px-0 overflow-hidden py-2 pb-10 bg-white/90 rounded-lg shadow-lg backdrop-blur-sm md:max-w-[110%] md:rounded-lg"> {/* py-16 */}
-      <div className="absolute inset-0 bg-gradient-to-b from-white to-gray-100 md:max-w-[110%] md:rounded-lg" />
+    <div className="relative w-full px-0 overflow-hidden py-8 md:py-12"> {/* py-16 */}
 
       <div className="relative mx-auto max-w-full -ml-3  sm:px-6 lg:px-8 md:max-w-[110%]"> {/* px-4 */}
         {/*<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">

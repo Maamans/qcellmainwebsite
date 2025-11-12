@@ -128,54 +128,14 @@ export default function DownloadApp() {
     <motion.section
       id="download-app-section"
       ref={containerRef}
-      className="relative overflow-hidden py-20 md:py-32"
+      className="relative overflow-hidden py-24 md:py-32 bg-white"
       style={{
-        background: "linear-gradient(135deg, #ffffff 0%, #f9f9f9 50%, #f5f5f5 100%)",
         opacity: opacitySection,
         scale,
       }}
     >
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-[#F98F1F]/5 blur-3xl"
-          animate={{
-            x: [0, 20, 0],
-            y: [0, 15, 0],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Number.POSITIVE_INFINITY,
-            repeatType: "reverse",
-            ease: "easeInOut",
-          }}
-        />
-        <motion.div
-          className="absolute -bottom-32 -left-32 h-96 w-96 rounded-full bg-[#F98F1F]/5 blur-3xl"
-          animate={{
-            x: [0, -20, 0],
-            y: [0, -15, 0],
-          }}
-          transition={{
-            duration: 18,
-            repeat: Number.POSITIVE_INFINITY,
-            repeatType: "reverse",
-            ease: "easeInOut",
-          }}
-        />
-        <motion.div
-          className="absolute top-1/2 left-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F98F1F]/3 blur-3xl"
-          animate={{
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Number.POSITIVE_INFINITY,
-            repeatType: "reverse",
-            ease: "easeInOut",
-          }}
-        />
-      </div>
+      {/* Clean, minimal background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white via-gray-50/30 to-white"></div>
 
       <motion.div
         className="container relative mx-auto px-4 md:px-6"
