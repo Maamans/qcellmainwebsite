@@ -326,6 +326,7 @@ export default function OurImpactPage() {
                       alt="CSR Activities - Community Distribution"
                       fill
                       className="object-cover"
+                      unoptimized
                     />
                   </div>
                 </div>
