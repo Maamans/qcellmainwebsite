@@ -2,6 +2,7 @@
 import React from 'react';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
+import Image from "next/image";
 import './styles.css'
 
 
@@ -108,7 +109,15 @@ const TimelineItem = ({ item }: { item: TimelineItemInterface }) => {
                     <div className="inline-block">
                         <a href={item.link.url} target="_blank" className="timeline_link w-inline-block">
                             <div>{item.link.text}</div>
-                            {item.link.imageUrl && <img src={item.link.imageUrl} loading="lazy" alt="" className="link-icon" />}
+                            {item.link.imageUrl && (
+                                <Image
+                                    src={item.link.imageUrl}
+                                    alt=""
+                                    width={16}
+                                    height={16}
+                                    className="link-icon"
+                                />
+                            )}
                         </a>
                     </div>
                 </div> : ""}
@@ -123,12 +132,22 @@ const TimelineItem = ({ item }: { item: TimelineItemInterface }) => {
                         </p>
                     </div>
                 </div> : ""}
-                <div className="timeline_image-wrapper"><img src={item.image} loading="lazy" width="480" alt="" /></div>
+                <div className="timeline_image-wrapper">
+                    <Image src={item.image} alt="" width={480} height={320} className="w-full h-auto" />
+                </div>
                 {item.quote && (item.quote.text || item.quote.author || item.quote.authorImage) ?
                 <>
                 <br/>
                 <div className="timeline_quote-wrapper">
-                    {item.quote.authorImage && <img src={item.quote.authorImage} loading="lazy" alt="" className="timeline_quote-image" />}
+                    {item.quote.authorImage && (
+                        <Image
+                            src={item.quote.authorImage}
+                            alt=""
+                            width={64}
+                            height={64}
+                            className="timeline_quote-image"
+                        />
+                    )}
                     <div className="timeline_quote-text-wrapper">
                         <p className="timeline_quote">
                             {item.quote.text}<br />
