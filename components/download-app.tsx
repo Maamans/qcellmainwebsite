@@ -353,6 +353,7 @@ export default function DownloadApp() {
                   width={300}
                   height={600}
                   className="h-auto w-full max-w-[300px]"
+                  unoptimized
                 />
 
                 {/* Animated overlay for screen interaction effect */}
