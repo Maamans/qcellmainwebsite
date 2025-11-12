@@ -422,7 +422,7 @@ export default function Footer() {
                 transition={{ delay: 0.4, type: "spring", stiffness: 200 }}
                 whileHover={{ scale: 1.05 }}
               >
-                <Image src="/images/logo.jpg" alt="Qcell Logo" width={120} height={50} className="h-12 w-auto" />
+                <Image src="/images/logo.jpg" alt="Qcell Logo" width={120} height={50} className="h-12 w-auto" unoptimized />
               </motion.div>
             </div>
           </motion.div>

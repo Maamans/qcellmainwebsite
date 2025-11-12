@@ -36,6 +36,7 @@ export default function LifeAtQcell() {
           width={500}
           height={400}
           className="w-full h-[800px] object-cover object-center"
+          unoptimized
         />
 
         <div className="absolute top-2/4 -translate-y-2/4 left-20 right-0 p-8">

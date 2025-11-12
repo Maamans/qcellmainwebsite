@@ -65,6 +65,7 @@ export default function TariffsHero() {
           fill
           className="object-cover object-left sm:object-center"
           priority
+          unoptimized
         />
       </motion.div>
 

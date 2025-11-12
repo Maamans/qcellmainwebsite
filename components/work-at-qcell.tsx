@@ -36,6 +36,7 @@ export default function WorkAtQcell() {
           width={500}
           height={400}
           className="w-full h-[800px] object-cover object-center"
+          unoptimized
         />
 
         <div className="absolute top-2/4 -translate-y-2/4 left-20 right-0 p-8">
@@ -47,11 +48,11 @@ export default function WorkAtQcell() {
 
           {/* Promotions Images Row */}
           <div className="flex flex-wrap gap-4 mb-8">
-            <Image src="/images/tokenbrowse.jpg" alt="TokenBrowse" width={120} height={80} className="rounded shadow-md object-cover" />
-            <Image src="/images/qcellbonaza.jpg" alt="QCell Bonanza" width={120} height={80} className="rounded shadow-md object-cover" />
-            <Image src="/images/rechargebonaza.jpg" alt="Recharge Bonanza" width={120} height={80} className="rounded shadow-md object-cover" />
-            <Image src="/images/freenight.jpg" alt="Free Night" width={120} height={80} className="rounded shadow-md object-cover" />
-            <Image src="/images/qnite.jpg" alt="Qnite" width={120} height={80} className="rounded shadow-md object-cover" />
+            <Image src="/images/tokenbrowse.jpg" alt="TokenBrowse" width={120} height={80} className="rounded shadow-md object-cover" unoptimized />
+            <Image src="/images/qcellbonaza.jpg" alt="QCell Bonanza" width={120} height={80} className="rounded shadow-md object-cover" unoptimized />
+            <Image src="/images/rechargebonaza.jpg" alt="Recharge Bonanza" width={120} height={80} className="rounded shadow-md object-cover" unoptimized />
+            <Image src="/images/freenight.jpg" alt="Free Night" width={120} height={80} className="rounded shadow-md object-cover" unoptimized />
+            <Image src="/images/qnite.jpg" alt="Qnite" width={120} height={80} className="rounded shadow-md object-cover" unoptimized />
           </div>
 
           <button onClick={() => setIsModalOpen(true)} className="flex items-center space-x-2 text-xs">

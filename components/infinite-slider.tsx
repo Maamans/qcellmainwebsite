@@ -118,7 +118,7 @@ export default function InfiniteSlider() {
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.2 }}
           >
-            <Image src={item.image} alt={item.title} fill className="object-cover" />
+            <Image src={item.image} alt={item.title} fill className="object-cover" unoptimized />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-6">
               <h3 className="text-xl font-medium text-white">{item.title}</h3>

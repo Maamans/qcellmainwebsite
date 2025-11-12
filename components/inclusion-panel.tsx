@@ -27,6 +27,7 @@ export default function InclusionPanel() {
               width={400}
               height={400}
               className="w-full h-full object-cover"
+              unoptimized
             />
           </div>
         </div>
@@ -49,6 +50,7 @@ export default function InclusionPanel() {
               width={400}
               height={400}
               className="w-full h-full object-cover"
+              unoptimized
             />
           </div>
         </div>
@@ -76,6 +78,7 @@ export default function InclusionPanel() {
               width={400}
               height={400}
               className="w-full h-full object-cover"
+              unoptimized
             />
           </div>
         </div>
@@ -89,6 +92,7 @@ export default function InclusionPanel() {
               width={400}
               height={400}
               className="w-full h-full object-cover"
+              unoptimized
             />
           </div>
         </div>

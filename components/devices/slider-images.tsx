@@ -49,6 +49,7 @@ export default function SliderImages () {
                     fill
                     className="object-cover object-center"
                     priority
+                    unoptimized
                 />
                 </motion.div>
             </AnimatePresence>
