@@ -297,6 +297,7 @@ useEffect(() => {
                     borderBottomLeftRadius: activeItem && !isScrolled ? "0px" : "5px",
                     borderTopLeftRadius: activeItem && !isScrolled ? "0px" : "5px"
                   }}
+                  unoptimized
                 /> 
               </Link>
             </motion.div>
@@ -545,6 +546,7 @@ useEffect(() => {
                     width={40}
                     height={40}
                     className="h-[40px] w-[40px] object-cover rounded-md"
+                    unoptimized
                   /> {/*<span className="ml-3 text-white">Expand Your World</span>*/}
                 </Link>
                 <motion.button
