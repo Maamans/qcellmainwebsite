@@ -2,7 +2,7 @@ import Image from "next/image"
 
 export default function SupportHero() {
   return (
-    <div className="w-full bg-[#FFF6EA] py-12 md:py-16">
+    <div className="w-full bg-white py-16 md:py-24">
       <div className="container mx-auto px-4">
         <div className="relative">
           {/* Image Grid */}
@@ -14,6 +14,7 @@ export default function SupportHero() {
                 alt="Person on phone"
                 fill
                 className="object-cover"
+                unoptimized
               />
             </div>
 
@@ -66,8 +67,8 @@ export default function SupportHero() {
 
           {/* Central Message Banner */}
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full md:w-3/4 lg:w-2/3 z-10">
-            <div className="bg-gradient-to-r from-orange-400 to-orange-500 text-white text-center py-4 md:py-6 px-4 rounded-lg shadow-lg">
-              <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-wide">HELP IS HERE FOR YOU</h1>
+            <div className="bg-gradient-to-r from-[#F98F1F] to-[#CD7F32] text-white text-center py-6 md:py-8 px-6 rounded-2xl shadow-xl">
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-wide">HELP IS HERE FOR YOU</h1>
             </div>
           </div>
         </div>

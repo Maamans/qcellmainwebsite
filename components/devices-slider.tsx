@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Image from 'next/image';
 
 const devices = [
     { id: 1, image: '/images/balloon.png' },
@@ -29,7 +30,7 @@ export default function DeviceSlider() {
     };
 
     return (
-        <div className="w-full flex flex-col items-center py-10 bg-gray-50 gap-4 overflow-hidden">
+        <div className="w-full flex flex-col items-center py-16 md:py-20 bg-white gap-4 overflow-hidden">
             <div className="flex justify-between items-center w-full px-4 md:px-10">
                 <button
                     onClick={() => paginate(-1)}
@@ -49,11 +50,15 @@ export default function DeviceSlider() {
                                 exit={{ opacity: 0, x: idx === 0 ? 50 : -50 }}
                                 transition={{ duration: 0.5, ease: 'easeInOut' }}
                             >
-                                <img
-                                    src={device.image}
-                                    alt={`device-${device.id}`}
-                                    className="rounded-xl object-cover w-full h-48 sm:h-64 mx-auto shadow-lg"
-                                />
+                                <div className="relative w-full h-48 sm:h-64 mx-auto rounded-xl overflow-hidden shadow-lg">
+                                    <Image
+                                        src={device.image}
+                                        alt={`device-${device.id}`}
+                                        fill
+                                        className="object-cover"
+                                        unoptimized
+                                    />
+                                </div>
                             </motion.div>
                         ))}
                     </AnimatePresence>

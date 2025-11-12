@@ -53,7 +53,7 @@ export default function InternetPage() {
     <div>
       {/* Navigation */}
       <Navigation page="internet"/>
-      <header className="min-h-screen bg-black text-white">
+      <header className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
         {/* Hero Slider */}
         <div className="relative min-h-screen overflow-hidden">
           {/* Slide Images */}
@@ -72,8 +72,9 @@ export default function InternetPage() {
                 fill
                 className="object-cover object-center"
                 priority
+                unoptimized
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#ff8400]/80 to-[#ff8400]/60 mix-blend-overlay" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#F98F1F]/40 to-[#F98F1F]/20" />
             </motion.div>
           </AnimatePresence>
 

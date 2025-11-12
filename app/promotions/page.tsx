@@ -49,29 +49,27 @@ export default function Promotions () {
             </AnimatePresence>
         </motion.header>
         {/* Promotions Slider Section */}
-        <section className="pt-16 pb-8 bg-white/95">
-          <div className="mb-8 px-4">
-            <h2 className="text-3xl md:text-5xl font-extrabold text-[#F98F1F] drop-shadow-sm text-left">
+        <section className="pt-20 md:pt-24 pb-16 md:pb-20 bg-white">
+          <div className="mb-12 px-4 md:px-8">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 text-left mb-6">
               Explore Our Latest Promotions
             </h2>
-            <p className="mt-4 text-gray-700 text-lg md:text-2xl text-left">
+            <p className="text-gray-700 text-lg md:text-xl text-left max-w-3xl">
               Check out the newest offers and special deals just for you!
             </p>
-            <div className="w-16 h-1 bg-[#F98F1F] rounded mt-6 mb-2"></div>
           </div>
           <OfferingsSlider offerings={promotionsOfferings} />
         </section>
 
         {/* Additional Info Section */}
-        <section className="py-12 bg-[#f7f7fa]">
+        <section className="py-16 md:py-24 bg-gray-50">
           <div className="w-[90vw] max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 px-4">
             <div className="flex-1 flex flex-col justify-center items-start pl-2 md:pl-8">
-              <h3 className="text-4xl md:text-5xl font-extrabold mb-3 drop-shadow-sm">
+              <h3 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-gray-900">
                 <span className="text-[#F98F1F]">Enjoy Qcell Promotions </span>
-                <span className="text-[#F98F1F]">Seamlessly</span>
+                <span className="text-gray-900">Seamlessly</span>
               </h3>
-              <div className="w-16 h-1 bg-[#F98F1F] rounded mb-6"></div>
-              <p className="text-gray-800 text-lg md:text-2xl mb-8 leading-relaxed max-w-xl">
+              <p className="text-gray-700 text-lg md:text-xl mb-8 leading-relaxed max-w-xl">
                 <span className="font-semibold text-[#F98F1F]">Experience</span> all our promotions and manage your account easily with the <span className="font-semibold text-[#F98F1F]">QCell Mobile App</span>.<br className="hidden md:block" />
                 <span className="text-[#222] font-semibold">Download now</span> and enjoy <span className="text-[#F98F1F] font-semibold">exclusive features</span> at your fingertips! <br />
                 <span className="inline-block mt-2 font-extrabold text-white bg-[#F98F1F] px-4 py-2 rounded shadow-lg text-xl md:text-2xl animate-pulse">1GB FREE</span>
@@ -89,7 +87,7 @@ export default function Promotions () {
             </div>
             <div className="flex-1 flex justify-end items-center mt-8 md:mt-0 relative">
               <div className="relative p-3">
-                <Image src="/qcell-mobile-app.png" alt="QCell App" width={260} height={400} className="rounded-2xl shadow-2xl border-2 border-[#F98F1F]/30 transform rotate-[12deg] hover:rotate-[8deg] transition-transform duration-300 bg-white" />
+                <Image src="/qcell-mobile-app.png" alt="QCell App" width={260} height={400} className="rounded-2xl shadow-2xl border-2 border-[#F98F1F]/30 transform rotate-[12deg] hover:rotate-[8deg] transition-transform duration-300 bg-white" unoptimized />
                 {/* Redesigned floating labels for a cleaner look */}
                 {/* Top-left */}
                 <div className="absolute -top-4 -left-8 z-10 bg-[#F98F1F] text-white px-4 py-1.5 rounded-xl shadow font-semibold text-xs md:text-sm border border-white rotate-[-10deg] opacity-90">Seamless Experience</div>

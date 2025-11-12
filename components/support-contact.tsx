@@ -4,8 +4,8 @@ import { MessageCircle, Mail } from "lucide-react"
 
 export default function SupportContact() {
   return (
-    <div className="w-full py-16 bg-gray-50">
-      <div className="container mx-auto px-4 sm:w-[70%] bg-white rounded-lg p-8">
+    <div className="w-full py-20 md:py-24 bg-white">
+      <div className="container mx-auto px-4 sm:w-[70%] bg-gray-50 rounded-2xl p-8 md:p-12">
         <div className="max-w-4xl mx-auto text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-orange-500 mb-4">Support On Your Phone</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
@@ -43,6 +43,7 @@ export default function SupportContact() {
               width={150}
               height={150}
               className="rounded-full border-4 border-white shadow-lg"
+              unoptimized
             />
           </div>
         </div>

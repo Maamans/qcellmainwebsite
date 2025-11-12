@@ -1,4 +1,4 @@
-
+import Image from 'next/image'
 
 const cards = [
   {
@@ -23,7 +23,7 @@ export default function QPowerMusicSlider() {
       <div className="flex gap-6 min-w-[600px]">
         {cards.map((card, idx) => (
           <div key={idx} className={`relative w-80 h-56 rounded-2xl overflow-hidden shadow-lg bg-gradient-to-br ${card.bg} flex-shrink-0`}>
-            <img src={card.image} alt={card.title} className="absolute inset-0 w-full h-full object-cover opacity-70" />
+            <Image src={card.image} alt={card.title} fill className="object-cover opacity-70" unoptimized />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
             <div className="relative z-10 p-6 flex flex-col h-full justify-end">
               <h3 className="text-2xl font-bold text-white mb-1 drop-shadow">{card.title}</h3>

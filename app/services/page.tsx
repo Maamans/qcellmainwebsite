@@ -129,17 +129,17 @@ export default function ServicesPage() {
         {/* Hero Section with Scroll Animation */}
         <motion.section
           ref={heroRef}
-          className="relative h-[800vh] w-full overflow-hidden bg-gradient-to-b from-sky-300 to-sky-500">
+          className="relative h-[800vh] w-full overflow-hidden bg-gradient-to-br from-white via-blue-50 to-gray-100">
           {/* Parallax Background - Fixed */}
           <div className="fixed inset-0 w-[full] h-[250vh]">
             <motion.div className="absolute inset-0" >
               {/* Mobile background */}
-              <motion.div className="sm:hidden absolute inset-0 w-[135vw] h-[200vh] -left-[35%] -top-[35%] bg-[url('/images/community-2.png')] bg-cover bg-top opacity-100" style={{ x: backgroundY, y: backgroundYTwo }}></motion.div>
+              <motion.div className="sm:hidden absolute inset-0 w-[135vw] h-[200vh] -left-[35%] -top-[35%] bg-[url('/images/community-2.png')] bg-cover bg-top opacity-20" style={{ x: backgroundY, y: backgroundYTwo }}></motion.div>
               {/* Desktop background */}
-              <motion.div className="hidden sm:block absolute inset-0 w-[135vw] h-[200vh] -left-[35%] -top-[35%] bg-[url('/images/community-2.png')] bg-cover bg-top opacity-100" style={{ x: backgroundY, y: backgroundYTwo }}></motion.div>
+              <motion.div className="hidden sm:block absolute inset-0 w-[135vw] h-[200vh] -left-[35%] -top-[35%] bg-[url('/images/community-2.png')] bg-cover bg-top opacity-20" style={{ x: backgroundY, y: backgroundYTwo }}></motion.div>
 
-              {/* Overlay */}
-              <div className="absolute inset-0 bg-[#F98F1F] mix-blend-overlay"></div>
+              {/* Clean overlay */}
+              <div className="absolute inset-0 bg-white/40"></div>
             </motion.div>
           </div>
 
@@ -154,7 +154,7 @@ export default function ServicesPage() {
                 y: mainTitleY,
               }}
             >
-              <h1 className="text-5xl text-white md:text-6xl lg:text-8xl font-normal drop-shadow-lg max-w-2xl">
+              <h1 className="text-5xl text-gray-900 md:text-6xl lg:text-8xl font-bold max-w-2xl">
                 Your World, <br /> Our Services!
               </h1>
             </motion.div>
@@ -167,7 +167,7 @@ export default function ServicesPage() {
                 y: subtitleY,
               }}
             >
-              <p className="text-xl md:text-2xl max-w-xl drop-shadow-lg text-white">
+              <p className="text-xl md:text-2xl max-w-xl text-gray-700 font-light">
                 <TypingEffect
                   texts={[
                     "From connectivity to innovation, QCell brings you the tools to stay ahead.",
@@ -220,7 +220,7 @@ export default function ServicesPage() {
                     >
                       {service.name}
                     </h2>
-                    <p className="text-lg md:text-xl text-white drop-shadow-md opacity-90">{service.description}</p>
+                    <p className="text-lg md:text-xl text-gray-700">{service.description}</p>
                   </div>
                 </motion.div>
               ))}
@@ -248,21 +248,23 @@ export default function ServicesPage() {
         </motion.section>
 
         {/* Content after hero section */}
-        <div className="relative z-30 bg-white p-10 md:p-28 xl:p-48 min-h-screen">
-          <h2 className="text-4xl font-bold text-gray-800 mb-6">Our Services</h2>
-          <p className="text-lg text-gray-600 mb-8">
-            Explore our offerings below to find the perfect service for your needs. Whether you need seamless communication, high-speed internet, or advanced digital services, QCell delivers reliable options tailored for individuals, families, and businesses. 
-          </p>
+        <div className="relative z-30 bg-white p-10 md:p-20 xl:p-32 min-h-screen">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">Our Services</h2>
+            <p className="text-lg md:text-xl text-gray-700 mb-12 max-w-3xl">
+              Explore our offerings below to find the perfect service for your needs. Whether you need seamless communication, high-speed internet, or advanced digital services, QCell delivers reliable options tailored for individuals, families, and businesses. 
+            </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((service) => (
-              <div key={service.name} className="p-6 border rounded-lg">
-                <h3 className="text-xl font-bold mb-2" style={{ color: service.color }}>
-                  {service.name}
-                </h3>
-                <p className="text-gray-600">{service.description}</p>
-              </div>
-            ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {services.map((service) => (
+                <div key={service.name} className="p-8 border border-gray-200 rounded-2xl bg-white hover:shadow-lg transition-shadow">
+                  <h3 className="text-2xl font-bold mb-3" style={{ color: service.color }}>
+                    {service.name}
+                  </h3>
+                  <p className="text-gray-700 leading-relaxed">{service.longDescription || service.description}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

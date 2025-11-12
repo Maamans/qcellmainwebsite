@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Footer from "@/components/footer"
 import Navigation from "@/components/nav"
 
@@ -8,21 +9,29 @@ export default function BusinessPage() {
     <div className="min-h-screen bg-white flex flex-col">
       <Navigation page="business" />
       {/* Hero Section */}
-  <section className="relative w-full h-[450px] md:h-[550px] flex items-center justify-center bg-gradient-to-r from-[#f9f6f2] to-[#fff7e6] mb-8">
-        <img src="https://images.unsplash.com/photo-1521737852567-6949f3f9f2b5?auto=format&fit=crop&w=1200&q=80" alt="Corporate People" className="absolute inset-0 w-full h-full object-cover opacity-60" />
-        {/* Overlay for better text contrast */}
-        <div className="absolute inset-0 bg-black/50"></div>
-        <div className="relative z-10 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-2xl">Corporate Solutions for Your Business</h1>
-          <p className="text-lg md:text-xl text-white font-medium mb-2 drop-shadow-2xl">Empowering organizations with innovative telecom services</p>
+      <section className="relative w-full h-[500px] md:h-[600px] flex items-center justify-center bg-gradient-to-br from-white via-blue-50 to-gray-100">
+        <div className="absolute inset-0">
+          <Image 
+            src="https://images.unsplash.com/photo-1521737852567-6949f3f9f2b5?auto=format&fit=crop&w=1200&q=80" 
+            alt="Corporate People" 
+            fill
+            className="object-cover opacity-30"
+            unoptimized
+          />
+        </div>
+        {/* Clean overlay */}
+        <div className="absolute inset-0 bg-white/60"></div>
+        <div className="relative z-10 text-center px-4">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">Corporate Solutions for Your Business</h1>
+          <p className="text-lg md:text-xl lg:text-2xl text-gray-700 font-light max-w-3xl mx-auto">Empowering organizations with innovative telecom services</p>
         </div>
       </section>
 
       {/* Corporate Information Section */}
-      <main className="flex-1 flex flex-col items-center px-4 pb-12">
-        <section className="max-w-5xl w-full py-16 bg-white">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#F98F1F] mb-4">
+      <main className="flex-1 flex flex-col items-center px-4 md:px-8 pb-16 md:pb-24">
+        <section className="max-w-6xl w-full py-20 md:py-24 bg-white">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
               Discover Our Corporate Perks
             </h2>
           </div>

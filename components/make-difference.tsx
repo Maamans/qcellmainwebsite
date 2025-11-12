@@ -1,7 +1,7 @@
 "use client"
 
-import React from 'react';  
-
+import React from 'react';
+import Image from 'next/image';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 
 interface CareerCardProps {
@@ -68,7 +68,7 @@ export default function WhatDrivesUs() {
                     className={` transition-all duration-300`}
                   >
                     <div className="relative h-[200px] w-full rounded-2xl sm:w-[300px] sm:h-[300px] md:h-[400px] md:w-[400px] lg:h-[500px] lg:w-[500px] lg:rounded-[30px] overflow-hidden">
-                      <img src={card.image} alt={card.alt} className="w-full h-full object-cover"/>
+                      <Image src={card.image} alt={card.alt} fill className="object-cover" unoptimized />
                       <div className="absolute flex justify-center items-center h-14 w-full bottom-0 bg-black opacity-50 backdrop-blur-sm z-10 md:h-14 xl:h-20 ">
 
                       </div>

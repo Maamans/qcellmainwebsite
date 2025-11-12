@@ -45,9 +45,11 @@ export default function OurImpactPage() {
 
   // Auto-advance slides
   useEffect(() => {
-    const interval = setInterval(nextSlide, 5000)
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length)
+    }, 5000)
     return () => clearInterval(interval)
-  }, [nextSlide])
+  }, [heroSlides.length])
 
   const csrFocusAreas = [
     {
@@ -136,6 +138,7 @@ export default function OurImpactPage() {
               fill
               className="object-cover"
               priority
+              unoptimized
             />
             <div className="absolute inset-0 bg-black/50"></div>
           </motion.div>
