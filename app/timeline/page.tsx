@@ -478,16 +478,12 @@ const Timeline = () => {
                         </div>
                     </div>
                     <div className="timeline_image-wrapper">
-                        <img
+                        <Image
                             src="https://cdn.prod.website-files.com/60dd72519d9f9f67690ae425/60de4fe236a3d8f3c716b49f_Image%206.png"
-                            loading="lazy"
-                            width="480"
-                            sizes="(max-width: 479px) 48px, (max-width: 767px) 64px, 36vw"
+                            width={480}
+                            height={320}
                             alt=""
-                            srcSet="
-                                https://cdn.prod.website-files.com/60dd72519d9f9f67690ae425/60de4fe236a3d8f3c716b49f_Image%206-p-500.png 500w,
-                                https://cdn.prod.website-files.com/60dd72519d9f9f67690ae425/60de4fe236a3d8f3c716b49f_Image%206.png       960w
-                            "
+                            unoptimized
                         />
                     </div>
                 </div>
