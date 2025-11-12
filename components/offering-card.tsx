@@ -28,6 +28,7 @@ export default function OfferingCard({ offering, onClick }: OfferingCardProps) {
             alt={offering.title}
             fill
             className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
+            unoptimized
           />
           <div className="absolute bottom-4 right-4 z-20">
             <button

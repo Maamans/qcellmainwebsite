@@ -89,6 +89,7 @@ export default function AboutPage() {
           height={2000}
           className="w-full h-auto"
           priority
+          unoptimized
         />
       </motion.div>
     
