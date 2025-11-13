@@ -36,13 +36,13 @@ const navItems: NavItem[] = [
     }
   },
   {
-    title: "Tariffs",
+    title: "Tarriffs",
     content: {
       heading: "Latest Updates",
       subheading: "Stay up to date with our newest offerings",
       links: [
         { title: "Home", href: "/" },
-        { title: "Tariffs", href: "/tariffs" },
+        { title: "Tarriffs", href: "/tariffs" },
         { title: "On-net and off-net", href: "/tariffs" }
       ]
     }
@@ -156,10 +156,10 @@ export default function Navigation() {
           <div className="flex space-x-5 sm:space-x-5 md:space-x-8 overflow-x-scroll">
             {navItems.map((item, index) => (
               <>
-                {item.title === "Tariffs" || item.title === "Services" ? (
+                {item.title === "Tarriffs" || item.title === "Services" ? (
                   <Link
                     key={item.title}
-                    href={item.title === "Tariffs" ? "/tariffs" : "/services"}
+                    href={item.title === "Tarriffs" ? "/tariffs" : "/services"}
                     className={`nav-btn relative py-4 text-sm font-medium transition-colors flex-shrink-0 hover:text-white/90 text-white`}
                   >
                     {item.title}
@@ -193,7 +193,7 @@ export default function Navigation() {
       </motion.nav>
 
       <AnimatePresence>
-        {activeItem && activeItem !== "Tariffs" && activeItem !== "Services" && (
+        {activeItem && activeItem !== "Tarriffs" && activeItem !== "Services" && (
           <>
             <motion.div
               className="fixed inset-0 z-10 bg-black/60"

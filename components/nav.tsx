@@ -67,7 +67,7 @@ const navItems: NavItem[] = [
         href: 'services'
     },
   {
-    title: "Tariffs",
+    title: "Tarriffs",
     href: '/tariffs',
   },
     {
