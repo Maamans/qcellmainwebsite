@@ -892,6 +892,7 @@ export default function Navigation() {
               fill
               className="object-cover object-center"
               priority
+              unoptimized
             />
           </motion.div>
         </AnimatePresence>
