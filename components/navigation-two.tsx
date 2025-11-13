@@ -17,7 +17,7 @@ function cn(...classes: (string | false | null | undefined)[]) {
 
 // Hero slider images
 const heroImages = [
-  "/telecom-pole-image.jpg",
+  "/images/expand%20your%20world.jpg",
   "https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=2069&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1546027658-7aa750153465?q=80&w=2070&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1533777419517-3e4017e2e15a?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -26,9 +26,9 @@ const heroImages = [
 // Hero slider content
 const heroContent = [
   {
-    title: "Expand Your World with Seamless Connectivity",
-    description: "Experience the fastest, cheapest, and most reliable network in Sierra Leone. Empowering your digital journey, one connection at a time.",
-    cta: "Get Started"
+    title: "",
+    description: "",
+    cta: ""
   },
   {
     title: "Unlimited Data Plans for Unlimited Possibilities",
@@ -221,6 +221,8 @@ export default function Navigation() {
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev - 1 + heroImages.length) % heroImages.length)
   }
+
+  const currentContent = heroContent[currentSlide]
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -885,14 +887,24 @@ export default function Navigation() {
                 transition: "all 2s"
             }}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-[#ff8400]/80 to-[#ff8400]/80 z-10 mix-blend-overlay" />
+            <div
+              className={cn(
+                "absolute inset-0 z-10",
+                currentSlide === 0
+                  ? "bg-black/30"
+                  : "bg-gradient-to-r from-[#ff8400]/80 to-[#ff8400]/80 mix-blend-overlay"
+              )}
+            />
             <Image
               src={heroImages[currentSlide] || "/placeholder.svg"}
               alt={`Slide ${currentSlide + 1}`}
               fill
-              className="object-cover object-center"
+              className="object-cover"
               priority
               unoptimized
+              style={{
+                objectPosition: currentSlide === 0 ? "center 35%" : "center",
+              }}
             />
           </motion.div>
         </AnimatePresence>
@@ -948,66 +960,74 @@ export default function Navigation() {
         <div className="relative z-20 flex min-h-screen items-center">
           <div className="container mx-auto px-4 py-24 text-white">
             <AnimatePresence mode="wait">
-              <motion.div
-                key={currentSlide}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="max-w-2xl"
-              >
-                <motion.h1
-                  className="text-4xl font-bold sm:text-5xl lg:text-6xl"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  {heroContent[currentSlide].title}
-                </motion.h1>
-                <motion.p
-                  className="mt-6 text-lg text-white/90"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  {heroContent[currentSlide].description}
-                </motion.p>
+              {currentContent && (currentContent.title || currentContent.description || currentContent.cta) && (
                 <motion.div
-                  className="mt-8 flex flex-wrap gap-4"
+                  key={currentSlide}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  className="max-w-2xl"
                 >
-                  <motion.div
-                    whileHover={{
-                      scale: 1.05,
-                      boxShadow: "0 5px 15px rgba(0, 0, 0, 0.1)",
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Link
-                      href="#"
-                      className="rounded-full bg-[#F98F1F] px-6 py-3 text-base font-medium text-white transition-all hover:bg-white/90 hover:shadow-lg "
+                  {currentContent.title && (
+                    <motion.h1
+                      className="text-4xl font-bold sm:text-5xl lg:text-6xl"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                     >
-                      {heroContent[currentSlide].cta}
-                    </Link>
-                  </motion.div>
-                  {/*<motion.div
-                    whileHover={{
-                      scale: 1.05,
-                      boxShadow: "0 5px 15px rgba(0, 0, 0, 0.1)",
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Link
-                      href="#"
-                      className="rounded-full border border-white/50 bg-white/10 px-6 py-3 text-base font-medium text-white backdrop-blur-sm transition-all hover:bg-white/20"
+                      {currentContent.title}
+                    </motion.h1>
+                  )}
+                  {currentContent.description && (
+                    <motion.p
+                      className="mt-6 text-lg text-white/90"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                     >
-                      Learn more about us
-                    </Link>
-                  </motion.div>*/}
+                      {currentContent.description}
+                    </motion.p>
+                  )}
+                  {currentContent.cta && (
+                    <motion.div
+                      className="mt-8 flex flex-wrap gap-4"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.6, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      <motion.div
+                        whileHover={{
+                          scale: 1.05,
+                          boxShadow: "0 5px 15px rgba(0, 0, 0, 0.1)",
+                        }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <Link
+                          href="#"
+                          className="rounded-full bg-[#F98F1F] px-6 py-3 text-base font-medium text-white transition-all hover:bg-white/90 hover:shadow-lg "
+                        >
+                          {currentContent.cta}
+                        </Link>
+                      </motion.div>
+                      {/*<motion.div
+                        whileHover={{
+                          scale: 1.05,
+                          boxShadow: "0 5px 15px rgba(0, 0, 0, 0.1)",
+                        }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <Link
+                          href="#"
+                          className="rounded-full border border-white/50 bg-white/10 px-6 py-3 text-base font-medium text-white backdrop-blur-sm transition-all hover:bg-white/20"
+                        >
+                          Learn more about us
+                        </Link>
+                      </motion.div>*/}
+                    </motion.div>
+                  )}
                 </motion.div>
-              </motion.div>
+              )}
             </AnimatePresence>
           </div>
         </div>
