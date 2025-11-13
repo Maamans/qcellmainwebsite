@@ -18,44 +18,29 @@ import { Button } from "@/components/ui/button"
 
 const devices: DevicesInterface[] = [
   {
-    id: "qpower",
-    title: "QPower",
-    image: "/images/device1.png",
+    id: "qsmart",
+    title: "QSmart",
+    image: "/images/QSMART_.jpg",
   },
   {
-    id: "qpower",
-    title: "QPower",
-    image: "/images/device2.png",
+    id: "qsmart-plus",
+    title: "QSmart Plus",
+    image: "/images/QSMART%20PLUS.jpg",
   },
   {
-    id: "qpower",
-    title: "QPower",
-    image: "/images/device3.png",
+    id: "mifi",
+    title: "MiFi Device",
+    image: "/images/mifi.jpg",
   },
   {
-    id: "qpower",
-    title: "QPower",
-    image: "/images/qmobile.png",
+    id: "qmobile",
+    title: "QMobile",
+    image: "/images/Qmobile_.jpg",
   },
   {
-    id: "qpower",
-    title: "QPower",
-    image: "/images/router.png",
-  },
-  {
-    id: "qpower",
-    title: "QPower",
-    image: "/images/qsmart-plus.png",
-  },
-  {
-    id: "qpower",
-    title: "QPower",
-    image: "/images/mifi.png",
-  },
-  {
-    id: "qpower",
-    title: "QPower",
-    image: "/images/qsmart.png",
+    id: "tariff",
+    title: "Tariff",
+    image: "/images/tiktok%20bundle.jpg",
   },
   
 ]
@@ -106,7 +91,7 @@ export default function DevicesSliderSmall() {
                 {devices.map((device) => (
                   <div
                     key={device.id}
-                    className="relative min-w-0 flex-[0_0_50%] pl-4 pr-4 sm:flex-[0_0_50%] md:flex-[0_0_35%] lg:flex-[0_0_40%] space-x-4"
+                    className="relative min-w-0 flex-[0_0_36%] pl-4 pr-4 sm:flex-[0_0_36%] md:flex-[0_0_24%] lg:flex-[0_0_26%] space-x-4"
                   >
                     <motion.div
                       className="relative h-full min-h-[50px] w-full cursor-pointer md:min-h-[50px]" // md:min-h-[600px]
@@ -123,6 +108,7 @@ export default function DevicesSliderSmall() {
                             alt={device.title}
                             fill
                             className="object-contain object-center transition-transform duration-500 group-hover:scale-105"
+                            unoptimized
                           />
                         </CardContent>
                       </Card>

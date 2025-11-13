@@ -31,7 +31,7 @@ export const offerings: Offering[] = [
       id: "qsmart",
       title: "QSmart",
       description: "Affordable smartphones packed with smart features",
-      image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=1527&auto=format&fit=crop",
+      image: "/images/QSMART_.jpg",
       features: ["Android OS", "Dual SIM", "Long battery life"],
       cta: {
         text: "Explore QSmart",
@@ -54,7 +54,7 @@ export const offerings: Offering[] = [
       id: "qsmart-plus",
       title: "QSmart Plus",
       description: "Performance-enhanced smartphones for power users",
-      image: "https://images.unsplash.com/photo-1558885544-2defc62e2e2b?q=80&w=1335&auto=format&fit=crop",
+      image: "/images/QSMART%20PLUS.jpg",
       features: ["HD Display", "Fingerprint unlock", "Large storage"],
       cta: {
         text: "Discover QSmart Plus",
@@ -77,7 +77,7 @@ export const offerings: Offering[] = [
       id: "qmobile",
       title: "QMobile",
       description: "Simple and durable feature phones for everyone",
-      image: "https://images.unsplash.com/flagged/photo-1574164908900-6275ca361157?q=80&w=1335&auto=format&fit=crop",
+      image: "/images/Qmobile_.jpg",
       features: ["Long battery life", "FM Radio", "Dual SIM"],
       cta: {
         text: "View QMobile",
@@ -100,7 +100,7 @@ export const offerings: Offering[] = [
       id: "mifi",
       title: "MiFi Device",
       description: "Portable internet device for fast connectivity on the go",
-      image: "https://images.unsplash.com/photo-1606904825846-647eb07f5be2?q=80&w=1470&auto=format&fit=crop",
+      image: "/images/mifi.jpg",
       features: ["4G LTE", "Connect up to 10 devices", "Rechargeable battery"],
       cta: {
         text: "Get MiFi",
@@ -120,56 +120,10 @@ export const offerings: Offering[] = [
       },
     },
     {
-      id: "indoor-router",
-      title: "Indoor Routers",
-      description: "Powerful home and office internet solutions",
-      image: "https://images.unsplash.com/photo-1687525660877-736941159780?q=80&w=1470&auto=format&fit=crop",
-      features: ["High-speed connection", "Wider range", "Stable performance"],
-      cta: {
-        text: "Explore Routers",
-        action: "/devices/indoor-routers",
-      },
-      details: {
-        title: "Reliable Wi-Fi for Every Room",
-        description:
-          "QCell indoor routers provide strong and reliable internet coverage for your entire home or office. Designed to support multiple users and high-bandwidth applications.",
-        benefits: [
-          "Wide signal range",
-          "Perfect for homes and businesses",
-          "Easy setup with QCell SIM",
-          "Supports streaming, gaming, and video calls",
-          "24/7 QCell support",
-        ],
-      },
-    },
-    {
-      id: "postpaid",
-      title: "POSTPAID",
-      description: "Flexible postpaid plans for businesses and individuals",
-      image: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?q=80&w=1480&auto=format&fit=crop",
-      features: ["Monthly billing", "Custom plans", "Priority support"],
-      cta: {
-        text: "Explore Postpaid",
-        action: "/devices/postpaid",
-      },
-      details: {
-        title: "Empower Your Connectivity",
-        description:
-          "QCell POSTPAID offers tailored plans for professionals and businesses, with flexible billing and premium support.",
-        benefits: [
-          "No recharge hassle",
-          "Customizable packages",
-          "Priority customer service",
-          "Detailed monthly statements",
-          "Ideal for teams and enterprises",
-        ],
-      },
-    },
-    {
       id: "tariff",
       title: "Tariff",
       description: "Explore our flexible tariff plans for every need.",
-      image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?q=80&w=1480&auto=format&fit=crop",
+      image: "/images/tiktok%20bundle.jpg",
       features: ["Voice & Data", "Affordable rates", "Easy activation"],
       cta: {
         text: "View Tariffs",
@@ -251,11 +205,10 @@ export default function DevicesSlider() {
                 {offerings.map((offering, index) => (
                   <div
                     key={offering.id}
-                    className="relative min-w-0 flex-[0_0_70%] pl-2 pr-2 sm:flex-[0_0_50%] lg:flex-[0_0_30.333%]"
+                    className="relative min-w-0 flex-[0_0_50%] pl-2 pr-2 sm:flex-[0_0_35%] lg:flex-[0_0_22%]"
                   >
                     <DeviceCard
                       offering={offering}
-                      index={index}
                       isActive={currentIndex === index}
                       onClick={() => setSelectedOffering(offering)}
                     />
