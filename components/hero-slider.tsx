@@ -58,6 +58,7 @@ interface HeroSlideResponse {
   ctaLink: string | null
   order: number
   isActive: boolean
+  createdAt?: string
 }
 
 export default function HeroSlider() {
@@ -74,35 +75,42 @@ export default function HeroSlider() {
         const activeSlides = Array.isArray(slides)
           ? slides
               .filter((slide) => slide.isActive)
-              .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-              .slice(0, fallbackSlides.length)
+              .sort((a, b) => {
+                // Sort by createdAt if available (newest first), otherwise by ID (newest first)
+                if (a.createdAt && b.createdAt) {
+                  return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                }
+                return (b.id ?? 0) - (a.id ?? 0)
+              })
           : []
 
-        const mergedSlides = fallbackSlides.map((slide) => ({ ...slide }))
-
-        activeSlides.forEach((slide, index) => {
+        // Build slides: backend slides first, then fallback slides
+        const backendSlides: SlideData[] = []
+        
+        activeSlides.forEach((slide) => {
           const sanitizedTitle = (slide.title || "").trim()
           const hideTitle = sanitizedTitle.toLowerCase() === "homepage slide"
           const sanitizedDescription = (slide.description || "").trim()
           const sanitizedCta = (slide.ctaText || "").trim()
 
-          mergedSlides[index] = {
-            ...mergedSlides[index],
+          backendSlides.push({
             id: slide.id,
-            backgroundImage: getImageUrl(slide.image) || mergedSlides[index].backgroundImage,
-            title: hideTitle ? "" : sanitizedTitle || mergedSlides[index].title,
-            description: sanitizedDescription || mergedSlides[index].description,
+            backgroundImage: getImageUrl(slide.image) || "",
+            title: hideTitle ? "" : sanitizedTitle,
+            description: sanitizedDescription,
             cta: {
               primary: {
-                text: sanitizedCta || mergedSlides[index].cta.primary.text,
-                href: slide.ctaLink || mergedSlides[index].cta.primary.href,
+                text: sanitizedCta || "Explore Plans",
+                href: slide.ctaLink || "#",
               },
-              secondary: mergedSlides[index].cta.secondary,
+              secondary: { text: "Learn more about us", href: "#" },
             },
-          }
+          })
         })
 
-        setHeroSlides(mergedSlides)
+        // Combine: backend slides first, then fallback slides (limit to fallbackSlides.length)
+        const finalSlides = [...backendSlides, ...fallbackSlides].slice(0, fallbackSlides.length)
+        setHeroSlides(finalSlides)
       } catch (error) {
         console.error("Failed to load hero slides:", error)
         setHeroSlides(fallbackSlides)

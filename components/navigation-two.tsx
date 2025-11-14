@@ -200,7 +200,7 @@ export default function Navigation() {
     const fetchHeroSlides = async () => {
       try {
         const slides = await api.getHeroSlides('/')
-        // Filter only active slides and sort by order
+        // Filter only active slides and sort by ID descending (newest first)
         const activeSlides = (slides as Array<{
           id: number;
           title: string | null;
@@ -210,9 +210,16 @@ export default function Navigation() {
           ctaLink: string | null;
           order: number;
           isActive: boolean;
+          createdAt?: string;
         }>)
           .filter((slide) => slide.isActive)
-          .sort((a, b) => a.order - b.order)
+          .sort((a, b) => {
+            // Sort by createdAt if available (newest first), otherwise by ID (newest first)
+            if (a.createdAt && b.createdAt) {
+              return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            }
+            return b.id - a.id
+          })
         
         if (activeSlides.length > 0) {
           setHeroSlides(activeSlides)
@@ -226,12 +233,8 @@ export default function Navigation() {
     fetchHeroSlides()
   }, [])
 
-  // Merge backend slides with existing four fallback slides (overwrite in place)
-  const MAX_SLIDES = fallbackHeroImages.length
-  const heroImages = fallbackHeroImages.slice(0, MAX_SLIDES)
-  const heroContent = fallbackHeroContent.slice(0, MAX_SLIDES).map((content) => ({ ...content }))
-
-  const sanitizedBackendSlides = heroSlides.slice(0, MAX_SLIDES).map((slide) => {
+  // Process backend slides - they will appear first
+  const sanitizedBackendSlides = heroSlides.map((slide) => {
     const sanitizedTitle = (slide.title || "").trim()
     const hideTitle = sanitizedTitle.toLowerCase() === "homepage slide"
 
@@ -245,24 +248,35 @@ export default function Navigation() {
     }
   })
 
-  sanitizedBackendSlides.forEach((slide, index) => {
-    heroImages[index] = slide.image || heroImages[index]
-    // For first slide, always use the fallback text if backend content is empty or "Homepage Slide"
-    if (index === 0 && (!slide.content.title || slide.content.title.trim() === "")) {
-      // Keep the fallback content for first slide
-      heroContent[index] = {
-        title: "Expand Your World with Seamless Connectivity",
-        description: "Enjoy The Cheapes and most Reliable Network In Sierra leone.",
-        cta: ""
-      }
-    } else {
-      heroContent[index] = {
-        title: slide.content.title || heroContent[index]?.title || "",
-        description: slide.content.description || heroContent[index]?.description || "",
-        cta: slide.content.cta || heroContent[index]?.cta || "",
+  // Build final arrays: backend slides first, then fallback slides
+  const MAX_SLIDES = fallbackHeroImages.length
+  const backendImages: string[] = []
+  const backendContent: Array<{ title: string; description: string; cta: string }> = []
+
+  // Add backend slides first
+  sanitizedBackendSlides.forEach((slide) => {
+    if (slide.image) {
+      backendImages.push(slide.image)
+      // For first backend slide, use fallback text if empty or "Homepage Slide"
+      if (backendImages.length === 1 && (!slide.content.title || slide.content.title.trim() === "")) {
+        backendContent.push({
+          title: "Expand Your World with Seamless Connectivity",
+          description: "Enjoy The Cheapes and most Reliable Network In Sierra leone.",
+          cta: ""
+        })
+      } else {
+        backendContent.push({
+          title: slide.content.title || "",
+          description: slide.content.description || "",
+          cta: slide.content.cta || "",
+        })
       }
     }
   })
+
+  // Combine: backend slides first, then fallback slides (up to MAX_SLIDES total)
+  const heroImages = [...backendImages, ...fallbackHeroImages].slice(0, MAX_SLIDES)
+  const heroContent = [...backendContent, ...fallbackHeroContent].slice(0, MAX_SLIDES)
 
   // Handle scroll effect
   useEffect(() => {
@@ -1013,7 +1027,7 @@ export default function Navigation() {
                 >
                   {currentContent.title && (
                     <motion.h1
-                      className="text-5xl font-bold sm:text-6xl lg:text-7xl"
+                      className="text-4xl font-bold sm:text-5xl lg:text-6xl"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -1023,7 +1037,7 @@ export default function Navigation() {
                   )}
                   {currentContent.description && (
                     <motion.p
-                      className="mt-6 text-xl text-white/90"
+                      className="mt-6 text-lg text-white/90"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.4, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
