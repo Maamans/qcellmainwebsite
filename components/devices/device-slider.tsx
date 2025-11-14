@@ -167,7 +167,7 @@ export default function DevicesSlider() {
   return (
     <div className="relative w-full px-0 overflow-hidden py-2 pb-10 bg-white rounded-lg shadow-lg backdrop-blur-sm md:max-w-[110%] md:rounded-lg"> {/* py-16 */}
       
-      <div className="relative sm:ml-24 mt-20"> {/* px-4 */}
+      <div className="relative sm:ml-24 mt-4 md:mt-20"> {/* px-4 */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="ml-4">
           <h2 className="mt-3 ml-4 sm:ml-0 max-w-2xl text-2xl text-gray-500 my-5 sm:mt-4 md:text-2xl">
             Take a Look at What&apos;s <span className="text-orange-400">New</span>

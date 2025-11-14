@@ -14,7 +14,7 @@ export default function DevicesPage () {
     return (
         <>
             <Navigation page="devices" />
-            <motion.header className="relative h-screen md:flex md:flex-row-reverse md:justify-center md:items-center">
+            <motion.header className="relative h-auto min-h-[60vh] md:h-screen md:flex md:flex-row-reverse md:justify-center md:items-center">
                 <motion.div className="relative w-full">
                     {/** images slider / static image i will show here */}
                     {/** for now static image */}
@@ -61,19 +61,13 @@ export default function DevicesPage () {
 
             </motion.header>
 
-            <motion.div>
+            <motion.div className="-mt-8 md:mt-0">
                 <DevicesSlider />
             </motion.div>
 
             <BenefitsSlider />
             <Footer />
 
-            {typeof window !== "undefined" && (
-            <div
-                className="hidden backdrop-filter z-40 bg-black/40 absolute inset-0 transition-all"
-                style={{ height: `${document.body.scrollHeight}px` }}
-            ></div>
-            )}
         </>
         
     )

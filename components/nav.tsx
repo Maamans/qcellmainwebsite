@@ -596,21 +596,32 @@ useEffect(() => {
                       ) : (
                         item.content ? (
                           <>
-                            <motion.button
-                              className="flex w-full items-center justify-between text-left text-base font-medium text-white"
-                              onClick={() => setMobileSubmenu(mobileSubmenu === item.title ? null : item.title)}
-                              whileTap={{ scale: 0.98 }}
-                            >
-                              <span>{item.title}</span>
-                              <motion.div
-                                animate={{
-                                  rotate: mobileSubmenu === item.title ? 180 : 0,
-                                  transition: { duration: 0.3 },
-                                }}
+                            <div className="flex w-full items-center justify-between">
+                              <Link 
+                                href={item.href} 
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="flex-1 text-left text-base font-medium text-white py-2"
                               >
-                                <ChevronDown className="h-5 w-5 text-white/80" />
-                              </motion.div>
-                            </motion.button>
+                                {item.title}
+                              </Link>
+                              <motion.button
+                                className="p-2 -mr-2"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setMobileSubmenu(mobileSubmenu === item.title ? null : item.title);
+                                }}
+                                whileTap={{ scale: 0.98 }}
+                              >
+                                <motion.div
+                                  animate={{
+                                    rotate: mobileSubmenu === item.title ? 180 : 0,
+                                    transition: { duration: 0.3 },
+                                  }}
+                                >
+                                  <ChevronDown className="h-5 w-5 text-white/80" />
+                                </motion.div>
+                              </motion.button>
+                            </div>
 
                             <AnimatePresence>
                               {mobileSubmenu === item.title && (
