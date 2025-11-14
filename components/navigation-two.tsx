@@ -27,8 +27,8 @@ const fallbackHeroImages = [
 // Fallback hero slider content
 const fallbackHeroContent = [
   {
-    title: "",
-    description: "",
+    title: "Expand Your World with Seamless Connectivity",
+    description: "Enjoy The Cheapes and most Reliable Network In Sierra leone.",
     cta: ""
   },
   {
@@ -247,10 +247,20 @@ export default function Navigation() {
 
   sanitizedBackendSlides.forEach((slide, index) => {
     heroImages[index] = slide.image || heroImages[index]
-    heroContent[index] = {
-      title: slide.content.title || heroContent[index]?.title || "",
-      description: slide.content.description || heroContent[index]?.description || "",
-      cta: slide.content.cta || heroContent[index]?.cta || "",
+    // For first slide, always use the fallback text if backend content is empty or "Homepage Slide"
+    if (index === 0 && (!slide.content.title || slide.content.title.trim() === "")) {
+      // Keep the fallback content for first slide
+      heroContent[index] = {
+        title: "Expand Your World with Seamless Connectivity",
+        description: "Enjoy The Cheapes and most Reliable Network In Sierra leone.",
+        cta: ""
+      }
+    } else {
+      heroContent[index] = {
+        title: slide.content.title || heroContent[index]?.title || "",
+        description: slide.content.description || heroContent[index]?.description || "",
+        cta: slide.content.cta || heroContent[index]?.cta || "",
+      }
     }
   })
 
@@ -539,7 +549,7 @@ export default function Navigation() {
               animate="visible"
               exit="hidden"
               style={{
-                backgroundColor: "#077aca",
+                backgroundColor: "rgba(7, 122, 202, 0.1)",
                 backdropFilter: "backdrop-blur(20px)",
                 WebkitBackdropFilter: "backdrop-blur(20px)",
                 boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)",
@@ -631,7 +641,7 @@ export default function Navigation() {
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               style={{
-                backgroundColor: "#077aca",
+                backgroundColor: "rgba(7, 122, 202, 0.1)",
                 backdropFilter: "backdrop-blur(10px)",
                 WebkitBackdropFilter: "backdrop-blur(10px)",
                 boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)",
@@ -1003,7 +1013,7 @@ export default function Navigation() {
                 >
                   {currentContent.title && (
                     <motion.h1
-                      className="text-4xl font-bold sm:text-5xl lg:text-6xl"
+                      className="text-5xl font-bold sm:text-6xl lg:text-7xl"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -1013,7 +1023,7 @@ export default function Navigation() {
                   )}
                   {currentContent.description && (
                     <motion.p
-                      className="mt-6 text-lg text-white/90"
+                      className="mt-6 text-xl text-white/90"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.4, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}

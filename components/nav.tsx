@@ -263,7 +263,7 @@ useEffect(() => {
             marginTop: isScrolled ? "0" : "50px",
             width: isScrolled ? "100%" : "90%",
             borderRadius: isScrolled ? "0" : "0.3rem",
-            backgroundColor: isScrolled ? "rgba(158, 82, 1, 0.75)" : "rgba(158, 82, 1, 0.3)",
+            backgroundColor: "#077aca",
             transition: "all 0.5s",
             backdropFilter: isScrolled ? "blur(10px)" : "blur(5px)",
         }}
@@ -428,7 +428,7 @@ useEffect(() => {
               animate="visible"
               exit="hidden"
               style={{
-                backgroundColor: isScrolled ? "rgba(158, 82, 1, 0.3)" : "rgba(158, 82, 1, 0.3)",
+                backgroundColor: "rgba(7, 122, 202, 0.1)",
                 backdropFilter: "backdrop-blur(20px)",
                 WebkitBackdropFilter: "backdrop-blur(20px)",
                 boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)",

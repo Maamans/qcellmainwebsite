@@ -54,7 +54,7 @@ export const offerings: Offering[] = [
       id: "qsmart-plus",
       title: "QSmart Plus",
       description: "Performance-enhanced smartphones for power users",
-      image: "/images/QSMART%20PLUS.jpg",
+      image: "/images/QSMART PLUS.jpg",
       features: ["HD Display", "Fingerprint unlock", "Large storage"],
       cta: {
         text: "Discover QSmart Plus",
@@ -123,7 +123,7 @@ export const offerings: Offering[] = [
       id: "tariff",
       title: "Tariff",
       description: "Explore our flexible tariff plans for every need.",
-      image: "/images/tiktok%20bundle.jpg",
+      image: "/images/tiktok bundle.jpg",
       features: ["Voice & Data", "Affordable rates", "Easy activation"],
       cta: {
         text: "View Tariffs",

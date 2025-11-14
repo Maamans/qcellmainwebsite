@@ -25,7 +25,7 @@ const devices: DevicesInterface[] = [
   {
     id: "qsmart-plus",
     title: "QSmart Plus",
-    image: "/images/QSMART%20PLUS.jpg",
+    image: "/images/QSMART PLUS.jpg",
   },
   {
     id: "mifi",
@@ -40,7 +40,7 @@ const devices: DevicesInterface[] = [
   {
     id: "tariff",
     title: "Tariff",
-    image: "/images/tiktok%20bundle.jpg",
+    image: "/images/tiktok bundle.jpg",
   },
   
 ]
@@ -109,6 +109,10 @@ export default function DevicesSliderSmall() {
                             fill
                             className="object-contain object-center transition-transform duration-500 group-hover:scale-105"
                             unoptimized
+                            sizes="(max-width: 768px) 36vw, (max-width: 1024px) 24vw, 26vw"
+                            onError={() => {
+                              console.error('Failed to load image:', device.image);
+                            }}
                           />
                         </CardContent>
                       </Card>

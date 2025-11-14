@@ -29,6 +29,10 @@ export default function DeviceCard({ offering, isActive, onClick }: DeviceCardPr
             fill
             className="object-contain object-center transition-transform duration-500 group-hover:scale-105"
             unoptimized
+            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 35vw, 22vw"
+            onError={() => {
+              console.error('Failed to load image:', offering.image);
+            }}
           />
           <div className="absolute bottom-4 right-4 z-20">
             <button
