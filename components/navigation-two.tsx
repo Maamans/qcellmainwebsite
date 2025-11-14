@@ -5,26 +5,27 @@ import type React from "react"
 import Link from "next/link"
 import { motion, AnimatePresence, useAnimation } from "framer-motion"
 import Image from "next/image"
-import { ChevronDown, ChevronRight, Menu, Search, X, ChevronLeft } from "lucide-react"
+import { ChevronDown, ChevronRight, Menu, Search, X } from "lucide-react"
+import { api, getImageUrl } from "@/lib/api"
 
 // Placeholder for images
-const QcellLogo = "/images/logo.jpg"
+const QcellLogo = "/images/01-e1725631236883.png"
 
 // Helper function to conditionally join classNames
 function cn(...classes: (string | false | null | undefined)[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-// Hero slider images
-const heroImages = [
+// Fallback hero slider images (used if API fails or while loading)
+const fallbackHeroImages = [
   "/images/expand%20your%20world.jpg",
   "https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=2069&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1546027658-7aa750153465?q=80&w=2070&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1533777419517-3e4017e2e15a?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 ];
 
-// Hero slider content
-const heroContent = [
+// Fallback hero slider content
+const fallbackHeroContent = [
   {
     title: "",
     description: "",
@@ -181,6 +182,77 @@ export default function Navigation() {
   const controls = useAnimation()
   // Add a new state for the search overlay
   const [searchOpen, setSearchOpen] = useState(false)
+  
+  // Hero slides from API
+  const [heroSlides, setHeroSlides] = useState<Array<{
+    id: number;
+    title: string | null;
+    description: string | null;
+    image: string;
+    ctaText: string | null;
+    ctaLink: string | null;
+    order: number;
+    isActive: boolean;
+  }>>([])
+
+  // Fetch hero slides from API
+  useEffect(() => {
+    const fetchHeroSlides = async () => {
+      try {
+        const slides = await api.getHeroSlides('/')
+        // Filter only active slides and sort by order
+        const activeSlides = (slides as Array<{
+          id: number;
+          title: string | null;
+          description: string | null;
+          image: string;
+          ctaText: string | null;
+          ctaLink: string | null;
+          order: number;
+          isActive: boolean;
+        }>)
+          .filter((slide) => slide.isActive)
+          .sort((a, b) => a.order - b.order)
+        
+        if (activeSlides.length > 0) {
+          setHeroSlides(activeSlides)
+        }
+      } catch (error) {
+        console.error('Failed to fetch hero slides:', error)
+        // Use fallback data on error
+      }
+    }
+
+    fetchHeroSlides()
+  }, [])
+
+  // Merge backend slides with existing four fallback slides (overwrite in place)
+  const MAX_SLIDES = fallbackHeroImages.length
+  const heroImages = fallbackHeroImages.slice(0, MAX_SLIDES)
+  const heroContent = fallbackHeroContent.slice(0, MAX_SLIDES).map((content) => ({ ...content }))
+
+  const sanitizedBackendSlides = heroSlides.slice(0, MAX_SLIDES).map((slide) => {
+    const sanitizedTitle = (slide.title || "").trim()
+    const hideTitle = sanitizedTitle.toLowerCase() === "homepage slide"
+
+    return {
+      image: getImageUrl(slide.image),
+      content: {
+        title: hideTitle ? "" : sanitizedTitle,
+        description: (slide.description || "").trim(),
+        cta: (slide.ctaText || "").trim(),
+      },
+    }
+  })
+
+  sanitizedBackendSlides.forEach((slide, index) => {
+    heroImages[index] = slide.image || heroImages[index]
+    heroContent[index] = {
+      title: slide.content.title || heroContent[index]?.title || "",
+      description: slide.content.description || heroContent[index]?.description || "",
+      cta: slide.content.cta || heroContent[index]?.cta || "",
+    }
+  })
 
   // Handle scroll effect
   useEffect(() => {
@@ -206,21 +278,14 @@ export default function Navigation() {
 
   // Auto-advance slider
   useEffect(() => {
+    if (heroImages.length === 0) return
+    
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroImages.length)
     }, 10000)
 
     return () => clearInterval(interval)
-  }, [])
-
-  // Handle next/prev slide
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % heroImages.length)
-  }
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + heroImages.length) % heroImages.length)
-  }
+  }, [heroImages.length])
 
   const currentContent = heroContent[currentSlide]
 
@@ -312,7 +377,7 @@ export default function Navigation() {
             marginTop: isScrolled ? "0" : "50px",
             width: isScrolled ? "100%" : "90%",
             borderRadius: isScrolled ? "0" : "0.3rem",
-            backgroundColor: isScrolled ? "rgba(158, 82, 1, 0.75)" : "rgba(158, 82, 1, 0.3)",
+            backgroundColor: "#077aca",
             transition: "all 0.5s",
             backdropFilter: isScrolled ? "blur(10px)" : "blur(5px)",
         }}
@@ -339,13 +404,14 @@ export default function Navigation() {
                 <Image
                   src={QcellLogo || "/placeholder.svg"}
                   alt="Qcell Logo"
-                  width={50}
-                  height={50}
-                  className="h-[50px] w-[50px] object-cover rounded-md rounded-tr-none rounded-br-none xl:rounded-none"
+                  width={64}
+                  height={64}
+                  className="h-[52px] w-auto object-contain rounded-md rounded-tr-none rounded-br-none xl:rounded-none"
                   style={{
-                    borderBottomLeftRadius: activeItem && !isScrolled ? "0px" : "5px",
-                    borderTopLeftRadius: activeItem && !isScrolled ? "0px" : "5px"
+                    borderBottomLeftRadius: activeItem && !isScrolled ? "0px" : "8px",
+                    borderTopLeftRadius: activeItem && !isScrolled ? "0px" : "8px"
                   }}
+                  priority
                   unoptimized
                 /> 
               </Link>
@@ -473,7 +539,7 @@ export default function Navigation() {
               animate="visible"
               exit="hidden"
               style={{
-                backgroundColor: isScrolled ? "rgba(158, 82, 1, 0.3)" : "rgba(158, 82, 1, 0.3)",
+                backgroundColor: "#077aca",
                 backdropFilter: "backdrop-blur(20px)",
                 WebkitBackdropFilter: "backdrop-blur(20px)",
                 boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)",
@@ -565,7 +631,7 @@ export default function Navigation() {
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               style={{
-                backgroundColor: isScrolled ? "rgba(158, 82, 1, 0.3)" : "rgba(158, 82, 1, 0.3)",
+                backgroundColor: "#077aca",
                 backdropFilter: "backdrop-blur(10px)",
                 WebkitBackdropFilter: "backdrop-blur(10px)",
                 boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)",
@@ -705,9 +771,10 @@ export default function Navigation() {
                   <Image
                     src={QcellLogo || "/placeholder.svg"}
                     alt="Qcell Logo"
-                    width={40}
-                    height={40}
-                    className="h-[40px] w-[40px] object-cover rounded-md"
+                    width={48}
+                    height={48}
+                    className="h-12 w-auto object-contain rounded-md"
+                    priority
                     unoptimized
                   /> <span className="ml-3 text-white">Expand Your World</span>
                 </Link>
@@ -887,55 +954,20 @@ export default function Navigation() {
                 transition: "all 2s"
             }}
           >
-            <div
-              className={cn(
-                "absolute inset-0 z-10",
-                currentSlide === 0
-                  ? "bg-black/30"
-                  : "bg-gradient-to-r from-[#ff8400]/80 to-[#ff8400]/80 mix-blend-overlay"
-              )}
-            />
+            <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#ff8400]/80 to-[#ff8400]/80 mix-blend-overlay" />
             <Image
               src={heroImages[currentSlide] || "/placeholder.svg"}
               alt={`Slide ${currentSlide + 1}`}
               fill
-              className="object-cover"
+              className="object-cover sm:object-center object-[center_35%]"
+              sizes="100vw"
               priority
               unoptimized
-              style={{
-                objectPosition: currentSlide === 0 ? "center 35%" : "center",
-              }}
             />
           </motion.div>
         </AnimatePresence>
 
-        {/* Slider Controls absolute z-40 inset-x-0 bottom-1/2 flex items-center justify-between px-4 sm:px-6 md:px-8*/}
-        <div className="absolute z-40 inset-x-0 top-[25%] flex items-center justify-left space-x-4 px-4 sm:px-6 md:hidden md:px-8">
-          <motion.button
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm sm:h-12 sm:w-12"
-            onClick={prevSlide}
-            whileHover={{
-              scale: 1.1,
-              backgroundColor: "rgba(255, 255, 255, 0.3)",
-              boxShadow: "0 0 15px rgba(255, 255, 255, 0.3)",
-            }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
-          </motion.button>
-          <motion.button
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm sm:h-12 sm:w-12"
-            onClick={nextSlide}
-            whileHover={{
-              scale: 1.1,
-              backgroundColor: "rgba(255, 255, 255, 0.3)",
-              boxShadow: "0 0 15px rgba(255, 255, 255, 0.3)",
-            }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
-          </motion.button>
-        </div>
+        {/* Slider Controls removed for mobile */}
 
         {/* Slider Indicators absolute z-40 bottom-8 left-0 right-0 flex justify-center space-x-2*/}
         <div className="absolute z-40 bottom-52 left-5 right-0 flex space-x-2 sm:left-0 sm:justify-center sm:bottom-8">

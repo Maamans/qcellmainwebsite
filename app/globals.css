@@ -50,56 +50,44 @@ div.hero::after {
   z-index: -1;
 }
 /* 031001011 */
-nav, .nav-items-container {
+nav,
+.nav-items-container {
   background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
   isolation: isolate;
   height: 50px;
   overflow: hidden;
 }
 
-nav::before, .nav-items-container::before {
+nav::before,
+.nav-items-container::before {
   content: '';
   position: absolute;
   inset: 0;
-  background-color: #ff8400;
+  background-color: transparent;
   border-radius: 5px;
   z-index: -1;
-  opacity: 30%;
-  
-  
+  opacity: 1;
 }
 
 .nav-items-container::before {
-  border-top-left-radius: 0px;
-  border-top-right-radius: 0px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
-nav::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-color: #fff;
-  z-index: -2;
-  /*filter: blur(200px);*/
-  filter: blur(200px);
-  opacity: 40%;
-  height: 30%;
-}
-
-.nav-btn:focus {
-  text-decoration: underline;
-}
-
+nav::after,
 .nav-items-container::after {
   content: '';
   position: absolute;
   inset: 0;
-  background-color: black;
+  background-color: transparent;
   z-index: -2;
-  /*filter: blur(200px);*/
-  filter: blur(50px);
-  opacity: 40%;
-  height: 100%;
+}
+
+.nav-btn:focus {
+  text-decoration: underline;
 }
 
 

@@ -5,7 +5,7 @@ import { useEffect } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import Image, { StaticImageData } from "next/image"
-import QcellLogo from "@/public/images/logo.jpg"
+import QcellLogo from "@/public/images/01-e1725631236883.png"
 import Qcell4G from "@/public/images/4g.png"
 import AnimatedHeroText from "./animated-hero-text"
 
@@ -144,13 +144,13 @@ export default function Navigation() {
         transition={{ duration: 0.5, delay: 0.2 }}
       >
         <div className="container flex items-center justify-between pr-5 lg:pr-10">
-          <Link href="/" className="rounded-tl-[5px] flex-shrink-0 rounded-bl-[5px] flex items-center justify-center overflow-hidden mr-4 sm:-mt-5 sm:mr-0">
+          <Link href="/" className="rounded-tl-[8px] flex-shrink-0 rounded-bl-[8px] flex items-center justify-center overflow-hidden mr-4 sm:-mt-5 sm:mr-0">
             <Image
               src={QcellLogo}
               alt="Qcell Logo"
-              width={50}
-              height={50}
-              className="h-[50px] w-[50px] object-cover flex-shrink-0"
+              width={64}
+              height={64}
+              className="h-[52px] w-auto object-contain flex-shrink-0"
             />
           </Link>
           <div className="flex space-x-5 sm:space-x-5 md:space-x-8 overflow-x-scroll">

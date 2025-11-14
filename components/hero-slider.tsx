@@ -5,8 +5,10 @@ import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
 import AnimatedHeroText from "./animated-hero-text"
+import { api, getImageUrl } from "@/lib/api"
 
 interface SlideData {
+  id?: string | number
   backgroundImage: string
   title: string
   description: string
@@ -16,7 +18,7 @@ interface SlideData {
   }
 }
 
-const slides: SlideData[] = [
+const fallbackSlides: SlideData[] = [
   {
     backgroundImage: "/images/hero-bg-1.jpg",
     title: "Expand Your World with Seamless Connectivity",
@@ -47,21 +49,102 @@ const slides: SlideData[] = [
   },
 ]
 
+interface HeroSlideResponse {
+  id: number
+  title: string | null
+  description: string | null
+  image: string
+  ctaText: string | null
+  ctaLink: string | null
+  order: number
+  isActive: boolean
+}
+
 export default function HeroSlider() {
+  const [heroSlides, setHeroSlides] = useState<SlideData[]>(fallbackSlides)
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length)
-    }, 5000)
-    return () => clearInterval(timer)
+    const loadSlides = async () => {
+      try {
+        setLoading(true)
+        const slides = (await api.getHeroSlides("/")) as HeroSlideResponse[]
+
+        const activeSlides = Array.isArray(slides)
+          ? slides
+              .filter((slide) => slide.isActive)
+              .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+              .slice(0, fallbackSlides.length)
+          : []
+
+        const mergedSlides = fallbackSlides.map((slide) => ({ ...slide }))
+
+        activeSlides.forEach((slide, index) => {
+          const sanitizedTitle = (slide.title || "").trim()
+          const hideTitle = sanitizedTitle.toLowerCase() === "homepage slide"
+          const sanitizedDescription = (slide.description || "").trim()
+          const sanitizedCta = (slide.ctaText || "").trim()
+
+          mergedSlides[index] = {
+            ...mergedSlides[index],
+            id: slide.id,
+            backgroundImage: getImageUrl(slide.image) || mergedSlides[index].backgroundImage,
+            title: hideTitle ? "" : sanitizedTitle || mergedSlides[index].title,
+            description: sanitizedDescription || mergedSlides[index].description,
+            cta: {
+              primary: {
+                text: sanitizedCta || mergedSlides[index].cta.primary.text,
+                href: slide.ctaLink || mergedSlides[index].cta.primary.href,
+              },
+              secondary: mergedSlides[index].cta.secondary,
+            },
+          }
+        })
+
+        setHeroSlides(mergedSlides)
+      } catch (error) {
+        console.error("Failed to load hero slides:", error)
+        setHeroSlides(fallbackSlides)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadSlides()
   }, [])
+
+  useEffect(() => {
+    if (heroSlides.length <= 1) return
+
+    const timer = setInterval(() => {
+      setCurrentSlide((prevSlide) => (prevSlide + 1) % heroSlides.length)
+    }, 5000)
+
+    return () => clearInterval(timer)
+  }, [heroSlides.length])
+
+  useEffect(() => {
+    if (currentSlide >= heroSlides.length && heroSlides.length > 0) {
+      setCurrentSlide(0)
+    }
+  }, [currentSlide, heroSlides.length])
+
+  if (loading && heroSlides.length === 0) {
+    return (
+      <div className="relative h-screen flex items-center justify-center bg-black">
+        <p className="text-white/80 text-lg">Loading hero content...</p>
+      </div>
+    )
+  }
+
+  const slidesToRender = heroSlides.length > 0 ? heroSlides : fallbackSlides
 
   return (
     <div className="relative h-screen">
       <AnimatePresence initial={false}>
         <motion.div
-          key={currentSlide}
+          key={slidesToRender[currentSlide]?.id ?? currentSlide}
           className="absolute inset-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -69,11 +152,12 @@ export default function HeroSlider() {
           transition={{ duration: 0.5 }}
         >
           <Image
-            src={slides[currentSlide].backgroundImage || "/placeholder.svg"}
-            alt={slides[currentSlide].title}
-            layout="fill"
-            objectFit="cover"
-            quality={100}
+            src={slidesToRender[currentSlide]?.backgroundImage || "/placeholder.svg"}
+            alt={slidesToRender[currentSlide]?.title || "Hero slide"}
+            fill
+            className="object-cover"
+            priority={currentSlide === 0}
+            unoptimized
           />
           <div className="absolute inset-0 bg-black bg-opacity-50" />
         </motion.div>
@@ -81,43 +165,44 @@ export default function HeroSlider() {
 
       <div className="relative z-10 h-full flex items-center">
         <div className="container mx-auto px-4">
-          <AnimatedHeroText text={slides[currentSlide].title} />
+          <AnimatedHeroText text={slidesToRender[currentSlide]?.title || ""} />
           <motion.p
             className="mt-4 max-w-xl text-lg text-white/80"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            {slides[currentSlide].description}
+            {slidesToRender[currentSlide]?.description}
           </motion.p>
           <motion.div
-            className="mt-8 flex gap-4"
+            className="mt-8 flex gap-4 flex-wrap"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
             <Link
-              href={slides[currentSlide].cta.primary.href}
+              href={slidesToRender[currentSlide]?.cta.primary.href || "#"}
               className="rounded-md bg-[#F98F1F] px-6 py-3 font-medium text-white transition-colors hover:bg-[#CD7F32]/90"
             >
-              {slides[currentSlide].cta.primary.text}
+              {slidesToRender[currentSlide]?.cta.primary.text}
             </Link>
             <Link
-              href={slides[currentSlide].cta.secondary.href}
+              href={slidesToRender[currentSlide]?.cta.secondary.href || "#"}
               className="rounded-md border border-white px-6 py-3 font-medium text-white transition-colors hover:bg-white/10"
             >
-              {slides[currentSlide].cta.secondary.text}
+              {slidesToRender[currentSlide]?.cta.secondary.text}
             </Link>
           </motion.div>
         </div>
       </div>
 
       <div className="absolute bottom-8 right-8 flex space-x-2">
-        {slides.map((_, index) => (
+        {slidesToRender.map((slide, index) => (
           <button
-            key={index}
+            key={slide.id ?? index}
             className={`w-3 h-3 rounded-full ${index === currentSlide ? "bg-white" : "bg-white/50"}`}
             onClick={() => setCurrentSlide(index)}
+            aria-label={`Go to slide ${index + 1}`}
           />
         ))}
       </div>

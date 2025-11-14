@@ -9,7 +9,7 @@ import Image from "next/image"
 import { ChevronDown, ChevronRight, Menu, X } from "lucide-react"
 
 // Placeholder for images
-const QcellLogo = "/images/logo.jpg"
+const QcellLogo = "/images/01-e1725631236883.png"
 
 interface NavItem {
     title: string;
@@ -290,13 +290,14 @@ useEffect(() => {
                 <Image
                   src={QcellLogo || "/placeholder.svg"}
                   alt="Qcell Logo"
-                  width={50}
-                  height={50}
-                  className="h-[50px] w-[50px] object-cover rounded-md rounded-tr-none rounded-br-none xl:rounded-none"
+                  width={64}
+                  height={64}
+                  className="h-[52px] w-auto object-contain rounded-md rounded-tr-none rounded-br-none xl:rounded-none"
                   style={{
-                    borderBottomLeftRadius: activeItem && !isScrolled ? "0px" : "5px",
-                    borderTopLeftRadius: activeItem && !isScrolled ? "0px" : "5px"
+                    borderBottomLeftRadius: activeItem && !isScrolled ? "0px" : "8px",
+                    borderTopLeftRadius: activeItem && !isScrolled ? "0px" : "8px"
                   }}
+                  priority
                   unoptimized
                 /> 
               </Link>
@@ -543,9 +544,10 @@ useEffect(() => {
                   <Image
                     src={QcellLogo || "/placeholder.svg"}
                     alt="Qcell Logo"
-                    width={40}
-                    height={40}
-                    className="h-[40px] w-[40px] object-cover rounded-md"
+                    width={48}
+                    height={48}
+                    className="h-12 w-auto object-contain rounded-md"
+                    priority
                     unoptimized
                   /> {/*<span className="ml-3 text-white">Expand Your World</span>*/}
                 </Link>
