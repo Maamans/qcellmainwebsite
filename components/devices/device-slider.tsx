@@ -205,7 +205,7 @@ export default function DevicesSlider() {
                 {offerings.map((offering, index) => (
                   <div
                     key={offering.id}
-                    className="relative min-w-0 flex-[0_0_50%] pl-2 pr-2 sm:flex-[0_0_35%] lg:flex-[0_0_22%]"
+                    className="relative min-w-0 flex-[0_0_50%] sm:flex-[0_0_35%] md:flex-[0_0_30%] lg:flex-[0_0_22%] pl-2 pr-2 sm:pl-3 sm:pr-3"
                   >
                     <DeviceCard
                       offering={offering}

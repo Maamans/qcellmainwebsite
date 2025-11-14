@@ -20,7 +20,7 @@ interface SlideData {
 
 const fallbackSlides: SlideData[] = [
   {
-    backgroundImage: "/images/hero-bg-1.jpg",
+    backgroundImage: "/images/expand your world 1.jpg",
     title: "Expand Your World with Seamless Connectivity",
     description:
       "Experience the fastest, cheapest, and most reliable network in Sierra Leone. Empowering your digital journey, one connection at a time.",

@@ -87,19 +87,20 @@ export default function DevicesSliderSmall() {
             </div>
 
             <div className="overflow-hidden rounded-lg" ref={emblaRef}>
-              <div className="flex touch-pan-y w-full rounded-lg h-[200px] md:h-[200px]">
+              <div className="flex touch-pan-y w-full rounded-lg">
                 {devices.map((device) => (
                   <div
                     key={device.id}
-                    className="relative min-w-0 flex-[0_0_36%] pl-4 pr-4 sm:flex-[0_0_36%] md:flex-[0_0_24%] lg:flex-[0_0_26%] space-x-4"
+                    className="relative min-w-0 flex-[0_0_36%] sm:flex-[0_0_36%] md:flex-[0_0_24%] lg:flex-[0_0_26%] pl-2 pr-2 sm:pl-3 sm:pr-3 md:pl-4 md:pr-4"
                   >
                     <motion.div
-                      className="relative h-full min-h-[50px] w-full cursor-pointer md:min-h-[50px]" // md:min-h-[600px]
+                      className="relative h-full w-full cursor-pointer"
+                      style={{ minHeight: '150px' }}
                     >
                       
-                      <Card className="group relative h-full overflow-hidden z-20 bg-transparent border-0 bg-gradient-to-r from-red-500/40 to-[#ff8400]/50 mix-blend-overlay"> {/* bg-gradient-to-br from-[#CD7F32] to-[#B87333] */}
+                      <Card className="group relative h-full w-full overflow-hidden z-20 bg-transparent border-0 bg-gradient-to-r from-red-500/40 to-[#ff8400]/50 mix-blend-overlay" style={{ aspectRatio: '3/4' }}> {/* bg-gradient-to-br from-[#CD7F32] to-[#B87333] */}
                         
-                        <CardContent className="relative flex h-full flex-col items-start justify-between p-6 md:p-14 border-0">
+                        <CardContent className="relative flex h-full w-full flex-col items-start justify-between p-3 sm:p-4 md:p-6 lg:p-8 border-0">
                           
 
                           <div className="absolute inset-0 z-10" /> {/* bg-gradient-to-t from-black/60 to-transparent */}
@@ -109,7 +110,7 @@ export default function DevicesSliderSmall() {
                             fill
                             className="object-contain object-center transition-transform duration-500 group-hover:scale-105"
                             unoptimized
-                            sizes="(max-width: 768px) 36vw, (max-width: 1024px) 24vw, 26vw"
+                            sizes="(max-width: 640px) 36vw, (max-width: 1024px) 24vw, 26vw"
                             onError={() => {
                               console.error('Failed to load image:', device.image);
                             }}
