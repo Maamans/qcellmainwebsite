@@ -7,6 +7,7 @@ import type { Offering } from "@/types/offerings"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import { getImageUrl } from "@/lib/api"
 
 interface DeviceModalProps {
   offering: Offering | null
@@ -16,6 +17,9 @@ interface DeviceModalProps {
 
 export default function DeviceModal({ offering, isOpen, onClose }: DeviceModalProps) {
   if (!offering) return null
+
+  const imageSrc = getImageUrl(offering.image ?? offering.details?.image ?? "/images/qmobile.png")
+  const title = offering.title ?? offering.details?.title ?? "Qcell device"
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -29,10 +33,11 @@ export default function DeviceModal({ offering, isOpen, onClose }: DeviceModalPr
           <div className="md:flex md:flex-col-reverse justify-between items-center md:gap-10 md:p-14 md:bg-gray-100 md:rounded-2xl">
             <div className="relative w-full mb-5 h-[400px] sm:h-[500px] md:h-[600px] lg:h-[700px] xl:h-[700px]">
               <Image
-                src={offering.image}
-                alt={offering.title}
+                src={imageSrc}
+                alt={title}
                 fill
                 className="object-cover object-center transition-transform duration-500 rounded-sm"
+                unoptimized
               />
             </div>
             <DialogDescription className="text-lg text-black/80 my-10 md:text-3xl">{offering.details.description}</DialogDescription>

@@ -1,27 +1,14 @@
 
 "use client";
-// Short codes for display (matching footer)
-const shortCodes = [
-  { code: '*303#', purpose: 'Check Balance' },
-  { code: '*124#', purpose: 'Check Data Balance' },
-  { code: '*122#', purpose: 'Buy Data Bundle' },
-  { code: '*133#', purpose: 'Borrow Credit' },
-  { code: '*100#', purpose: 'Customer Care' },
-  { code: '*101#', purpose: 'Know Your Number' },
-  { code: '*144*PIN#', purpose: 'Recharge Card' },
-  { code: '*126#', purpose: 'Buy Voice Bundle' },
-  { code: '*151#', purpose: 'Qcell Mobile Money' },
-  { code: '*123#', purpose: 'Check Promotions' },
-  { code: '*555#', purpose: 'Qcell Services Menu' },
-];
 
+import Link from "next/link"
+import Image from "next/image"
 import { motion } from "framer-motion"
 import { Check } from "lucide-react"
 
 import type { Offering } from "@/types/offerings"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import Image from "next/image"
 
 interface OfferingModalProps {
   offering: Offering | null
@@ -29,24 +16,40 @@ interface OfferingModalProps {
   onClose: () => void
 }
 
+const getLinkProps = (action?: string) => {
+  if (!action) {
+    return { href: "#" }
+  }
+  const isExternal = action.startsWith("http")
+  return {
+    href: action,
+    target: isExternal ? "_blank" : undefined,
+    rel: isExternal ? "noreferrer" : undefined,
+  }
+}
+
 export default function OfferingModal({ offering, isOpen, onClose }: OfferingModalProps) {
   if (!offering) return null
+
+  const quickActions = offering.details.quickActions ?? offering.quickActions ?? []
+  const ctas = offering.details.ctas ?? offering.ctas ?? (offering.cta ? [offering.cta] : [])
+  const heroImage = offering.details.image ?? offering.image ?? "/images/qmobile.png"
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="mx-auto w-full md:w-[80%] h-[90%] overflow-hidden overflow-y-scroll no-scrollbar bg-white text-black -mb-3 rounded-tr-2xl rounded-tl-2xl md:p-14 shadow-2xl">
         <DialogHeader>
           <div className="flex flex-col md:flex-row gap-10 items-center justify-between">
-                  <div className="relative w-full md:w-1/2 h-[260px] md:h-[400px] rounded-2xl overflow-hidden shadow-2xl border-2 border-[#F98F1F]/30">
-                    <Image
-                      src={offering.image}
-                      alt={offering.title}
-                      fill
-                      className="object-cover object-center scale-105 saturate-150 brightness-105"
-                      style={{ borderRadius: '1rem', boxShadow: '0 8px 32px 0 #F98F1F22' }}
-                    />
-                    {/* Removed dark overlay for more vibrant image */}
-                  </div>
+            <div className="relative w-full md:w-1/2 h-[260px] md:h-[400px] rounded-2xl overflow-hidden shadow-2xl border-2 border-[#F98F1F]/30">
+              <Image
+                src={heroImage}
+                alt={offering.details.title ?? offering.title ?? "Qcell Offering"}
+                fill
+                unoptimized
+                className="object-cover object-center"
+                style={{ borderRadius: "1rem", boxShadow: "0 8px 32px 0 #F98F1F22" }}
+              />
+            </div>
             <div className="flex-1 flex flex-col justify-center items-start px-2 md:px-8">
               <DialogTitle className="text-4xl md:text-5xl font-extrabold text-[#F98F1F] mb-2 drop-shadow-lg">
                 {offering.details.title}
@@ -55,23 +58,27 @@ export default function OfferingModal({ offering, isOpen, onClose }: OfferingMod
                 {offering.details.description}
               </p>
               <div className="flex flex-wrap gap-2 mb-4">
-                {offering.features.map((feature) => (
-                  <span key={feature} className="bg-[#F98F1F]/10 text-[#F98F1F] px-3 py-1 rounded-full text-xs font-semibold shadow">
+                {offering.features?.map((feature) => (
+                  <span
+                    key={feature}
+                    className="bg-[#F98F1F]/10 text-[#F98F1F] px-3 py-1 rounded-full text-xs font-semibold shadow"
+                  >
                     {feature}
                   </span>
                 ))}
               </div>
-                    {/* Dial code callout - compact, elegant badge */}
-                    <div className="w-full flex flex-col items-center my-4">
-                      <div className="flex flex-col items-center mb-2">
-                        <span className="text-[#F98F1F] text-lg font-bold tracking-widest mb-1">Dial Instantly</span>
-                        <div className="inline-flex items-center gap-2 bg-[#F98F1F] text-white font-mono text-xl font-extrabold rounded-full px-7 py-2 shadow-md border-2 border-[#F98F1F]/30 drop-shadow-md">
-                          <svg className="w-5 h-5 text-white opacity-80" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6.5 7.5v-2A2.5 2.5 0 0 1 9 3h6a2.5 2.5 0 0 1 2.5 2.5v2M12 15v2m0 0v2m0-2h2m-2 0H10" /></svg>
-                          *303#
-                        </div>
-                        <span className="text-xs text-gray-500 mt-1">to activate instantly</span>
-                      </div>
-                    </div>
+              {quickActions?.length ? (
+                <div className="flex flex-wrap gap-2">
+                  {quickActions.map((action, index) => (
+                    <span
+                      key={`${action.text ?? "action"}-${index}`}
+                      className="text-sm font-semibold text-[#F98F1F] border border-[#F98F1F]/40 rounded-full px-3 py-1 bg-[#F98F1F]/5"
+                    >
+                      {action.text}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
             </div>
           </div>
         </DialogHeader>
@@ -101,31 +108,23 @@ export default function OfferingModal({ offering, isOpen, onClose }: OfferingMod
           </div>
         </motion.div>
 
-        {/* Short codes list - modern, catchy card layout */}
-        <div className="mt-10">
-          <h5 className="text-[#F98F1F] text-2xl font-extrabold mb-4 text-center tracking-wide drop-shadow">Shortcodes &amp; Purpose</h5>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-            {shortCodes.map((item) => (
-              <div
-                key={item.code}
-                className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 shadow border border-[#F98F1F]/10 hover:shadow-lg transition group"
-              >
-                <span className="flex items-center justify-center font-mono text-base text-white bg-[#F98F1F] rounded-full px-4 py-2 font-bold shadow border-2 border-[#F98F1F]/30 group-hover:scale-105 transition-transform">
-                  <svg className="w-4 h-4 mr-1 text-white opacity-80" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6.5 7.5v-2A2.5 2.5 0 0 1 9 3h6a2.5 2.5 0 0 1 2.5 2.5v2" /></svg>
-                  {item.code}
-                </span>
-                <span className="text-sm text-gray-800 font-semibold tracking-wide group-hover:text-[#F98F1F] transition-colors">
-                  {item.purpose}
-                </span>
-              </div>
-            ))}
-          </div>
-          <div className="flex justify-end gap-4">
-            <Button variant="ghost" onClick={onClose} className="text-[#F98F1F] border border-[#F98F1F] hover:bg-[#F98F1F] hover:text-white font-bold px-6 py-2 rounded-full transition">
-              Close
+        <div className="mt-10 flex flex-wrap justify-end gap-4">
+          <Button
+            variant="ghost"
+            onClick={onClose}
+            className="text-[#F98F1F] border border-[#F98F1F] hover:bg-[#F98F1F] hover:text-white font-bold px-6 py-2 rounded-full transition"
+          >
+            Close
+          </Button>
+          {ctas?.map((cta, index) => (
+            <Button
+              key={`${cta.text ?? "cta"}-${index}`}
+              asChild
+              className="transition-all bg-[#F98F1F] text-white font-bold px-6 py-2 rounded-full hover:bg-[#F98F1F]/90 hover:scale-105 shadow-lg"
+            >
+              <Link {...getLinkProps(cta.action)}>{cta.text ?? "Learn more"}</Link>
             </Button>
-            <Button className="transition-all bg-[#F98F1F] text-white font-bold px-6 py-2 rounded-full hover:bg-[#F98F1F]/90 hover:scale-105 shadow-lg">Get Started</Button>
-          </div>
+          ))}
         </div>
       </DialogContent>
     </Dialog>

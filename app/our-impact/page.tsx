@@ -6,14 +6,173 @@ import Image from "next/image"
 import Navigation from "@/components/nav"
 import Footer from "@/components/footer"
 import { GraduationCap, Heart, Users, Leaf, ChevronLeft, ChevronRight } from "lucide-react"
+import { api, getImageUrl } from "@/lib/api"
+
+type CSRCard = {
+  id: string
+  eyebrow?: string
+  title: string
+  description: string
+  image: string
+}
+
+type UnknownRecord = Record<string, unknown>
+
+const isRecord = (value: unknown): value is UnknownRecord => typeof value === "object" && value !== null
+
+const extractSections = (payload: unknown): UnknownRecord[] => {
+  if (!payload) return []
+  if (Array.isArray(payload)) {
+    return payload.filter(isRecord)
+  }
+  if (isRecord(payload)) {
+    const sectionsField = payload["sections"]
+    if (Array.isArray(sectionsField)) {
+      return sectionsField.filter(isRecord)
+    }
+
+    const dataField = payload["data"]
+    if (isRecord(dataField) && Array.isArray(dataField["sections"])) {
+      return dataField["sections"].filter(isRecord)
+    }
+
+    if (Array.isArray(dataField)) {
+      return dataField.filter(isRecord)
+    }
+
+    return Object.values(payload).filter(isRecord)
+  }
+  return []
+}
+
+const extractCards = (section?: UnknownRecord): UnknownRecord[] => {
+  if (!section) return []
+
+  const dataField = section["data"]
+  if (isRecord(dataField) && Array.isArray(dataField["cards"])) {
+    return dataField["cards"].filter(isRecord)
+  }
+
+  if (Array.isArray(dataField)) {
+    return dataField.filter(isRecord)
+  }
+
+  const cardsField = section["cards"]
+  if (Array.isArray(cardsField)) {
+    return cardsField.filter(isRecord)
+  }
+
+  if (isRecord(cardsField)) {
+    return Object.values(cardsField).filter(isRecord)
+  }
+
+  return []
+}
+
+const toStringValue = (value: unknown): string | undefined => {
+  if (typeof value === "string") return value
+  if (typeof value === "number") return value.toString()
+  return undefined
+}
+
+const normalizeCsrCard = (card: UnknownRecord, index: number): CSRCard => {
+  const fallback = fallbackCsrCards[index % fallbackCsrCards.length]
+  const imagePath = toStringValue(card["image"]) ?? fallback.image
+
+  return {
+    id: toStringValue(card["id"]) ?? fallback.id ?? `csr-card-${index}`,
+    eyebrow: toStringValue(card["eyebrow"]) ?? toStringValue(card["label"]) ?? fallback.eyebrow,
+    title: toStringValue(card["title"]) ?? fallback.title,
+    description: toStringValue(card["description"]) ?? toStringValue(card["body"]) ?? fallback.description,
+    image: getImageUrl(imagePath) || fallback.image,
+  }
+}
+
+const fallbackCsrCards: CSRCard[] = [
+  {
+    id: "csr-innovation",
+    eyebrow: "Innovation",
+    title: "Sierra Leone Innovates Tech Summit",
+    description:
+      "QCell sponsored the Sierra Leone Innovates Tech Summit, supporting young entrepreneurs and fostering innovation in the tech ecosystem.",
+    image: "/images/images (1).jpeg",
+  },
+  {
+    id: "csr-relief",
+    eyebrow: "Community Support",
+    title: "Wellington Fire Relief Support",
+    description:
+      "QCell provided medical and food aid to victims of the Wellington fire accident, offering much-needed relief during a difficult time.",
+    image: "/images/images (2).jpeg",
+  },
+  {
+    id: "csr-health",
+    eyebrow: "Healthcare",
+    title: "Rural Health Initiative",
+    description:
+      "Qcell partnered with local health organizations to provide free medical check-ups and supplies in rural communities across Sierra Leone.",
+    image: "/images/images.jpeg",
+  },
+]
 
 export default function OurImpactPage() {
   const containerRef = useRef<HTMLDivElement>(null)
   const isInView = useInView(containerRef, { once: true, amount: 0.1 })
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [csrCards, setCsrCards] = useState<CSRCard[]>(fallbackCsrCards)
+  const [csrColumns, setCsrColumns] = useState<number>(3)
 
   useEffect(() => {
-    document.title = 'Our Impact - Qcell'
+    document.title = "Our Impact - Qcell"
+  }, [])
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadCsrCards = async () => {
+      try {
+        const response: unknown = await api.getPageContent("/our-impact")
+        const sections = extractSections(response)
+
+        const csrSection = sections.find((section) => {
+          const sectionName = toStringValue(section["section"]) ?? toStringValue(section["slug"]) ?? toStringValue(section["id"])
+          return typeof sectionName === "string" && sectionName.toLowerCase() === "csr-activities"
+        })
+
+        const cardsPayload = extractCards(csrSection)
+
+        const normalizedCards: CSRCard[] = cardsPayload.map((card, index) => normalizeCsrCard(card, index))
+
+        const dataField = csrSection && isRecord(csrSection["data"]) ? csrSection["data"] : undefined
+        const layoutField = csrSection && isRecord(csrSection["layout"]) ? csrSection["layout"] : undefined
+        const dataLayoutField = dataField && isRecord(dataField["layout"]) ? dataField["layout"] : undefined
+
+        const resolvedColumnsRaw = Number(
+          dataField?.["columns"] ?? csrSection?.["columns"] ?? layoutField?.["columns"] ?? dataLayoutField?.["columns"],
+        )
+        const resolvedColumns =
+          Number.isFinite(resolvedColumnsRaw) && resolvedColumnsRaw > 0 ? Math.min(4, Math.max(1, resolvedColumnsRaw)) : null
+
+        if (isMounted) {
+          setCsrCards(normalizedCards.length ? normalizedCards : fallbackCsrCards)
+          if (resolvedColumns) {
+            setCsrColumns(resolvedColumns)
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load CSR content:", error)
+        if (isMounted) {
+          setCsrCards(fallbackCsrCards)
+          setCsrColumns(3)
+        }
+      }
+    }
+
+    loadCsrCards()
+
+    return () => {
+      isMounted = false
+    }
   }, [])
 
   // Hero slides data
@@ -74,24 +233,6 @@ export default function OurImpactPage() {
     }
   ]
 
-
-  const recentActivities = [
-    {
-      image: "/images/images (1).jpeg",
-      title: "Sierra Leone Innovates Tech Summit",
-      description: "QCell sponsored the Sierra Leone Innovates Tech Summit, supporting young entrepreneurs and fostering innovation in the tech ecosystem."
-    },
-    {
-      image: "/images/images (2).jpeg",
-      title: "Wellington Fire Relief Support",
-      description: "QCell provided medical and food aid to victims of the Wellington fire accident, offering much-needed relief during a difficult time."
-    },
-    {
-      image: "/images/images.jpeg",
-      title: "Rural Health Initiative",
-      description: "Qcell partnered with local health organizations to provide free medical check-ups and supplies in rural communities across Sierra Leone."
-    }
-  ]
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -351,10 +492,10 @@ export default function OurImpactPage() {
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {recentActivities.map((activity, index) => (
+          <div className={`grid grid-cols-1 ${csrColumns === 2 ? "md:grid-cols-2" : csrColumns >= 4 ? "md:grid-cols-4" : "md:grid-cols-3"} gap-8`}>
+            {csrCards.map((activity, index) => (
               <motion.div
-                key={index}
+                key={activity.id ?? index}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.2, duration: 0.6 }}
@@ -373,6 +514,12 @@ export default function OurImpactPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                 </div>
                 <div className="p-6">
+                  {activity.eyebrow &&
+                  activity.eyebrow.trim().toLowerCase() !== activity.title.trim().toLowerCase() ? (
+                    <p className="text-xs font-semibold uppercase tracking-widest text-[#F98F1F] mb-2">
+                      {activity.eyebrow}
+                    </p>
+                  ) : null}
                   <h3 className="text-xl font-bold text-gray-900 mb-3">{activity.title}</h3>
                   <p className="text-gray-600 leading-relaxed">{activity.description}</p>
                 </div>

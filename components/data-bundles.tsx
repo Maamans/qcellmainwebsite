@@ -9,7 +9,7 @@ export default function DataBundles() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="text-2xl font-bold text-purple-700 mb-6"
+      className="text-2xl font-bold text-black/60 mb-6"
     >
       Qcell offers you the Fastest High Speed Internet Service to browse the internet, upload and download data
       files.
@@ -23,7 +23,7 @@ export default function DataBundles() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="overflow-x-auto"
         >
-          <h3 className="text-xl font-bold mb-4" style={{ color: '#FF8400' }}>DATA BUNDLES</h3>
+          <h3 className="text-xl font-bold mb-4 text-[#FF8400]">DATA BUNDLES</h3>
           <table className="w-full min-w-[300px] border-collapse rounded-lg overflow-hidden shadow">
             <thead>
               <tr>
@@ -35,7 +35,7 @@ export default function DataBundles() {
             </thead>
             <tbody>
               <tr className="bg-orange-50">
-                <td colSpan={4} className="p-3 text-center font-semibold" style={{ color: '#FF8400' }}>
+                <td colSpan={4} className="p-3 text-center font-semibold text-[#FF8400]">
                   Daily
                 </td>
               </tr>
@@ -91,7 +91,7 @@ export default function DataBundles() {
           transition={{ duration: 0.5, delay: 0.4 }}
           className="overflow-x-auto"
         >
-          <h3 className="text-xl font-bold mb-4" style={{ color: '#FF8400' }}>POST-PAID BUNDLES</h3>
+          <h3 className="text-xl font-bold mb-4 text-[#FF8400]">POST-PAID BUNDLES</h3>
           <table className="w-full min-w-[300px] border-collapse rounded-lg overflow-hidden shadow">
             <thead>
               <tr>
@@ -155,7 +155,7 @@ export default function DataBundles() {
           transition={{ duration: 0.5, delay: 0.6 }}
           className="overflow-x-auto"
         >
-          <h3 className="text-xl font-bold mb-4" style={{ color: '#FF8400' }}>SOCIAL MEDIA BUNDLES</h3>
+          <h3 className="text-xl font-bold mb-4 text-[#FF8400]">SOCIAL MEDIA BUNDLES</h3>
           <table className="w-full min-w-[300px] border-collapse rounded-lg overflow-hidden shadow">
             <thead>
               <tr>

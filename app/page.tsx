@@ -62,7 +62,6 @@ export default function Home() {
             transition={{ duration: 1 }}
             className="main-content"
           >
-            
             <Cursor />
             <section className="relative w-full bg-white">
               <motion.div

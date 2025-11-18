@@ -1,20 +1,29 @@
+export interface OfferingAction {
+  text: string
+  action: string
+}
+
+export interface OfferingDetails {
+  title: string
+  description: string
+  benefits: string[]
+  quickActions?: OfferingAction[]
+  ctas?: OfferingAction[]
+  image?: string
+}
+
 export interface Offering {
-    id: string
-    title: string
-    description: string
-    image: string
-    features: string[]
-    cta: {
-      text: string
-      action: string
-    }
-    details: {
-      title: string
-      description: string
-      benefits: string[]
-    }
-  }
-  //
+  id: string
+  title?: string
+  description?: string
+  image?: string
+  features?: string[]
+  cta?: OfferingAction
+  ctas?: OfferingAction[]
+  quickActions?: OfferingAction[]
+  details: OfferingDetails
+}
+
 export const offerings: Offering[] = [
   {
     id: "combo-bundles",
@@ -30,6 +39,15 @@ export const offerings: Offering[] = [
       title: "Combo Bundles",
       description: "Enjoy seamless connectivity with our affordable combo bundles, perfect for every need.",
       benefits: ["Save more", "All-in-one", "Easy activation"],
+      quickActions: [
+        { text: "Dial *335#", action: "*335#" },
+        { text: "Open Qcell App", action: "app://qcell" },
+      ],
+      ctas: [
+        { text: "Buy Combo Bundle", action: "/tariffs/alternative" },
+        { text: "See Plan Details", action: "/tariffs/alternative" },
+      ],
+      image: "/images/qmobile.png",
     },
   },
   {
@@ -46,6 +64,15 @@ export const offerings: Offering[] = [
       title: "Data Bundles",
       description: "Choose from a variety of data plans to suit your browsing and streaming needs.",
       benefits: ["No hidden fees", "Flexible plans", "Fast speeds"],
+      quickActions: [
+        { text: "Dial *335#", action: "*335#" },
+        { text: "Share Data Gift", action: "/tariffs/data-bundles" },
+      ],
+      ctas: [
+        { text: "Buy Data", action: "/tariffs/data-bundles" },
+        { text: "View Full Plans", action: "/tariffs/data-bundles" },
+      ],
+      image: "/images/mifi.png",
     },
   },
   {
@@ -62,6 +89,14 @@ export const offerings: Offering[] = [
       title: "Voice Tariffs",
       description: "Enjoy affordable calls to any network, anytime.",
       benefits: ["No hidden charges", "Best value", "Wide coverage"],
+      quickActions: [
+        { text: "Check Balance *335#", action: "*335#" },
+        { text: "View Voice Plans", action: "/tariffs/voice-tariffs" },
+      ],
+      ctas: [
+        { text: "See Voice Tariffs", action: "/tariffs/voice-tariffs" },
+      ],
+      image: "/images/voice-tariffs.jpg",
     },
   },
   {
@@ -78,6 +113,13 @@ export const offerings: Offering[] = [
       title: "QPower",
       description: "Top up your NAWEC cash power anytime, anywhere using your QCell line.",
       benefits: ["Fast & secure", "No queues", "Easy to use"],
+      quickActions: [
+        { text: "Dial *335#", action: "*335#" },
+      ],
+      ctas: [
+        { text: "Buy QPower", action: "/services/alternative" },
+      ],
+      image: "/images/qpower.jpg",
     },
   },
   {
@@ -94,8 +136,13 @@ export const offerings: Offering[] = [
       title: "QCell Music",
       description: "Access a world of music with our exclusive streaming service.",
       benefits: ["Huge library", "No interruptions", "Listen anywhere"],
+      quickActions: [
+        { text: "Dial *335#", action: "*335#" },
+      ],
+      ctas: [
+        { text: "Start Listening", action: "/services/alternative-two" },
+      ],
+      image: "/images/qsmart-plus.png",
     },
   },
 ]
-  
-  

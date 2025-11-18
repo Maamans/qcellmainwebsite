@@ -39,15 +39,20 @@ export default function ServicesPage() {
   const subtitleY = useTransform(smoothScrollYProgress, [0, 0.15], [0, -30])
 
   // Service data
+  const servicePalette = ["#FF8400", "#1A85FF"]
+
   const services = [
-    { name: "CUG", description: "Closed User Group", longDescription: "Enjoy unlimited calls within your organization or group at a fixed monthly rate. Perfect for businesses and teams who need seamless, cost-effective communication.", color: "#FF6B35" },
-    { name: "QFiber", description: "High-Speed Internet", longDescription: "Experience ultra-fast, reliable internet connectivity for your home or business. QFiber delivers high-speed broadband to keep you connected and productive.", color: "#1A85FF" },
-    { name: "VAS Offers", description: "Value Added Services", longDescription: "Enhance your mobile experience with our Value Added Services, including caller tunes, SMS bundles, mobile entertainment, and more.", color: "#9747FF" },
-    { name: "eSIM", description: "Digital SIM Cards", longDescription: "Go digital with eSIM technology—activate your mobile plan instantly without a physical SIM card. Convenient, secure, and perfect for modern devices.", color: "#00C896" },
-    { name: "Instant Roaming", description: "Global Connectivity", longDescription: "Stay connected wherever you travel. Our Instant Roaming service ensures you have voice, SMS, and data access worldwide with ease.", color: "#FFB800" },
-    { name: "Tros-Mi-Topup", description: "No Credit. No Wahala!", longDescription: "Never run out of credit again! With Tros-Mi-Topup, you can instantly borrow airtime when you need it most. Stay connected even when your balance is low—no stress, no interest, no hassle.", color: "#FFB800" },
-    { name: "Q-Power", description: "Buy EDSA using Topup", longDescription: "Easily purchase EDSA electricity tokens directly from your QCell credit balance. Q-Power makes it simple and convenient to keep your home or business powered up, anytime and anywhere.", color: "#FFB800" },
-  ]
+    { name: "CUG", description: "Closed User Group", longDescription: "Enjoy unlimited calls within your organization or group at a fixed monthly rate. Perfect for businesses and teams who need seamless, cost-effective communication." },
+    { name: "QFiber", description: "High-Speed Internet", longDescription: "Experience ultra-fast, reliable internet connectivity for your home or business. QFiber delivers high-speed broadband to keep you connected and productive." },
+    { name: "VAS Offers", description: "Value Added Services", longDescription: "Enhance your mobile experience with our Value Added Services, including caller tunes, SMS bundles, mobile entertainment, and more." },
+    { name: "eSIM", description: "Digital SIM Cards", longDescription: "Go digital with eSIM technology—activate your mobile plan instantly without a physical SIM card. Convenient, secure, and perfect for modern devices." },
+    { name: "Instant Roaming", description: "Global Connectivity", longDescription: "Stay connected wherever you travel. Our Instant Roaming service ensures you have voice, SMS, and data access worldwide with ease." },
+    { name: "Tros-Mi-Topup", description: "No Credit. No Wahala!", longDescription: "Never run out of credit again! With Tros-Mi-Topup, you can instantly borrow airtime when you need it most. Stay connected even when your balance is low—no stress, no interest, no hassle." },
+    { name: "Q-Power", description: "Buy EDSA using Topup", longDescription: "Easily purchase EDSA electricity tokens directly from your QCell credit balance. Q-Power makes it simple and convenient to keep your home or business powered up, anytime and anywhere." },
+  ].map((service, index) => ({
+    ...service,
+    color: servicePalette[index % servicePalette.length],
+  }))
 
   // Service animations - simplified and more visible ranges
   const service1Opacity = useTransform(smoothScrollYProgress, [0.1, 0.2, 0.3], [0, 1, 0])

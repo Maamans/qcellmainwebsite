@@ -108,8 +108,11 @@ export default function HeroSlider() {
           })
         })
 
-        // Combine: backend slides first, then fallback slides (limit to fallbackSlides.length)
-        const finalSlides = [...backendSlides, ...fallbackSlides].slice(0, fallbackSlides.length)
+        const maxSlides = 3
+        const finalSlides =
+          backendSlides.length > 0
+            ? [backendSlides[0], ...fallbackSlides].slice(0, maxSlides)
+            : fallbackSlides.slice(0, maxSlides)
         setHeroSlides(finalSlides)
       } catch (error) {
         console.error("Failed to load hero slides:", error)
@@ -159,14 +162,26 @@ export default function HeroSlider() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Image
-            src={slidesToRender[currentSlide]?.backgroundImage || "/placeholder.svg"}
-            alt={slidesToRender[currentSlide]?.title || "Hero slide"}
-            fill
-            className="object-cover"
-            priority={currentSlide === 0}
-            unoptimized
-          />
+          <div className="absolute inset-0 w-full h-full overflow-hidden">
+            <Image
+              src={slidesToRender[currentSlide]?.backgroundImage || "/placeholder.svg"}
+              alt={slidesToRender[currentSlide]?.title || "Hero slide"}
+              fill
+              className="object-cover"
+              style={{
+                objectPosition: "center center",
+                width: "100%",
+                height: "100%",
+                minWidth: "100%",
+                minHeight: "100%",
+                left: 0,
+                top: 0
+              }}
+              sizes="100vw"
+              priority={currentSlide === 0}
+              unoptimized
+            />
+          </div>
           <div className="absolute inset-0 bg-black bg-opacity-50" />
         </motion.div>
       </AnimatePresence>

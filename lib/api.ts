@@ -30,6 +30,12 @@ export const getImageUrl = (imagePath: string): string => {
 };
 
 // API Client - All endpoints are PUBLIC (no authentication required)
+const normalizePageParam = (page?: string | null) => {
+  if (page === undefined || page === null) return undefined
+  if (page === "") return "/"
+  return page
+}
+
 export const api = {
   /**
    * Get all homepage content in one call (NO AUTH NEEDED)
@@ -48,11 +54,26 @@ export const api = {
   },
 
   /**
+   * Get offerings for the homepage carousel (NO AUTH NEEDED)
+   */
+  getOfferings: async () => {
+    // Try /api/public/offerings first, fallback to /api/offerings
+    let response = await fetch(`${API_URL}/api/public/offerings`)
+    if (!response.ok && response.status === 404) {
+      response = await fetch(`${API_URL}/api/offerings`)
+    }
+    if (!response.ok) {
+      throw new Error(`Failed to fetch offerings: ${response.status} ${response.statusText}`)
+    }
+    return response.json()
+  },
+
+  /**
    * Get hero slides for a specific page (NO AUTH NEEDED)
    * @param page - Page path (e.g., '/about-us', '/devices'). Use '/' or null for homepage
    */
   getHeroSlides: async (page?: string | null) => {
-    const pageParam = page === '/' || page === null ? '' : page;
+    const pageParam = normalizePageParam(page);
     // Try /api/public/hero-slides first, fallback to /api/hero-slides
     let url = pageParam
       ? `${API_URL}/api/public/hero-slides?page=${encodeURIComponent(pageParam)}`

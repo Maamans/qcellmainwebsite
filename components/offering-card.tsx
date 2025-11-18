@@ -24,8 +24,8 @@ export default function OfferingCard({ offering, onClick }: OfferingCardProps) {
           {/* Only image and card UI, no title or description */}
           <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 to-transparent" />
           <Image
-            src={offering.image}
-            alt={offering.title}
+            src={offering.details.image ?? offering.image ?? "/images/qmobile.png"}
+            alt={offering.details.title ?? offering.title ?? "Qcell offering"}
             fill
             className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
             unoptimized

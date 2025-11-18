@@ -57,7 +57,7 @@ export default function TariffNavigation({ activeTab }: TariffNavigationProps) {
               className={cn(
                 "px-4 py-3 whitespace-nowrap font-medium border-b-2 transition-colors",
                 activeTab === tab
-                  ? "border-purple-600 text-purple-600"
+                  ? "border-black text-black"
                   : "border-transparent text-gray-400 hover:text-gray-600",
               )}
             >
@@ -75,7 +75,7 @@ export default function TariffNavigation({ activeTab }: TariffNavigationProps) {
                 onClick={() => setActiveSubTab(subTab)}
                 className={cn(
                   "px-4 py-2 font-medium text-sm",
-                  activeSubTab === subTab ? "text-purple-600" : "text-gray-500 hover:text-gray-700",
+                  activeSubTab === subTab ? "text-black" : "text-gray-500 hover:text-gray-700",
                 )}
               >
                 {subTab}

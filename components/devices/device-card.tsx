@@ -5,6 +5,7 @@ import Image from "next/image"
 import { Plus } from "lucide-react"
 
 import type { Offering } from "@/types/offerings"
+import { getImageUrl } from "@/lib/api"
 import { Card, CardContent } from "@/components/ui/card"
 
 interface DeviceCardProps {
@@ -14,6 +15,9 @@ interface DeviceCardProps {
 }
 
 export default function DeviceCard({ offering, isActive, onClick }: DeviceCardProps) {
+  const imageSrc = getImageUrl(offering.image ?? offering.details?.image ?? "/images/qmobile.png")
+  const title = offering.title ?? offering.details?.title ?? "Qcell device"
+
   return (
     <motion.div
       className="relative h-full w-full cursor-pointer"
@@ -25,14 +29,14 @@ export default function DeviceCard({ offering, isActive, onClick }: DeviceCardPr
         <CardContent className="relative flex h-full w-full items-center justify-center p-4 sm:p-6 md:p-8 lg:p-14">
           <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/40 to-transparent" />
           <Image
-            src={offering.image}
-            alt={offering.title}
+            src={imageSrc}
+            alt={title}
             fill
             className="object-contain object-center transition-transform duration-500 group-hover:scale-105"
             unoptimized
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 35vw, 22vw"
             onError={() => {
-              console.error('Failed to load image:', offering.image);
+              console.error("Failed to load image:", imageSrc)
             }}
           />
           <div className="absolute bottom-4 right-4 z-20">

@@ -16,37 +16,24 @@ function cn(...classes: (string | false | null | undefined)[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-// Fallback hero slider images (used if API fails or while loading)
-const fallbackHeroImages = [
-  "/images/expand your world 1.jpg",
-  "https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=2069&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1546027658-7aa750153465?q=80&w=2070&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1533777419517-3e4017e2e15a?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-];
-
-// Fallback hero slider content
-const fallbackHeroContent = [
+const staticHeroSlides = [
   {
-    title: "Expand Your World with Seamless Connectivity",
-    description: "Enjoy The Cheapes and most Reliable Network In Sierra leone.",
-    cta: ""
+    image: "/images/expand your world 1.jpg",
+    content: {
+      title: "Expand Your World with Seamless Connectivity",
+      description: "Enjoy The Cheapes and most Reliable Network In Sierra leone.",
+      cta: "Explore Plans",
+    },
   },
   {
-    title: "Unlimited Data Plans for Unlimited Possibilities",
-    description: "Stream, browse, and connect without limits. Our high-speed network keeps you connected wherever you go.",
-    cta: "Explore Plans"
+    image: "/images/Weekend Freedom.jpg",
+    content: { title: "", description: "", cta: "" },
   },
   {
-    title: "Business Solutions That Drive Growth",
-    description: "Empower your business with our enterprise-grade connectivity solutions designed for reliability and performance.",
-    cta: "Learn More"
+    image: "/images/expand your world copy.jpg",
+    content: { title: "", description: "", cta: "" },
   },
-  {
-    title: "Join the Qcell Family Today",
-    description: "Become part of Sierra Leone's largest and most trusted telecommunications network.",
-    cta: "Join Now"
-  }
-];
+]
 
 // Animation variants
 const dropdownVariants = {
@@ -248,35 +235,16 @@ export default function Navigation() {
     }
   })
 
-  // Build final arrays: backend slides first, then fallback slides
-  const MAX_SLIDES = fallbackHeroImages.length
-  const backendImages: string[] = []
-  const backendContent: Array<{ title: string; description: string; cta: string }> = []
+  const resolvedSlides =
+    sanitizedBackendSlides.length && sanitizedBackendSlides[0]?.content?.title
+      ? sanitizedBackendSlides
+      : staticHeroSlides.map((slide) => ({
+          image: getImageUrl(slide.image),
+          content: slide.content,
+        }))
 
-  // Add backend slides first
-  sanitizedBackendSlides.forEach((slide) => {
-    if (slide.image) {
-      backendImages.push(slide.image)
-      // For first backend slide, use fallback text if empty or "Homepage Slide"
-      if (backendImages.length === 1 && (!slide.content.title || slide.content.title.trim() === "")) {
-        backendContent.push({
-          title: "Expand Your World with Seamless Connectivity",
-          description: "Enjoy The Cheapes and most Reliable Network In Sierra leone.",
-          cta: ""
-        })
-      } else {
-        backendContent.push({
-          title: slide.content.title || "",
-          description: slide.content.description || "",
-          cta: slide.content.cta || "",
-        })
-      }
-    }
-  })
-
-  // Combine: backend slides first, then fallback slides (up to MAX_SLIDES total)
-  const heroImages = [...backendImages, ...fallbackHeroImages].slice(0, MAX_SLIDES)
-  const heroContent = [...backendContent, ...fallbackHeroContent].slice(0, MAX_SLIDES)
+  const heroImages = resolvedSlides.map((slide) => slide.image)
+  const heroContent = resolvedSlides.map((slide) => slide.content)
 
   // Handle scroll effect
   useEffect(() => {
@@ -964,7 +932,7 @@ export default function Navigation() {
       </AnimatePresence>
 
       {/* Hero Slider */}
-      <div ref={heroRef} className={isScrolled ? "relative min-h-screen overflow-hidden sm:px-10" : "relative min-h-screen overflow-hidden sm:px-20"}>
+      <div ref={heroRef} className="relative min-h-screen w-full overflow-hidden" style={{ width: "100%", margin: 0, padding: 0 }}>
         {/* Slider Images */}
         <AnimatePresence initial={false}>
           <motion.div
@@ -975,19 +943,47 @@ export default function Navigation() {
             exit={{ opacity: 0 }}
             transition={{ duration: 2, ease: [0.22, 1, 0.36, 1] }}
             style={{
-                transition: "all 2s"
+                transition: "all 2s",
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                width: "100%",
+                height: "100%"
             }}
           >
-            <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#ff8400]/80 to-[#ff8400]/80 mix-blend-overlay" />
-            <Image
-              src={heroImages[currentSlide] || "/placeholder.svg"}
-              alt={`Slide ${currentSlide + 1}`}
-              fill
-              className="object-cover sm:object-center object-[center_35%]"
-              sizes="100vw"
-              priority
-              unoptimized
-            />
+            <div className="absolute inset-0 w-full h-full">
+              <Image
+                src={heroImages[currentSlide] || "/placeholder.svg"}
+                alt=""
+                fill
+                className="object-cover blur-2xl scale-110"
+                style={{
+                  objectPosition: "center center",
+                  filter: "blur(25px)",
+                  transform: "scale(1.2)",
+                }}
+                sizes="100vw"
+                priority
+                unoptimized
+                aria-hidden
+              />
+            </div>
+            <div className="absolute inset-0 w-full h-full">
+              <Image
+                src={heroImages[currentSlide] || "/placeholder.svg"}
+                alt={`Slide ${currentSlide + 1}`}
+                fill
+                className="object-cover"
+                style={{
+                  objectPosition: "center center",
+                }}
+                sizes="100vw"
+                priority
+                unoptimized
+              />
+            </div>
           </motion.div>
         </AnimatePresence>
 

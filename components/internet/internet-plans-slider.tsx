@@ -119,7 +119,7 @@ export default function InternetPlansSlider() {
                   </div>
                 ))}
               </div>
-            </div>
+            </div> 
 
             <div className="mt-8 flex justify-center gap-2">
               {internetPlans.map((_, index) => (
