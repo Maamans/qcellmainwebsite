@@ -30,7 +30,7 @@ const staticHeroSlides = [
     content: { title: "", description: "", cta: "" },
   },
   {
-    image: "/images/expand your world copy.jpg",
+    image: "/images/QCell SL App.jpg",
     content: { title: "", description: "", cta: "" },
   },
 ]
@@ -361,12 +361,12 @@ export default function Navigation() {
       {/* Desktop Navigation */}
       <motion.header
         ref={navRef}
-        className="fixed top-0 left-0 right-0 z-50 nav mx-auto text-white w-[90%] mt-[50px] pr-3 py-0 rounded-none"
+        className="fixed top-0 left-0 right-0 z-50 nav mx-auto text-white w-[90%] mt-[20px] pr-3 py-0 rounded-none"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         style={{
-            marginTop: isScrolled ? "0" : "50px",
+            marginTop: isScrolled ? "0" : "20px",
             width: isScrolled ? "100%" : "90%",
             borderRadius: isScrolled ? "0" : "0.3rem",
             backgroundColor: "#077aca",
@@ -938,19 +938,18 @@ export default function Navigation() {
           <motion.div
             key={currentSlide}
             className="absolute inset-0 z-0"
-            initial={{ opacity: 0, scale: 1.05 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 2, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, x: 80 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -80 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             style={{
-                transition: "all 2s",
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                width: "100%",
-                height: "100%"
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              width: "100%",
+              height: "100%",
             }}
           >
             <div className="absolute inset-0 w-full h-full">
@@ -990,7 +989,7 @@ export default function Navigation() {
         {/* Slider Controls removed for mobile */}
 
         {/* Slider Indicators absolute z-40 bottom-8 left-0 right-0 flex justify-center space-x-2*/}
-        <div className="absolute z-40 bottom-52 left-5 right-0 flex space-x-2 sm:left-0 sm:justify-center sm:bottom-8">
+        <div className="absolute z-40 bottom-40 left-5 right-0 flex space-x-2 sm:left-0 sm:justify-center sm:bottom-10">
           {heroImages.map((_, index) => (
             <motion.button
               key={index}
