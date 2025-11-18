@@ -19,10 +19,10 @@ function cn(...classes: (string | false | null | undefined)[]) {
 const staticHeroSlides = [
   {
     image: "/images/expand your world 1.jpg",
-    content: {
-      title: "Expand Your World with Seamless Connectivity",
-      description: "Enjoy The Cheapes and most Reliable Network In Sierra leone.",
-      cta: "Explore Plans",
+    content: { 
+      title: "Expand Your World with Seamless Connectivity", 
+      description: "Enjoy The Cheapes and most Reliable Network In Sierra leone.", 
+      cta: "Explore Plans" 
     },
   },
   {
@@ -181,6 +181,9 @@ export default function Navigation() {
     order: number;
     isActive: boolean;
   }>>([])
+  
+  // Track failed images
+  const [failedImages, setFailedImages] = useState<Set<string>>(new Set())
 
   // Fetch hero slides from API
   useEffect(() => {
@@ -235,16 +238,68 @@ export default function Navigation() {
     }
   })
 
-  const resolvedSlides =
-    sanitizedBackendSlides.length && sanitizedBackendSlides[0]?.content?.title
-      ? sanitizedBackendSlides
-      : staticHeroSlides.map((slide) => ({
-          image: getImageUrl(slide.image),
-          content: slide.content,
-        }))
+  // Merge backend slides with static slides: backend first, then static to fill up to 3 total
+  const resolvedSlides = (() => {
+    const staticSlides = staticHeroSlides.map((slide) => ({
+      image: getImageUrl(slide.image),
+      content: slide.content,
+    }))
+    
+    if (sanitizedBackendSlides.length > 0 && sanitizedBackendSlides[0]?.image) {
+      // Use first backend slide image, but merge content from first static slide if backend has no content
+      const firstBackendSlide = sanitizedBackendSlides[0]
+      const firstStaticSlide = staticSlides[0]
+      const firstSlide = {
+        image: firstBackendSlide.image,
+        content: (firstBackendSlide.content?.title || firstBackendSlide.content?.description || firstBackendSlide.content?.cta)
+          ? firstBackendSlide.content
+          : firstStaticSlide.content, // Use static slide content if backend has no content
+      }
+      
+      // Use first slide (backend image + text), then use last 2 static slides
+      // This ensures "QCell SL App.jpg" (3rd static slide) is included
+      const merged = [firstSlide, ...staticSlides.slice(1)]
+      return merged.slice(0, 3) // Limit to 3 slides total
+    }
+    
+    return staticSlides
+  })()
 
-  const heroImages = resolvedSlides.map((slide) => slide.image)
+  const heroImages = resolvedSlides.map((slide) => slide.image).filter(Boolean)
   const heroContent = resolvedSlides.map((slide) => slide.content)
+
+  // Log images for debugging
+  useEffect(() => {
+    if (heroImages.length > 0) {
+      console.log('Hero images loaded:', heroImages)
+      console.log('Current slide:', currentSlide, 'Image:', heroImages[currentSlide])
+    }
+  }, [heroImages, currentSlide])
+
+  // Get current image with fallback
+  const getCurrentImage = () => {
+    const currentImage = heroImages[currentSlide]
+    // Check if image is invalid, empty, or failed
+    if (!currentImage || currentImage.trim() === '' || failedImages.has(currentImage)) {
+      // Fallback to static images
+      const staticImage = staticHeroSlides[currentSlide % staticHeroSlides.length]?.image
+      const fallbackImage = staticImage ? getImageUrl(staticImage) : "/placeholder.svg"
+      if (failedImages.has(currentImage || '') || !currentImage || currentImage.trim() === '') {
+        console.log('Using fallback image for slide', currentSlide, ':', fallbackImage)
+      }
+      return fallbackImage
+    }
+    return currentImage
+  }
+
+  const handleImageError = (imageSrc: string) => {
+    console.error('Failed to load hero image:', imageSrc)
+    setFailedImages((prev) => {
+      const newSet = new Set([...prev, imageSrc])
+      console.log('Failed images set:', Array.from(newSet))
+      return newSet
+    })
+  }
 
   // Handle scroll effect
   useEffect(() => {
@@ -267,6 +322,16 @@ export default function Navigation() {
       window.removeEventListener("scroll", handleScroll)
     }
   }, [])
+
+  // Preload all hero images for faster transitions
+  useEffect(() => {
+    heroImages.forEach((imageSrc) => {
+      if (imageSrc) {
+        const img = document.createElement('img')
+        img.src = imageSrc
+      }
+    })
+  }, [heroImages])
 
   // Auto-advance slider
   useEffect(() => {
@@ -932,16 +997,16 @@ export default function Navigation() {
       </AnimatePresence>
 
       {/* Hero Slider */}
-      <div ref={heroRef} className="relative min-h-screen w-full overflow-hidden" style={{ width: "100%", margin: 0, padding: 0 }}>
+      <div ref={heroRef} className="relative w-full overflow-hidden h-[38vh] md:h-screen bg-black" style={{ width: "100%", margin: 0, padding: 0, maxWidth: "100vw" }}>
         {/* Slider Images */}
         <AnimatePresence initial={false}>
           <motion.div
             key={currentSlide}
             className="absolute inset-0 z-0"
-            initial={{ opacity: 0, x: 80 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -80 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
             style={{
               position: "absolute",
               top: 0,
@@ -950,37 +1015,52 @@ export default function Navigation() {
               bottom: 0,
               width: "100%",
               height: "100%",
+              minWidth: "100%",
             }}
           >
-            <div className="absolute inset-0 w-full h-full">
+            <div className="absolute inset-0 w-full h-full" style={{ width: "100%", minWidth: "100%" }}>
               <Image
-                src={heroImages[currentSlide] || "/placeholder.svg"}
+                src={getCurrentImage()}
                 alt=""
                 fill
-                className="object-cover blur-2xl scale-110"
+                className="hero-slide-bg-image"
                 style={{
                   objectPosition: "center center",
                   filter: "blur(25px)",
                   transform: "scale(1.2)",
+                  width: "100%",
+                  height: "100%",
+                  minWidth: "100%",
                 }}
                 sizes="100vw"
                 priority
                 unoptimized
                 aria-hidden
+                onError={() => {
+                  const currentImg = heroImages[currentSlide]
+                  if (currentImg) handleImageError(currentImg)
+                }}
               />
             </div>
-            <div className="absolute inset-0 w-full h-full">
+            <div className="absolute inset-0 w-full h-full" style={{ width: "100%", minWidth: "100%" }}>
               <Image
-                src={heroImages[currentSlide] || "/placeholder.svg"}
+                src={getCurrentImage()}
                 alt={`Slide ${currentSlide + 1}`}
                 fill
-                className="object-cover"
+                className="hero-slide-image"
                 style={{
                   objectPosition: "center center",
+                  width: "100%",
+                  height: "100%",
+                  minWidth: "100%",
                 }}
                 sizes="100vw"
                 priority
                 unoptimized
+                onError={() => {
+                  const currentImg = heroImages[currentSlide]
+                  if (currentImg) handleImageError(currentImg)
+                }}
               />
             </div>
           </motion.div>
@@ -989,7 +1069,7 @@ export default function Navigation() {
         {/* Slider Controls removed for mobile */}
 
         {/* Slider Indicators absolute z-40 bottom-8 left-0 right-0 flex justify-center space-x-2*/}
-        <div className="absolute z-40 bottom-40 left-5 right-0 flex space-x-2 sm:left-0 sm:justify-center sm:bottom-10">
+        <div className="absolute z-40 bottom-8 left-0 right-0 flex justify-center space-x-2 px-4">
           {heroImages.map((_, index) => (
             <motion.button
               key={index}
@@ -1008,8 +1088,8 @@ export default function Navigation() {
         </div>
 
         {/* Slider Content */}
-        <div className="relative z-20 flex min-h-screen items-center">
-          <div className="container mx-auto px-4 py-24 text-white">
+        <div className="relative z-20 flex h-full items-center justify-center px-4 py-8 sm:py-16 md:py-24">
+          <div className="container mx-auto w-full max-w-3xl text-white text-center">
             <AnimatePresence mode="wait">
               {currentContent && (currentContent.title || currentContent.description || currentContent.cta) && (
                 <motion.div
@@ -1018,11 +1098,11 @@ export default function Navigation() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  className="max-w-2xl"
+                  className="max-w-2xl text-center"
                 >
                   {currentContent.title && (
                     <motion.h1
-                      className="text-4xl font-bold sm:text-5xl lg:text-6xl"
+                      className="text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl leading-tight"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -1032,7 +1112,7 @@ export default function Navigation() {
                   )}
                   {currentContent.description && (
                     <motion.p
-                      className="mt-6 text-lg text-white/90"
+                      className="mt-4 sm:mt-6 text-base sm:text-lg text-white/90 leading-relaxed"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.4, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -1042,7 +1122,7 @@ export default function Navigation() {
                   )}
                   {currentContent.cta && (
                     <motion.div
-                      className="mt-8 flex flex-wrap gap-4"
+                      className="mt-6 sm:mt-8 flex flex-wrap gap-4"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.6, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -1056,7 +1136,7 @@ export default function Navigation() {
                       >
                         <Link
                           href="#"
-                          className="rounded-full bg-[#F98F1F] px-6 py-3 text-base font-medium text-white transition-all hover:bg-white/90 hover:shadow-lg "
+                          className="rounded-full bg-[#F98F1F] px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-medium text-white transition-all hover:bg-white/90 hover:shadow-lg"
                         >
                           {currentContent.cta}
                         </Link>
