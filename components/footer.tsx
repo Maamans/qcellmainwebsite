@@ -32,38 +32,46 @@ export default function Footer() {
     setExpandedSection(expandedSection === section ? null : section)
   }
 
+  const customerCareShopsColumnA = [
+    "1 Cockerill North Wilkinson Road, Freetown",
+    "8 Wilberforce Street, Freetown",
+    "26A Kingharman Road, Freetown",
+    "59 Bai Bureh Road, Kissy Shell, Freetown",
+    "Aberdeen Beach Road (Adjacent to Warehouse)",
+    "Jui (Freetown)",
+  ]
+
+  const customerCareShopsColumnB = [
+    "New England Ville (Police Post), Freetown",
+    "Brookfields (Bus Halt), Freetown",
+    "31A Liverpool Street, Freetown",
+    "6 Bojon Street, Bo",
+    "29 Mabanta Road, Makeni",
+    "20 Blama Road, Jacoba Junction, Kenema",
+  ]
+
+  const customerCareShopsColumnC = [
+    "10 Bomboli Street, Masiaka",
+    "1 Sawanah Street, Moyamba",
+    "1 Council Road, Kailahun",
+    "Kaikordu Road, Koidu",
+    "109 Lumpa Road, Waterloo",
+    "Lungi Airport",
+    "Lungi Port Loko Road (Lungi)",
+  ]
+
   const footerSections = [
     {
-      title: "Shop and Learn",
-      links: [
-        { name: "Data Bundles", href: "#" },
-        { name: "Voice Bundles", href: "#" },
-        { name: "Devices", href: "#" },
-        { name: "QFiber", href: "#" },
-        { name: "Roaming", href: "#" },
-        { name: "Mobile Money", href: "#" },
-      ],
+      title: "Customer Care Shops (Freetown)",
+      links: customerCareShopsColumnA.map((shop) => ({ name: shop, href: "#" })),
     },
     {
-      title: "Account",
-      links: [
-        { name: "Manage Your Account", href: "#" },
-        { name: "Check Balance", href: "#" },
-        { name: "Buy Bundle", href: "#" },
-        { name: "Know Your Number", href: "#" },
-        { name: "Recharge", href: "#" },
-      ],
+      title: "Customer Care Shops (Nationwide)",
+      links: customerCareShopsColumnB.map((shop) => ({ name: shop, href: "#" })),
     },
     {
-      title: "Qcell Store",
-      links: [
-        { name: "Find a Store", href: "#" },
-        { name: "Today at Qcell", href: "#" },
-        { name: "Promotions", href: "#" },
-        { name: "Qcell App", href: "#" },
-        { name: "Certified Resellers", href: "#" },
-        { name: "Financing", href: "#" },
-      ],
+      title: "Customer Care Shops (Upcountry)",
+      links: customerCareShopsColumnC.map((shop) => ({ name: shop, href: "#" })),
     },
     {
       title: "For Business",
