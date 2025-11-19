@@ -6,8 +6,6 @@ import Cursor from "@/components/cursor"
 import EnhancedCoverageMap from "@/components/enhanced-coverage-map-two"
 
 import OfferingsSlider from "@/components/offering-slider"
-import InfiniteSlider from "@/components/infinite-slider-two"
-
 import DownloadApp from "@/components/download-app"
 import Footer from "@/components/footer"
 
@@ -36,9 +34,6 @@ export default function Home() {
 
           <section className="py-16 md:py-24 bg-gray-50">
             <OfferingsSlider />
-          </section>
-          <section className="py-16 md:py-24 bg-white">
-            <InfiniteSlider />
           </section>
           <section className="bg-white">
             <DownloadApp />

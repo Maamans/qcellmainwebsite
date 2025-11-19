@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion"
 import Image from "next/image"
-import { Plus } from "lucide-react"
 import type { Offering } from "@/types/offerings"
 import { Card, CardContent } from "@/components/ui/card"
 
@@ -30,15 +29,6 @@ export default function OfferingCard({ offering, onClick }: OfferingCardProps) {
             className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
             unoptimized
           />
-          <div className="absolute bottom-4 right-4 z-20">
-            <button
-              type="button"
-              className="rounded-full bg-black/40 hover:bg-[#F98F1F]/80 p-3 text-white flex items-center justify-center shadow-lg transition"
-              aria-label="Learn more about this offer"
-            >
-              <Plus className="h-6 w-6" />
-            </button>
-          </div>
         </CardContent>
       </Card>
     </motion.div>

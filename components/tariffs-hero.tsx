@@ -56,7 +56,7 @@ export default function TariffsHero() {
   }
 
   return (
-    <div className="relative w-full h-[500px] md:h-[600px] overflow-hidden">
+    <div className="relative w-full h-[500px] md:h-[600px] overflow-hidden bg-transparent">
       {/* Background Image with Animation */}
       <motion.div className="absolute inset-0" initial="hidden" animate={imageControls} variants={imageVariants}>
         <Image

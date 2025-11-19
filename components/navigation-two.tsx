@@ -18,12 +18,8 @@ function cn(...classes: (string | false | null | undefined)[]) {
 
 const staticHeroSlides = [
   {
-    image: "/images/expand your world 1.jpg",
-    content: { 
-      title: "Expand Your World with Seamless Connectivity", 
-      description: "Enjoy The Cheapes and most Reliable Network In Sierra leone.", 
-      cta: "Explore Plans" 
-    },
+    image: "/images/expand your world (1).jpg",
+    content: { title: "", description: "", cta: "" },
   },
   {
     image: "/images/Weekend Freedom.jpg",
@@ -182,9 +178,9 @@ export default function Navigation() {
     isActive: boolean;
   }>>([])
   
-  // Track failed images
-  const [failedImages, setFailedImages] = useState<Set<string>>(new Set())
-
+  const staticFallbackImage = getImageUrl(staticHeroSlides[0].image)
+  const [displayedImage, setDisplayedImage] = useState<string>(staticFallbackImage)
+  
   // Fetch hero slides from API
   useEffect(() => {
     const fetchHeroSlides = async () => {
@@ -278,27 +274,14 @@ export default function Navigation() {
 
   // Get current image with fallback
   const getCurrentImage = () => {
-    const currentImage = heroImages[currentSlide]
-    // Check if image is invalid, empty, or failed
-    if (!currentImage || currentImage.trim() === '' || failedImages.has(currentImage)) {
-      // Fallback to static images
-      const staticImage = staticHeroSlides[currentSlide % staticHeroSlides.length]?.image
-      const fallbackImage = staticImage ? getImageUrl(staticImage) : "/placeholder.svg"
-      if (failedImages.has(currentImage || '') || !currentImage || currentImage.trim() === '') {
-        console.log('Using fallback image for slide', currentSlide, ':', fallbackImage)
-      }
-      return fallbackImage
+    if (displayedImage && displayedImage.trim() !== "") {
+      return displayedImage
     }
-    return currentImage
+    return staticFallbackImage
   }
 
   const handleImageError = (imageSrc: string) => {
     console.error('Failed to load hero image:', imageSrc)
-    setFailedImages((prev) => {
-      const newSet = new Set([...prev, imageSrc])
-      console.log('Failed images set:', Array.from(newSet))
-      return newSet
-    })
   }
 
   // Handle scroll effect
@@ -323,15 +306,42 @@ export default function Navigation() {
     }
   }, [])
 
-  // Preload all hero images for faster transitions
+  // Update displayed image when slide changes; keep showing previous image until new image loads
   useEffect(() => {
-    heroImages.forEach((imageSrc) => {
-      if (imageSrc) {
-        const img = document.createElement('img')
-        img.src = imageSrc
+    if (!heroImages.length) {
+      setDisplayedImage(staticFallbackImage)
+      return
+    }
+
+    const targetImage = heroImages[currentSlide]
+    if (!targetImage || targetImage === displayedImage) {
+      return
+    }
+
+    let isCancelled = false
+    const img = document.createElement("img")
+    img.onload = () => {
+      if (!isCancelled) {
+        setDisplayedImage(targetImage)
       }
-    })
-  }, [heroImages])
+    }
+    img.onerror = () => {
+      if (!isCancelled) {
+        const fallbackForSlide =
+          staticHeroSlides[currentSlide % staticHeroSlides.length]?.image || staticFallbackImage
+        setDisplayedImage(getImageUrl(fallbackForSlide))
+      }
+    }
+    img.src = targetImage
+
+    if (img.complete && img.naturalHeight !== 0) {
+      setDisplayedImage(targetImage)
+    }
+
+    return () => {
+      isCancelled = true
+    }
+  }, [currentSlide, heroImages, displayedImage, staticFallbackImage])
 
   // Auto-advance slider
   useEffect(() => {
@@ -997,25 +1007,39 @@ export default function Navigation() {
       </AnimatePresence>
 
       {/* Hero Slider */}
-      <div ref={heroRef} className="relative w-full overflow-hidden h-[38vh] md:h-screen bg-black" style={{ width: "100%", margin: 0, padding: 0, maxWidth: "100vw" }}>
+      <div
+        ref={heroRef}
+        className="relative w-full overflow-hidden h-[38vh] md:h-screen"
+        style={{
+          width: "100%",
+          margin: 0,
+          padding: 0,
+          maxWidth: "100vw",
+          backgroundColor: "#000",
+          backgroundImage: displayedImage ? `url("${encodeURI(displayedImage)}")` : undefined,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
         {/* Slider Images */}
-        <AnimatePresence initial={false}>
+        <AnimatePresence mode="wait">
           <motion.div
             key={currentSlide}
             className="absolute inset-0 z-0"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.4, ease: "easeInOut" }}
+            transition={{ duration: 0.4, ease: "linear" }}
             style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              width: "100%",
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                width: "100%",
               height: "100%",
               minWidth: "100%",
+              backgroundColor: "transparent",
             }}
           >
             <div className="absolute inset-0 w-full h-full" style={{ width: "100%", minWidth: "100%" }}>
@@ -1031,6 +1055,7 @@ export default function Navigation() {
                   width: "100%",
                   height: "100%",
                   minWidth: "100%",
+                  backgroundColor: "transparent",
                 }}
                 sizes="100vw"
                 priority
@@ -1053,6 +1078,7 @@ export default function Navigation() {
                   width: "100%",
                   height: "100%",
                   minWidth: "100%",
+                  backgroundColor: "transparent",
                 }}
                 sizes="100vw"
                 priority

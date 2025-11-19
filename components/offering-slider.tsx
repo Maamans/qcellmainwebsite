@@ -216,17 +216,9 @@ export default function OfferingsSlider({ offerings: offeringsProp }: OfferingsS
   const slides = useMemo(() => offeringsData.filter(Boolean), [offeringsData])
 
   return (
-    <div className="relative w-full px-0 overflow-hidden py-8 md:py-12"> {/* py-16 */}
-
-      <div className="relative mx-auto max-w-full -ml-3  sm:px-6 lg:px-8 md:max-w-[110%]"> {/* px-4 */}
-        {/*<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Explore Our Offerings</h2>
-          <p className="mx-auto mt-3 max-w-2xl text-xl text-gray-500 sm:mt-4">
-            Discover the perfect solutions for your connectivity needs
-          </p>
-        </motion.div>*/}
-
-        <div > {/* px-4 */}
+    <div className="relative w-full px-0 overflow-hidden py-8 md:py-12">
+      <div className="relative mx-auto max-w-full -ml-3 sm:px-6 lg:px-8 md:max-w-[110%]">
+        <div>
           <div className="relative">
             <div className="hidden sm:block absolute left-0 top-1/2 z-10 -translate-y-1/2">
               <Button

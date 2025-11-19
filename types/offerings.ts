@@ -29,7 +29,7 @@ export const offerings: Offering[] = [
     id: "combo-bundles",
     title: "Combo Bundles",
     description: "Get the best of both worlds with our combo voice and data bundles!",
-    image: "/images/qmobile.png",
+    image: "/images/off1.jpg",
     features: ["Voice + Data", "Affordable", "Flexible options"],
     cta: {
       text: "View Bundles",
@@ -47,14 +47,14 @@ export const offerings: Offering[] = [
         { text: "Buy Combo Bundle", action: "/tariffs/alternative" },
         { text: "See Plan Details", action: "/tariffs/alternative" },
       ],
-      image: "/images/qmobile.png",
+      image: "/images/off1.jpg",
     },
   },
   {
     id: "data-bundles",
     title: "Data Bundles",
     description: "Stay connected with our high-value data bundles for every budget.",
-    image: "/images/mifi.png",
+    image: "/images/off2.jpg",
     features: ["Big data", "Long validity", "Best price"],
     cta: {
       text: "Buy Data",
@@ -72,14 +72,14 @@ export const offerings: Offering[] = [
         { text: "Buy Data", action: "/tariffs/data-bundles" },
         { text: "View Full Plans", action: "/tariffs/data-bundles" },
       ],
-      image: "/images/mifi.png",
+      image: "/images/off2.jpg",
     },
   },
   {
     id: "voice-tariffs",
     title: "Voice Tariffs",
     description: "Crystal clear calls at unbeatable rates across all networks.",
-    image: "/images/voice-tariffs.jpg",
+    image: "/images/off3.jpg",
     features: ["Low rates", "All networks", "No connection fee"],
     cta: {
       text: "See Tariffs",
@@ -96,14 +96,14 @@ export const offerings: Offering[] = [
       ctas: [
         { text: "See Voice Tariffs", action: "/tariffs/voice-tariffs" },
       ],
-      image: "/images/voice-tariffs.jpg",
+      image: "/images/off3.jpg",
     },
   },
   {
     id: "qpower",
     title: "QPower",
     description: "Buy NAWEC cash power easily and instantly with QPower!",
-    image: "/images/qpower.jpg",
+    image: "/images/off4.jpg",
     features: ["Instant purchase", "No extra charges", "24/7 availability"],
     cta: {
       text: "Buy QPower",
@@ -119,14 +119,14 @@ export const offerings: Offering[] = [
       ctas: [
         { text: "Buy QPower", action: "/services/alternative" },
       ],
-      image: "/images/qpower.jpg",
+      image: "/images/off4.jpg",
     },
   },
   {
     id: "qcell-music",
     title: "QCell Music",
     description: "Stream and download your favorite songs with QCell Music!",
-    image: "/images/qsmart-plus.png",
+    image: "/images/off5.jpg",
     features: ["Unlimited music", "No ads", "Offline listening"],
     cta: {
       text: "Try Now",
@@ -142,7 +142,30 @@ export const offerings: Offering[] = [
       ctas: [
         { text: "Start Listening", action: "/services/alternative-two" },
       ],
-      image: "/images/qsmart-plus.png",
+      image: "/images/off5.jpg",
+    },
+  },
+  {
+    id: "smart-home",
+    title: "Smart Home Devices",
+    description: "Secure, automate, and monitor your home with QCell smart solutions.",
+    image: "/images/off6.jpg",
+    features: ["Home security", "Automation", "24/7 monitoring"],
+    cta: {
+      text: "Explore Devices",
+      action: "/devices",
+    },
+    details: {
+      title: "Smart Home Devices",
+      description: "Cameras, sensors, and hubs that keep your home connected and protected.",
+      benefits: ["Easy installation", "Mobile control", "Secure cloud storage"],
+      quickActions: [
+        { text: "Book a Demo", action: "/devices" },
+      ],
+      ctas: [
+        { text: "Explore Devices", action: "/devices" },
+      ],
+      image: "/images/off6.jpg",
     },
   },
 ]
