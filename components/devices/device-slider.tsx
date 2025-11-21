@@ -31,7 +31,7 @@ export const offerings: Offering[] = [
       id: "qsmart",
       title: "QSmart",
       description: "Affordable smartphones packed with smart features",
-      image: "/images/QSMART_.jpg",
+      image: "/images/device1.jpg",
       features: ["Android OS", "Dual SIM", "Long battery life"],
       cta: {
         text: "Explore QSmart",
@@ -54,7 +54,7 @@ export const offerings: Offering[] = [
       id: "qsmart-plus",
       title: "QSmart Plus",
       description: "Performance-enhanced smartphones for power users",
-      image: "/images/QSMART PLUS.jpg",
+      image: "/images/device2.jpg",
       features: ["HD Display", "Fingerprint unlock", "Large storage"],
       cta: {
         text: "Discover QSmart Plus",
@@ -77,7 +77,7 @@ export const offerings: Offering[] = [
       id: "qmobile",
       title: "QMobile",
       description: "Simple and durable feature phones for everyone",
-      image: "/images/Qmobile_.jpg",
+      image: "/images/device3.jpg",
       features: ["Long battery life", "FM Radio", "Dual SIM"],
       cta: {
         text: "View QMobile",
@@ -86,7 +86,7 @@ export const offerings: Offering[] = [
       details: {
         title: "Stay Connected, Simply",
         description:
-          "QMobile is your go-to device for calls, SMS, and basic mobile needs. With a focus on battery life and reliability, it’s a perfect choice for daily communication.",
+          "QMobile is your go-to device for calls, SMS, and basic mobile needs. With a focus on battery life and reliability, it's a perfect choice for daily communication.",
         benefits: [
           "Affordable and reliable",
           "Compact design",
@@ -100,7 +100,7 @@ export const offerings: Offering[] = [
       id: "mifi",
       title: "MiFi Device",
       description: "Portable internet device for fast connectivity on the go",
-      image: "/images/mifi.jpg",
+      image: "/images/device4.jpg",
       features: ["4G LTE", "Connect up to 10 devices", "Rechargeable battery"],
       cta: {
         text: "Get MiFi",
@@ -123,7 +123,7 @@ export const offerings: Offering[] = [
       id: "tariff",
       title: "Tariff",
       description: "Explore our flexible tariff plans for every need.",
-      image: "/images/tiktok bundle.jpg",
+      image: "/images/device5.jpg",
       features: ["Voice & Data", "Affordable rates", "Easy activation"],
       cta: {
         text: "View Tariffs",

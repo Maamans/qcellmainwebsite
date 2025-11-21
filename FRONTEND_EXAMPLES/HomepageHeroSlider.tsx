@@ -1,21 +1,38 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useEffect, useMemo, useState } from "react"
+import { AnimatePresence, motion } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
-import AnimatedHeroText from "./animated-hero-text"
+
 import { api, getImageUrl } from "@/lib/api"
 
-interface SlideData {
+type SlideCTA = {
+  text: string
+  href: string
+}
+
+type SlideData = {
   id?: string | number
   backgroundImage: string
   title: string
   description: string
   cta: {
-    primary: { text: string; href: string }
-    secondary: { text: string; href: string }
+    primary: SlideCTA
+    secondary: SlideCTA
   }
+}
+
+type HeroSlideResponse = {
+  id: number
+  title: string | null
+  description: string | null
+  image: string
+  ctaText: string | null
+  ctaLink: string | null
+  order?: number | null
+  isActive: boolean
+  createdAt?: string
 }
 
 const fallbackSlides: SlideData[] = [
@@ -49,20 +66,10 @@ const fallbackSlides: SlideData[] = [
   },
 ]
 
-interface HeroSlideResponse {
-  id: number
-  title: string | null
-  description: string | null
-  image: string
-  ctaText: string | null
-  ctaLink: string | null
-  order: number
-  isActive: boolean
-  createdAt?: string
-}
+const MAX_SLIDES = 3
 
-export default function HeroSlider() {
-  const [heroSlides, setHeroSlides] = useState<SlideData[]>(fallbackSlides)
+export default function HomepageHeroSlider() {
+  const [slides, setSlides] = useState<SlideData[]>(fallbackSlides)
   const [currentSlide, setCurrentSlide] = useState(0)
   const [loading, setLoading] = useState(true)
 
@@ -70,51 +77,46 @@ export default function HeroSlider() {
     const loadSlides = async () => {
       try {
         setLoading(true)
-        const slides = (await api.getHeroSlides("/")) as HeroSlideResponse[]
+        const response = (await api.getHeroSlides("/")) as HeroSlideResponse[]
+        const activeSlides =
+          Array.isArray(response) && response.length
+            ? response
+                .filter((slide) => slide.isActive)
+                .sort((a, b) => {
+                  const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0
+                  const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0
+                  if (dateA && dateB) return dateB - dateA
+                  return (b.id ?? 0) - (a.id ?? 0)
+                })
+            : []
 
-        const activeSlides = Array.isArray(slides)
-          ? slides
-              .filter((slide) => slide.isActive)
-              .sort((a, b) => {
-                // Sort by createdAt if available (newest first), otherwise by ID (newest first)
-                if (a.createdAt && b.createdAt) {
-                  return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                }
-                return (b.id ?? 0) - (a.id ?? 0)
-              })
-          : []
-
-        // Build slides: backend slides first, then fallback slides
-        const backendSlides: SlideData[] = activeSlides.map((slide) => {
-          const sanitizedTitle = (slide.title || "").trim()
-          const hideTitle = sanitizedTitle.toLowerCase() === "homepage slide"
-          const sanitizedDescription = (slide.description || "").trim()
-          const sanitizedCta = (slide.ctaText || "").trim()
+        const normalizedSlides: SlideData[] = activeSlides.map((slide) => {
+          const title = (slide.title ?? "").trim()
+          const hideTitle = title.toLowerCase() === "homepage slide"
+          const description = (slide.description ?? "").trim()
+          const primaryText = (slide.ctaText ?? "").trim() || "Explore Plans"
 
           return {
             id: slide.id,
             backgroundImage: getImageUrl(slide.image) || "",
-            title: hideTitle ? "" : sanitizedTitle,
-            description: sanitizedDescription,
+            title: hideTitle ? "" : title,
+            description,
             cta: {
-              primary: {
-                text: sanitizedCta || "Explore Plans",
-                href: slide.ctaLink || "#",
-              },
+              primary: { text: primaryText, href: slide.ctaLink || "#" },
               secondary: { text: "Learn more about us", href: "#" },
             },
           }
         })
 
-        const maxSlides = 3
-        const finalSlides =
-          backendSlides.length > 0
-            ? [...backendSlides, ...fallbackSlides].slice(0, maxSlides)
-            : fallbackSlides.slice(0, maxSlides)
-        setHeroSlides(finalSlides)
+        const mergedSlides =
+          normalizedSlides.length > 0
+            ? [...normalizedSlides, ...fallbackSlides].slice(0, MAX_SLIDES)
+            : fallbackSlides.slice(0, MAX_SLIDES)
+
+        setSlides(mergedSlides)
       } catch (error) {
         console.error("Failed to load hero slides:", error)
-        setHeroSlides(fallbackSlides)
+        setSlides(fallbackSlides)
       } finally {
         setLoading(false)
       }
@@ -124,30 +126,28 @@ export default function HeroSlider() {
   }, [])
 
   useEffect(() => {
-    if (heroSlides.length <= 1) return
-
+    if (slides.length <= 1) return
     const timer = setInterval(() => {
-      setCurrentSlide((prevSlide) => (prevSlide + 1) % heroSlides.length)
+      setCurrentSlide((prev) => (prev + 1) % slides.length)
     }, 5000)
-
     return () => clearInterval(timer)
-  }, [heroSlides.length])
+  }, [slides.length])
 
   useEffect(() => {
-    if (currentSlide >= heroSlides.length && heroSlides.length > 0) {
+    if (currentSlide >= slides.length && slides.length > 0) {
       setCurrentSlide(0)
     }
-  }, [currentSlide, heroSlides.length])
+  }, [currentSlide, slides.length])
 
-  if (loading && heroSlides.length === 0) {
+  const slidesToRender = useMemo(() => (slides.length ? slides : fallbackSlides), [slides])
+
+  if (loading && slidesToRender.length === 0) {
     return (
       <div className="relative h-screen flex items-center justify-center bg-black">
         <p className="text-white/80 text-lg">Loading hero content...</p>
       </div>
     )
   }
-
-  const slidesToRender = heroSlides.length > 0 ? heroSlides : fallbackSlides
 
   return (
     <div className="relative h-screen">
@@ -160,33 +160,28 @@ export default function HeroSlider() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="absolute inset-0 w-full h-full overflow-hidden">
-            <Image
-              src={slidesToRender[currentSlide]?.backgroundImage || "/placeholder.svg"}
-              alt={slidesToRender[currentSlide]?.title || "Hero slide"}
-              fill
-              className="object-cover"
-              style={{
-                objectPosition: "center center",
-                width: "100%",
-                height: "100%",
-                minWidth: "100%",
-                minHeight: "100%",
-                left: 0,
-                top: 0
-              }}
-              sizes="100vw"
-              priority={currentSlide === 0}
-              unoptimized
-            />
-          </div>
-          <div className="absolute inset-0 bg-black bg-opacity-50" />
+          <Image
+            src={slidesToRender[currentSlide]?.backgroundImage || "/placeholder.svg"}
+            alt={slidesToRender[currentSlide]?.title || "Hero slide"}
+            fill
+            className="object-cover"
+            priority={currentSlide === 0}
+            unoptimized
+          />
+          <div className="absolute inset-0 bg-black/50" />
         </motion.div>
       </AnimatePresence>
 
       <div className="relative z-10 h-full flex items-center">
         <div className="container mx-auto px-4">
-          <AnimatedHeroText text={slidesToRender[currentSlide]?.title || ""} />
+          <motion.h1
+            className="text-4xl md:text-6xl font-bold text-white"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            {slidesToRender[currentSlide]?.title}
+          </motion.h1>
           <motion.p
             className="mt-4 max-w-xl text-lg text-white/80"
             initial={{ opacity: 0, y: 20 }}
@@ -230,3 +225,5 @@ export default function HeroSlider() {
     </div>
   )
 }
+
+

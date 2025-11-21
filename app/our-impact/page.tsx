@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { motion, useInView, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import Navigation from "@/components/nav"
@@ -115,12 +115,37 @@ const fallbackCsrCards: CSRCard[] = [
   },
 ]
 
+const defaultImpactHeroFallback = [
+  {
+    id: "impact-hero-1",
+    image: "/images/download (8) 1.png",
+    title: "QCell's Commitment to Fostering Innovation in Sierra Leone",
+    subtitle:
+      "QCell partnered with QMoneySL and AFCOM to support the Knesst Developers Challenge, fostering innovation in agriculture, AIFML, and KYC in Sierra Leone.",
+  },
+  {
+    id: "impact-hero-2",
+    image: "/images/download (8) 1.png",
+    title: "Empowering Communities Through Technology",
+    subtitle:
+      "Connecting Sierra Leone with innovative telecommunications solutions and digital services that transform lives and businesses.",
+  },
+  {
+    id: "impact-hero-3",
+    image: "/images/download (8) 1.png",
+    title: "Building a Digital Future for Sierra Leone",
+    subtitle: "Leading the digital transformation with cutting-edge technology, reliable connectivity, and community-focused initiatives.",
+  },
+]
+
 export default function OurImpactPage() {
   const containerRef = useRef<HTMLDivElement>(null)
   const isInView = useInView(containerRef, { once: true, amount: 0.1 })
   const [currentSlide, setCurrentSlide] = useState(0)
   const [csrCards, setCsrCards] = useState<CSRCard[]>(fallbackCsrCards)
-  const [csrColumns, setCsrColumns] = useState<number>(3)
+  const [impactHeroSlides, setImpactHeroSlides] = useState<
+    { id: string | number; image: string; title: string; subtitle: string; order?: number }[]
+  >([])
 
   useEffect(() => {
     document.title = "Our Impact - Qcell"
@@ -141,29 +166,48 @@ export default function OurImpactPage() {
 
         const cardsPayload = extractCards(csrSection)
 
-        const normalizedCards: CSRCard[] = cardsPayload.map((card, index) => normalizeCsrCard(card, index))
+        // Sort backend cards by createdAt (newest first) if available
+        const sortedCardsPayload = [...cardsPayload].sort((a, b) => {
+          const aCreated = toStringValue(a["createdAt"]) ?? toStringValue(a["updatedAt"])
+          const bCreated = toStringValue(b["createdAt"]) ?? toStringValue(b["updatedAt"])
+          if (!aCreated || !bCreated) return 0
+          const aTime = new Date(aCreated).getTime()
+          const bTime = new Date(bCreated).getTime()
+          return Number.isNaN(aTime) || Number.isNaN(bTime) ? 0 : bTime - aTime
+        })
 
-        const dataField = csrSection && isRecord(csrSection["data"]) ? csrSection["data"] : undefined
-        const layoutField = csrSection && isRecord(csrSection["layout"]) ? csrSection["layout"] : undefined
-        const dataLayoutField = dataField && isRecord(dataField["layout"]) ? dataField["layout"] : undefined
+        const normalizedCards: CSRCard[] = sortedCardsPayload.map((card, index) => normalizeCsrCard(card, index))
 
-        const resolvedColumnsRaw = Number(
-          dataField?.["columns"] ?? csrSection?.["columns"] ?? layoutField?.["columns"] ?? dataLayoutField?.["columns"],
-        )
-        const resolvedColumns =
-          Number.isFinite(resolvedColumnsRaw) && resolvedColumnsRaw > 0 ? Math.min(4, Math.max(1, resolvedColumnsRaw)) : null
+        // Merge backend cards with fallback cards, limit to 6 total
+        const CSR_CARD_LIMIT = 6
+        const seenIds = new Set<string>()
+        const mergedCards: CSRCard[] = []
+
+        // Add backend cards first (newest first)
+        for (const card of normalizedCards) {
+          if (mergedCards.length >= CSR_CARD_LIMIT) break
+          if (!seenIds.has(card.id)) {
+            seenIds.add(card.id)
+            mergedCards.push(card)
+          }
+        }
+
+        // Fill remaining slots with fallback cards
+        for (const fallback of fallbackCsrCards) {
+          if (mergedCards.length >= CSR_CARD_LIMIT) break
+          if (!seenIds.has(fallback.id)) {
+            seenIds.add(fallback.id)
+            mergedCards.push(fallback)
+          }
+        }
 
         if (isMounted) {
-          setCsrCards(normalizedCards.length ? normalizedCards : fallbackCsrCards)
-          if (resolvedColumns) {
-            setCsrColumns(resolvedColumns)
-          }
+          setCsrCards(mergedCards.length > 0 ? mergedCards : fallbackCsrCards.slice(0, CSR_CARD_LIMIT))
         }
       } catch (error) {
         console.error("Failed to load CSR content:", error)
         if (isMounted) {
-          setCsrCards(fallbackCsrCards)
-          setCsrColumns(3)
+          setCsrCards(fallbackCsrCards.slice(0, 6))
         }
       }
     }
@@ -175,24 +219,63 @@ export default function OurImpactPage() {
     }
   }, [])
 
-  // Hero slides data
-  const heroSlides = [
-    {
-      image: "/images/download (8) 1.png",
-      title: "QCell's Commitment to Fostering Innovation in Sierra Leone",
-      subtitle: "QCell partnered with QMoneySL and AFCOM to support the Knesst Developers Challenge, fostering innovation in agriculture, AIFML, and KYC in Sierra Leone."
-    },
-    {
-      image: "/images/download (8) 1.png",
-      title: "Empowering Communities Through Technology",
-      subtitle: "Connecting Sierra Leone with innovative telecommunications solutions and digital services that transform lives and businesses."
-    },
-    {
-      image: "/images/download (8) 1.png",
-      title: "Building a Digital Future for Sierra Leone",
-      subtitle: "Leading the digital transformation with cutting-edge technology, reliable connectivity, and community-focused initiatives."
+  useEffect(() => {
+    let cancelled = false
+
+    const loadImpactHeroSlides = async () => {
+      try {
+        const slides = await api.getHeroSlides("/our-impact")
+
+        const normalized =
+          Array.isArray(slides) && slides.length
+            ? slides
+                .filter((slide) => slide.isActive)
+                .sort((a, b) => {
+                  const orderA = Number.isFinite(Number(a.order)) ? Number(a.order) : null
+                  const orderB = Number.isFinite(Number(b.order)) ? Number(b.order) : null
+                  if (orderA !== null && orderB !== null && orderA !== orderB) {
+                    return orderA - orderB
+                  }
+                  const createdA = a.createdAt ? new Date(a.createdAt).getTime() : 0
+                  const createdB = b.createdAt ? new Date(b.createdAt).getTime() : 0
+                  return createdB - createdA
+                })
+                .map((slide) => ({
+                  id: slide.id ?? slide.order ?? slide.image ?? Math.random().toString(36).slice(2),
+                  image: getImageUrl(slide.image) || "/images/download (8) 1.png",
+                  title: slide.title?.trim() || "",
+                  subtitle: slide.description?.trim() || "",
+                  order: slide.order,
+                }))
+            : []
+
+        if (!cancelled) {
+          setImpactHeroSlides(normalized)
+        }
+      } catch (error) {
+        console.error("Failed to load impact hero slides:", error)
+        if (!cancelled) {
+          setImpactHeroSlides([])
+        }
+      } finally {
+        // no-op
+      }
     }
-  ]
+
+    loadImpactHeroSlides()
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const heroSlides = useMemo(() => {
+    if (impactHeroSlides.length > 0) {
+      return [...impactHeroSlides, ...defaultImpactHeroFallback].slice(0, 4)
+    }
+    return defaultImpactHeroFallback.slice(0, 4)
+  }, [impactHeroSlides])
+
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % heroSlides.length)
@@ -274,8 +357,8 @@ export default function OurImpactPage() {
             transition={{ duration: 0.5 }}
           >
             <Image
-              src={heroSlides[currentSlide].image}
-              alt="QCell CSR Activities"
+              src={heroSlides[currentSlide]?.image || "/images/download (8) 1.png"}
+              alt={heroSlides[currentSlide]?.title || "QCell CSR Activities"}
               fill
               className="object-cover"
               priority
@@ -492,7 +575,7 @@ export default function OurImpactPage() {
             </h2>
           </motion.div>
 
-          <div className={`grid grid-cols-1 ${csrColumns === 2 ? "md:grid-cols-2" : csrColumns >= 4 ? "md:grid-cols-4" : "md:grid-cols-3"} gap-8`}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {csrCards.map((activity, index) => (
               <motion.div
                 key={activity.id ?? index}

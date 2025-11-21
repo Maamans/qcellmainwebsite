@@ -1,37 +1,21 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
-//import { motion } from "framer-motion"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { useEffect, useMemo, useState } from "react"
 import useEmblaCarousel from "embla-carousel-react"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import type { Offering } from "@/types/offerings"
 import { offerings as fallbackOfferings } from "@/types/offerings"
 import { Button } from "@/components/ui/button"
-import OfferingCard from "./offering-card"
-import OfferingModal from "./offering-modal"
+import OfferingCard from "@/components/offering-card"
+import OfferingModal from "@/components/offering-modal"
 import { api, getImageUrl } from "@/lib/api"
 
 type OfferingsSliderProps = {
+  /**
+   * Optional pre-fetched offerings. When omitted, the component will hit the public offerings endpoint.
+   */
   offerings?: Offering[]
-}
-
-const OFFERING_LIMIT = 6
-
-const limitOfferings = (items: Offering[]) => items.filter(Boolean).slice(0, OFFERING_LIMIT)
-
-const mergeOfferings = (remote: Offering[], fallback: Offering[]) => {
-  const combined = [...remote, ...fallback]
-  const seen = new Set<string>()
-
-  return combined.filter((offering) => {
-    const id = offering.id ?? ""
-    if (!id || seen.has(id)) {
-      return false
-    }
-    seen.add(id)
-    return true
-  })
 }
 
 type RemoteAction = {
@@ -61,6 +45,10 @@ type RemoteOffering = {
     image?: string
   }
 }
+
+const OFFERING_LIMIT = 6
+
+const limitOfferings = (items: Offering[]) => items.filter(Boolean).slice(0, OFFERING_LIMIT)
 
 const sortRemoteOfferings = (items: RemoteOffering[]) => {
   const getTimestamp = (item: RemoteOffering) => {
@@ -141,7 +129,25 @@ const normalizeOffering = (item: RemoteOffering, fallback: Offering, index: numb
   }
 }
 
-export default function OfferingsSlider({ offerings: offeringsProp }: OfferingsSliderProps = {}) {
+const mergeOfferings = (remote: Offering[], fallback: Offering[]) => {
+  const combined = [...remote, ...fallback]
+  const seen = new Set<string>()
+
+  return combined.filter((offering) => {
+    const id = offering.id ?? ""
+    if (!id || seen.has(id)) {
+      return false
+    }
+    seen.add(id)
+    return true
+  })
+}
+
+/**
+ * Example slider that always mirrors backend's "six newest offerings" contract.
+ * Drop-in ready for the homepage and safe to hydrate with server-fetched props.
+ */
+export default function HomepageOfferingsSlider({ offerings: offeringsProp }: OfferingsSliderProps = {}) {
   const [selectedOffering, setSelectedOffering] = useState<Offering | null>(null)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [offeringsData, setOfferingsData] = useState<Offering[]>(
@@ -185,7 +191,6 @@ export default function OfferingsSlider({ offerings: offeringsProp }: OfferingsS
         if (isMounted) {
           setOfferingsData(limitOfferings(fallbackOfferings))
         }
-      } finally {
       }
     }
 
@@ -258,10 +263,10 @@ export default function OfferingsSlider({ offerings: offeringsProp }: OfferingsS
                     key={offering.id}
                     className="relative min-w-0 flex-[0_0_70%] pl-4 sm:flex-[0_0_50%] lg:flex-[0_0_30.333%]"
                   >
-                      <OfferingCard
-                        offering={offering}
-                        onClick={() => setSelectedOffering(offering)}
-                      />
+                    <OfferingCard
+                      offering={offering}
+                      onClick={() => setSelectedOffering(offering)}
+                    />
                   </div>
                 ))}
               </div>
@@ -293,4 +298,5 @@ export default function OfferingsSlider({ offerings: offeringsProp }: OfferingsS
     </div>
   )
 }
+
 

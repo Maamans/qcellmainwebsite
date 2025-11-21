@@ -37,8 +37,8 @@ export default function OfferingModal({ offering, isOpen, onClose }: OfferingMod
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="mx-auto w-full md:w-[80%] h-[90%] overflow-hidden overflow-y-scroll no-scrollbar bg-white text-black -mb-3 rounded-tr-2xl rounded-tl-2xl md:p-14 shadow-2xl">
-        <DialogHeader>
+      <DialogContent className="mx-auto w-full md:w-[80%] h-[90%] overflow-hidden overflow-y-scroll no-scrollbar bg-white text-black -mb-3 rounded-tr-2xl rounded-tl-2xl md:px-14 md:pb-14 md:pt-10 p-6 shadow-2xl">
+        <DialogHeader className="-mt-4 md:-mt-6">
           <div className="flex flex-col md:flex-row gap-10 items-center justify-between">
             <div className="relative w-full md:w-1/2 h-[260px] md:h-[400px] rounded-2xl overflow-hidden shadow-2xl border-2 border-[#F98F1F]/30">
               <Image
