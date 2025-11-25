@@ -49,18 +49,7 @@ const navItems: NavItem[] = [
     },
     {
         title: "Internet",
-        content: {
-        heading: "Enjoy Ultra-Fast 4G Internet Connectivity.",
-      links: [
-        { title: "4G LTE", href: "#" },
-        { title: "QFIBER", href: "#" },
-        { title: "QFiber", href: "#" },
-        { title: "Data Bundles", href: "#" },
-        { title: "Unlimited Data Plans", href: "#" },
-      ],
-        image: "/placeholder.svg?height=200&width=400",
-        },
-        href: 'internet'
+        href: '/internet'
     },
     {
         title: "Services",

@@ -264,5 +264,17 @@ export const api = {
     }
     return response.json();
   },
+
+  /**
+   * Get the complete Devices page payload (NO AUTH NEEDED)
+   * Returns heroSlides, sections, devices, featuredDevices
+   */
+  getDevicesPage: async () => {
+    const response = await fetch(`${API_URL}/api/public/devices-page/`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch devices page: ${response.status} ${response.statusText}`);
+    }
+    return response.json();
+  },
 };
 

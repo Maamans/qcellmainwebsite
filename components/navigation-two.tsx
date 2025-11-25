@@ -81,18 +81,7 @@ const navItems = [
     },
     {
         title: "Internet",
-        content: {
-            heading: "Enjoy Ultra-Fast 4G Internet Connectivity.",
-        links: [
-          { title: "4G LTE", href: "#" },
-          { title: "QFIBER", href: "#" },
-          { title: "QFiber", href: "#" },
-          { title: "Data Bundles", href: "#" },
-          { title: "Unlimited Data Plans", href: "#" }
-        ],
-            image: "/placeholder.svg?height=200&width=400"
-        },
-        href: 'internet'
+        href: '/internet'
     },
     {
         title: "Services",
@@ -664,7 +653,7 @@ export default function Navigation() {
                           )}
                         </div>
 
-                        {item.content.image && (
+                        {item.content && 'image' in item.content && typeof item.content.image === 'string' && (
                           <motion.div className="flex items-center justify-center" variants={imageVariants}>
                             <motion.div
                               className="overflow-hidden rounded-lg"
@@ -775,22 +764,31 @@ export default function Navigation() {
 
                     <div>
                       <h3 className="mb-3 text-sm font-medium text-white/80">Quick Links</h3>
-                      <ul className="space-y-2">
-                        {["Check balance", "Buy bundle", "Support", "Find a store", "Contact us"].map((item, i) => (
+                      <ul className="space-y-2 text-sm text-white/70">
+                        {[
+                          { label: "To check main voice balance", code: "*101#" },
+                          { label: "To buy Bundle", code: "*303#" },
+                          { label: "To know your Number", code: "*160#" },
+                          { label: "To transfer Credit", code: "*141*Number*Amount#" },
+                          { label: "To Loan Credit", code: "*393#" },
+                          { label: "To send Please call me", code: "*444*Number#" },
+                          { label: "To access free Website", code: "*303*6#" },
+                          { label: "To Access last call info", code: "*102#" },
+                          { label: "To self activate 4G LTE", code: "*335#" },
+                          { label: "To access all short codes", code: "*343#" },
+                        ].map((item, i) => (
                           <motion.li
-                            key={item}
+                            key={item.label}
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.5 + i * 0.05, duration: 0.3 }}
+                            className="flex flex-col sm:flex-row sm:items-center sm:justify-between border border-white/10 rounded-lg px-3 py-2 bg-white/5"
                           >
-                            <Link
-                              href="#"
-                              className="flex items-center text-sm text-white/70 transition-colors hover:text-white"
-                              onClick={() => setSearchOpen(false)}
-                            >
-                              <ChevronRight className="mr-2 h-4 w-4 text-[#F98F1F]/80" />
-                              {item}
-                            </Link>
+                            <div className="flex items-center gap-2">
+                              <ChevronRight className="h-4 w-4 text-[#F98F1F]/80" />
+                              <span>{item.label}</span>
+                            </div>
+                            <span className="font-mono text-white text-sm sm:text-base">{item.code}</span>
                           </motion.li>
                         ))}
                       </ul>

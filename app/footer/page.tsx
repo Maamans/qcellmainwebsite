@@ -73,16 +73,6 @@ export default function Footer() {
       links: customerCareShopsColumnC.map((shop) => ({ name: shop, href: "#" })),
     },
     {
-      title: "For Business",
-      links: [
-        { name: "Qcell for Business", href: "#" },
-        { name: "Shop for Business", href: "#" },
-        { name: "Business Solutions", href: "#" },
-        { name: "Enterprise Connectivity", href: "#" },
-        { name: "Corporate Accounts", href: "#" },
-      ],
-    },
-    {
       title: "Qcell Values",
       links: [
         { name: "Accessibility", href: "#" },
@@ -90,6 +80,16 @@ export default function Footer() {
         { name: "Privacy", href: "#" },
         { name: "Corporate Responsibility", href: "#" },
         { name: "Supplier Responsibility", href: "#" },
+      ],
+    },
+    {
+      title: "For Business",
+      links: [
+        { name: "Qcell for Business", href: "#" },
+        { name: "Shop for Business", href: "#" },
+        { name: "Business Solutions", href: "#" },
+        { name: "Enterprise Connectivity", href: "#" },
+        { name: "Corporate Accounts", href: "#" },
       ],
     },
   ]

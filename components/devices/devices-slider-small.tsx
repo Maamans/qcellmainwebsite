@@ -5,18 +5,14 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import useEmblaCarousel from "embla-carousel-react"
 import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
+import { useMemo } from "react"
+import { getImageUrl } from "@/lib/api"
+import type { DeviceContent } from "@/types/devices"
 
-export interface DevicesInterface {
-  id: string
-  title: string
-  image: string
-}
-
-//import { offerings } from "@/types/offerings"
 import { Button } from "@/components/ui/button"
 
 
-const devices: DevicesInterface[] = [
+const fallbackDevices: DeviceContent[] = [
   {
     id: "qsmart",
     title: "QSmart",
@@ -42,15 +38,21 @@ const devices: DevicesInterface[] = [
     title: "Tariff",
     image: "/images/tiktok bundle.jpg",
   },
-  
 ]
 
-export default function DevicesSliderSmall() {
+interface DevicesSliderSmallProps {
+  devices?: DeviceContent[]
+}
+
+export default function DevicesSliderSmall({ devices }: DevicesSliderSmallProps = {}) {
+  void devices
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: "center",
     containScroll: "trimSnaps",
   })
+
+  const slides = useMemo(() => fallbackDevices, [])
 
   const scrollPrev = () => emblaApi?.scrollPrev()
   const scrollNext = () => emblaApi?.scrollNext()
@@ -88,7 +90,7 @@ export default function DevicesSliderSmall() {
 
             <div className="overflow-hidden rounded-lg" ref={emblaRef}>
               <div className="flex touch-pan-y w-full rounded-lg">
-                {devices.map((device) => (
+                {slides.map((device) => (
                   <div
                     key={device.id}
                     className="relative min-w-0 flex-[0_0_36%] sm:flex-[0_0_36%] md:flex-[0_0_24%] lg:flex-[0_0_26%] pl-2 pr-2 sm:pl-3 sm:pr-3 md:pl-4 md:pr-4"
@@ -105,7 +107,7 @@ export default function DevicesSliderSmall() {
 
                           <div className="absolute inset-0 z-10" /> {/* bg-gradient-to-t from-black/60 to-transparent */}
                           <Image
-                            src={device.image}
+                            src={getImageUrl(device.image ?? "/images/qmobile.png")}
                             alt={device.title}
                             fill
                             className="object-contain object-center transition-transform duration-500 group-hover:scale-105"

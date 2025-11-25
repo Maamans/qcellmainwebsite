@@ -1,31 +1,33 @@
 "use client"
 
+import { Plus } from "lucide-react"
 import { motion } from "framer-motion"
 import Image from "next/image"
-import { Plus } from "lucide-react"
 
-import type { Offering } from "@/types/offerings"
+import type { DeviceContent } from "@/types/devices"
 import { getImageUrl } from "@/lib/api"
 import { Card, CardContent } from "@/components/ui/card"
 
 interface DeviceCardProps {
-  offering: Offering
+  device: DeviceContent
   isActive: boolean
   onClick: () => void
 }
 
-export default function DeviceCard({ offering, isActive, onClick }: DeviceCardProps) {
-  const imageSrc = getImageUrl(offering.image ?? offering.details?.image ?? "/images/qmobile.png")
-  const title = offering.title ?? offering.details?.title ?? "Qcell device"
+export default function DeviceCard({ device, isActive, onClick }: DeviceCardProps) {
+  const data = device.data as Record<string, unknown> | undefined
+  const dataImage = typeof data?.["image"] === "string" ? (data?.["image"] as string) : undefined
+  const imageSrc = getImageUrl(device.image ?? dataImage ?? "/images/qmobile.png")
+  const title = device.title ?? "Qcell device"
 
   return (
     <motion.div
       className="relative h-full w-full cursor-pointer"
-      style={{ minHeight: '300px' }}
+      style={{ minHeight: "300px" }}
       animate={{ scale: isActive ? 1 : 0.95, opacity: isActive ? 1 : 0.85 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className="group relative h-full w-full overflow-hidden bg-gradient-to-br from-[#CD7F32] to-[#B87333] z-20" style={{ aspectRatio: '3/4' }}>
+      <Card className="group relative h-full w-full overflow-hidden bg-gradient-to-br from-[#CD7F32] to-[#B87333] z-20" style={{ aspectRatio: "3/4" }}>
         <CardContent className="relative flex h-full w-full items-center justify-center p-4 sm:p-6 md:p-8 lg:p-14">
           <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/40 to-transparent" />
           <Image
@@ -43,9 +45,10 @@ export default function DeviceCard({ offering, isActive, onClick }: DeviceCardPr
             <button
               type="button"
               className="rounded-full bg-white hover:bg-orange-100 p-3 flex items-center justify-center shadow-lg transition"
-              aria-label={`Learn more about ${offering.title}`}
+              aria-label={`Learn more about ${device.title}`}
               onClick={onClick}
             >
+              <span className="sr-only">{`View details for ${title}`}</span>
               <Plus className="h-6 w-6 text-[#F98F1F]" />
             </button>
           </div>

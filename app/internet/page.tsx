@@ -3,7 +3,6 @@
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ChevronLeft, ChevronRight } from "lucide-react"
 import Navigation from "@/components/nav" 
 import Footer from "@/components/footer"
 import InternetPlansSlider from "@/components/internet/internet-plans-slider"
@@ -46,25 +45,23 @@ export default function InternetPage() {
     }, 6000)
     return () => clearInterval(id)
   }, [heroSlides.length])
-  const prevHero = () => setCurrentHero((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)
-  const nextHero = () => setCurrentHero((prev) => (prev + 1) % heroSlides.length)
 
   return (
     <div>
       {/* Navigation */}
       <Navigation page="internet"/>
-      <header className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
+      <header className="relative min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white overflow-hidden">
         {/* Hero Slider */}
-        <div className="relative min-h-screen overflow-hidden">
+        <div className="relative min-h-screen">
           {/* Slide Images */}
           <AnimatePresence initial={false}>
             <motion.div
               key={currentHero}
               className="absolute inset-0 z-0"
-              initial={{ opacity: 0, scale: 1.03 }}
+              initial={{ opacity: 0, scale: 1.05 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.8 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 1, ease: "easeInOut" }}
             >
               <Image
                 src={heroSlides[currentHero].image}
@@ -74,87 +71,75 @@ export default function InternetPage() {
                 priority
                 unoptimized
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#F98F1F]/40 to-[#F98F1F]/20" />
+              <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-[#F98F1F]/30" />
             </motion.div>
           </AnimatePresence>
 
           {/* Content */}
-          <div className="relative z-10 flex min-h-screen flex-col justify-center items-center px-6 py-24 md:px-12">
-            <div className="relative flex flex-col items-center justify-center text-center md:mt-20 md:items-start md:text-left">
+          <div className="relative z-10 flex min-h-screen flex-col justify-center px-6 py-20 md:px-12 lg:px-20">
+            <div className="relative mx-auto w-full max-w-6xl">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentHero}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.6 }}
-                  className="flex flex-col items-center text-center"
+                  exit={{ opacity: 0, y: -30 }}
+                  transition={{ duration: 0.7, ease: "easeOut" }}
+                  className="flex flex-col items-center text-center space-y-6"
                 >
-                  <h1 className="mb-3 text-5xl text-white text-center">
+                  <h1 className="text-4xl font-bold text-white md:text-6xl lg:text-7xl leading-tight">
                     {heroSlides[currentHero].title}
                   </h1>
-                  <p className="mb-8 mx-auto max-w-2xl text-lg text-white text-center md:text-xl">
+                  <p className="mx-auto max-w-3xl text-lg text-white/90 md:text-xl lg:text-2xl leading-relaxed">
                     {heroSlides[currentHero].subtitle}
                   </p>
-                  <div className="flex gap-3">
-                    <a
+                  <div className="flex flex-wrap items-center justify-center gap-4 mt-4">
+                    <motion.a
                       href={heroSlides[currentHero].cta.href}
-                      className="rounded-full bg-white/90 text-[#F98F1F] px-6 py-2.5 text-sm md:text-base font-semibold hover:bg-white transition"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="rounded-full bg-[#F98F1F] text-white px-8 py-3.5 text-base md:text-lg font-semibold hover:bg-[#ff9c33] transition-all shadow-lg hover:shadow-xl"
                     >
                       {heroSlides[currentHero].cta.text}
-                    </a>
-                    <a
+                    </motion.a>
+                    <motion.a
                       href="#plans"
-                      className="rounded-full border border-white/70 text-white px-6 py-2.5 text-sm md:text-base font-semibold hover:bg-white/10 transition"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="rounded-full border-2 border-white/80 text-white px-8 py-3.5 text-base md:text-lg font-semibold hover:bg-white/10 hover:border-white transition-all backdrop-blur-sm"
                     >
                       View Plans
-                    </a>
+                    </motion.a>
                   </div>
                 </motion.div>
               </AnimatePresence>
 
-              <div className="mt-2 flex items-center gap-3">
-                <button
-                  aria-label="Previous"
-                  onClick={prevHero}
-                  className="hidden md:flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/30 transition"
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </button>
-                {heroSlides.map((_, i) => (
-                  <button
-                    key={i}
-                    aria-label={`Go to slide ${i + 1}`}
-                    className={`h-2 rounded-full transition-all ${currentHero === i ? 'w-8 bg-white' : 'w-2 bg-white/70'}`}
-                    onClick={() => setCurrentHero(i)}
-                  />
-                ))}
-                <button
-                  aria-label="Next"
-                  onClick={nextHero}
-                  className="hidden md:flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/30 transition"
-                >
-                  <ChevronRight className="h-5 w-5" />
-                </button>
-              </div>
-            {/*<motion.button
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.6, delay: 0.8 }}
-                onClick={openVideoModal}
-                className="flex items-center justify-center mx-auto px-12 py-3 text-base font-medium text-white bg-[#F98F1F65] rounded-full hover:bg-[#F98F1F95] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#F98F1F] transition-all">
-                    View Plans
-            </motion.button>*/}
             </div>
           </div>          
+
+          {/* Navigation Dots */}
+          <div className="pointer-events-auto absolute bottom-10 left-1/2 z-20 flex -translate-x-1/2 items-center justify-center gap-3">
+            {heroSlides.map((_, i) => (
+              <button
+                key={i}
+                aria-label={`Go to slide ${i + 1}`}
+                className={`h-2.5 rounded-full transition-all duration-300 ${
+                  currentHero === i ? 'w-12 bg-white shadow-lg' : 'w-3 bg-white/50 hover:bg-white/70'
+                }`}
+                onClick={() => setCurrentHero(i)}
+              />
+            ))}
+          </div>
         </div>        
       </header>
 
-      <main>
-        <section className="w-full mt-6 mb-1 px-0">
+      <main className="bg-white">
+        <section id="plans" className="w-full py-12 md:py-16 px-0">
           <InternetPlansSlider />
         </section>
-        <InternetBenefits />
+        <section className="w-full py-12 md:py-16">
+          <InternetBenefits />
+        </section>
       </main>
 
       <Footer />
