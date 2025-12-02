@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 const heroContent = [
     {
@@ -31,25 +31,27 @@ const heroContent = [
         tag: 'Qnite',
         title: "Browse All Night for Less!",
         description: "Nighttime data at unbeatable prices—only on Qnite.",
+    },
+    {
+        tag: 'Promo 1',
+        title: "Special Promotion Available Now!",
+        description: "Don't miss out on this amazing offer from QCell.",
+    },
+    {
+        tag: 'Promo 2',
+        title: "Another Fantastic Deal!",
+        description: "Get the best value with our latest promotion.",
     }
 ]
 
 export default function SliderContent () {
     const heroContentRef = useRef<HTMLDivElement>(null)
-    const [currentSlide, setCurrentSlide] = useState(0)
     const [targetWidth, setTargetWidth] = useState('80%');
-
-    
-    // Auto-advance slider
-    useEffect(() => {
-        const interval = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % heroContent.length)
-        }, 10000)
-    
-        return () => clearInterval(interval)
-    }, [])
+    const [isMounted, setIsMounted] = useState(false);
+    const currentSlide = 0; // Always show first content
 
     useEffect(() => {
+        setIsMounted(true);
         const handleResize = () => {
             if (window.innerWidth >= 768) {
                 // sm and up (Tailwind's sm breakpoint is 640px)
@@ -73,42 +75,34 @@ export default function SliderContent () {
         }
     }
 
+    if (!isMounted) {
+        return null;
+    }
+
     return (
-        <AnimatePresence initial={false}>
-            <motion.div
-                key={currentSlide}
-                className="absolute inset-0 z-0"
-                initial={{ opacity: 0, scale: 1 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 2, ease: [0.22, 1, 0.36, 1] }}
-                style={{
-                    transition: "all 2s"
-                }}
-            >
+        <motion.div
+            className="absolute inset-0 z-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 2, ease: [0.22, 1, 0.36, 1] }}
+        >
                 <motion.div
                     ref={heroContentRef}
                     className='w-[80%] sm:w-2/4 px-10 sm:px-20 bg-black/70 absolute left-0 h-full flex flex-col justify-evenly items-center'
                     initial={{ opacity: 0, width: '0%' }}
                     animate={{ opacity: 1, width: targetWidth }}
-                    exit={{ opacity: 0, width: '0%' }}
                     transition={{ duration: 0.5 }}
                     onScroll={hideHeroContent}
                 >
             
-                    {/*onMouseMove={handleMouseMove}*/}
-                    <AnimatePresence>
-                        <motion.h1
-                            className='text-white font-light font-mono text-5xl leading-snug sm:5xl md:text-7xl mt-24'
-                            initial={{ opacity: 0, y: -40, scale: 0.95 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 40, scale: 0.95 }}
-                            transition={{ delay: 0.4, duration: 0.8, type: "spring", stiffness: 60 }}
-                        >
-                            {/* Discover Our Latest Promotions */}
-                            {heroContent[currentSlide].title}
-                        </motion.h1>
-                    </AnimatePresence>
+                    <motion.h1
+                        className='text-white font-light font-mono text-5xl leading-snug sm:5xl md:text-7xl mt-24'
+                        initial={{ opacity: 0, y: -40, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ delay: 0.4, duration: 0.8, type: "spring", stiffness: 60 }}
+                    >
+                        {heroContent[currentSlide].title}
+                    </motion.h1>
                     {
                         heroContent[currentSlide].tag === "promotions" ? (
                             <motion.p
@@ -165,6 +159,5 @@ export default function SliderContent () {
                     ))}
                 </motion.div>
             </motion.div>
-        </AnimatePresence>
     )
 }

@@ -9,14 +9,13 @@ import type { Offering } from "@/types/offerings"
 import { offerings as fallbackOfferings } from "@/types/offerings"
 import { Button } from "@/components/ui/button"
 import OfferingCard from "./offering-card"
-import OfferingModal from "./offering-modal"
 import { api, getImageUrl } from "@/lib/api"
 
 type OfferingsSliderProps = {
   offerings?: Offering[]
 }
 
-const OFFERING_LIMIT = 6
+const OFFERING_LIMIT = 8
 
 const limitOfferings = (items: Offering[]) => items.filter(Boolean).slice(0, OFFERING_LIMIT)
 
@@ -142,7 +141,6 @@ const normalizeOffering = (item: RemoteOffering, fallback: Offering, index: numb
 }
 
 export default function OfferingsSlider({ offerings: offeringsProp }: OfferingsSliderProps = {}) {
-  const [selectedOffering, setSelectedOffering] = useState<Offering | null>(null)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [offeringsData, setOfferingsData] = useState<Offering[]>(
     Array.isArray(offeringsProp) && offeringsProp.length > 0 ? limitOfferings(offeringsProp) : limitOfferings(fallbackOfferings),
@@ -260,7 +258,6 @@ export default function OfferingsSlider({ offerings: offeringsProp }: OfferingsS
                   >
                       <OfferingCard
                         offering={offering}
-                        onClick={() => setSelectedOffering(offering)}
                       />
                   </div>
                 ))}
@@ -285,11 +282,6 @@ export default function OfferingsSlider({ offerings: offeringsProp }: OfferingsS
         </div>
       </div>
 
-      <OfferingModal
-        offering={selectedOffering}
-        isOpen={!!selectedOffering}
-        onClose={() => setSelectedOffering(null)}
-      />
     </div>
   )
 }

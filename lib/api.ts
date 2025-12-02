@@ -29,6 +29,13 @@ export const getImageUrl = (imagePath: string): string => {
   return imagePath;
 };
 
+// Helper to build video URL (same logic as images)
+export const getVideoUrl = (videoPath: string): string => {
+  if (!videoPath) return '';
+  // Videos can be in /uploads/, /videos/, or external URLs
+  return getImageUrl(videoPath);
+};
+
 // API Client - All endpoints are PUBLIC (no authentication required)
 const normalizePageParam = (page?: string | null) => {
   if (page === undefined || page === null) return undefined
@@ -151,6 +158,35 @@ export const api = {
       throw new Error(`Failed to fetch promotions: ${response.status} ${response.statusText}`);
     }
     return response.json();
+  },
+
+  /**
+   * Get promotions offerings for carousel (NO AUTH NEEDED)
+   * Returns active promotions ordered by order field
+   */
+  getPromotionsOfferings: async () => {
+    try {
+      // Try frontend API route first (which proxies to backend)
+      // Use relative URL to ensure it goes through Next.js API route
+      const response = await fetch('/api/public/promotions-offerings', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        // Return empty array on any error - allows fallback to work
+        return [];
+      }
+      
+      const data = await response.json();
+      // Handle both array and object responses
+      return Array.isArray(data) ? data : (data.promotions || data.offerings || []);
+    } catch {
+      // Return empty array on any error to allow fallback
+      return [];
+    }
   },
 
   /**

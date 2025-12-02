@@ -65,18 +65,7 @@ const navItems: NavItem[] = [
     },
     {
         title: "Support",
-        content: {
-        heading: "Here to Help, Anytime You Need.",
-        subheading:
-            "24/7 Access expert assistance, helpful resources, and quick solutions to keep you connected and informed.",
-        links: [
-            { title: "Customer Care", href: "#" },
-            { title: "Check Balance", href: "#" },
-            { title: "Buy Bundle", href: "#" },
-            { title: "Know Your Number", href: "#" },
-        ],
-        },
-        href: 'support'
+        href: '/support'
     },
 ]
 
@@ -248,6 +237,7 @@ useEffect(() => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        data-scrolled={isScrolled ? "true" : "false"}
         style={{
             marginTop: isScrolled ? "0" : "50px",
             width: isScrolled ? "100%" : "90%",
@@ -329,7 +319,7 @@ useEffect(() => {
                       >
                         <span className="relative">{item.title}</span>
                       </motion.button>
-                    ) : item.title === "Promotions" ? (
+                    ) : item.title === "Promotions" || item.title === "Support" ? (
                       <Link href={item.href}>
                         <span className="group flex items-center py-2 text-sm font-medium text-white transition-colors hover:text-white/80">
                           {item.title}
@@ -408,7 +398,7 @@ useEffect(() => {
 
         {/* Mega Menu Dropdown */}
         <AnimatePresence>
-          {activeItem && activeItem !== "Promotions" && (
+          {activeItem && activeItem !== "Promotions" && activeItem !== "Support" && (
             <motion.div
               ref={dropdownRef}
               className="absolute left-0 w-full overflow-hidden px-5"
@@ -578,7 +568,7 @@ useEffect(() => {
                         >
                           <span>{item.title}</span>
                         </motion.button>
-                      ) : item.title === "Promotions" ? (
+                      ) : item.title === "Promotions" || item.title === "Support" ? (
                         <Link href={item.href} onClick={() => setMobileMenuOpen(false)}>
                           <span className="flex w-full items-center justify-between text-left text-base font-medium text-white py-2">{item.title}</span>
                         </Link>

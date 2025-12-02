@@ -8,20 +8,16 @@ import { Card, CardContent } from "@/components/ui/card"
 
 interface OfferingCardProps {
   offering: Offering;
-  onClick: () => void;
 }
 
-export default function OfferingCard({ offering, onClick }: OfferingCardProps) {
+export default function OfferingCard({ offering }: OfferingCardProps) {
   return (
     <motion.div
-      className="relative h-full min-h-[480px] w-full cursor-pointer md:min-h-[700px]"
-      onClick={onClick}
+      className="relative h-full min-h-[480px] w-full md:min-h-[700px]"
     >
       <Card className="group relative h-full overflow-hidden bg-gradient-to-br from-[#CD7F32] to-[#B87333] z-20">
-        <div className="absolute inset-0 bg-black/20" />
         <CardContent className="relative flex h-full flex-col items-start justify-between p-6">
-          {/* Only image and card UI, no title or description */}
-          <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 to-transparent" />
+          {/* Only image, no text content overlay */}
           <Image
             src={offering.details.image ?? offering.image ?? "/images/qmobile.png"}
             alt={offering.details.title ?? offering.title ?? "Qcell offering"}

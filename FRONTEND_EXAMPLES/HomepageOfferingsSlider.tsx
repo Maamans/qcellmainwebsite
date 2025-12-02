@@ -8,7 +8,6 @@ import type { Offering } from "@/types/offerings"
 import { offerings as fallbackOfferings } from "@/types/offerings"
 import { Button } from "@/components/ui/button"
 import OfferingCard from "@/components/offering-card"
-import OfferingModal from "@/components/offering-modal"
 import { api, getImageUrl } from "@/lib/api"
 
 type OfferingsSliderProps = {
@@ -148,7 +147,6 @@ const mergeOfferings = (remote: Offering[], fallback: Offering[]) => {
  * Drop-in ready for the homepage and safe to hydrate with server-fetched props.
  */
 export default function HomepageOfferingsSlider({ offerings: offeringsProp }: OfferingsSliderProps = {}) {
-  const [selectedOffering, setSelectedOffering] = useState<Offering | null>(null)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [offeringsData, setOfferingsData] = useState<Offering[]>(
     Array.isArray(offeringsProp) && offeringsProp.length > 0 ? limitOfferings(offeringsProp) : limitOfferings(fallbackOfferings),
@@ -265,7 +263,6 @@ export default function HomepageOfferingsSlider({ offerings: offeringsProp }: Of
                   >
                     <OfferingCard
                       offering={offering}
-                      onClick={() => setSelectedOffering(offering)}
                     />
                   </div>
                 ))}
@@ -290,11 +287,6 @@ export default function HomepageOfferingsSlider({ offerings: offeringsProp }: Of
         </div>
       </div>
 
-      <OfferingModal
-        offering={selectedOffering}
-        isOpen={!!selectedOffering}
-        onClose={() => setSelectedOffering(null)}
-      />
     </div>
   )
 }

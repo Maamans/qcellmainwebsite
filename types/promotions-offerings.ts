@@ -97,4 +97,55 @@ export const promotionsOfferings: Offering[] = [
       benefits: ["Handpicked offers", "Save more", "Easy to claim"],
     },
   },
+  {
+    id: "promo1",
+    title: "PROMO 1",
+    description: "Exciting new promotion available now!",
+    image: "/images/Promo1.jpg",
+    features: ["Special offer", "Limited time", "Great value"],
+    cta: {
+      text: "Learn More",
+      action: "/promo1",
+    },
+    details: {
+      title: "PROMO 1",
+      description: "Don't miss out on this amazing promotion!",
+      benefits: ["Exclusive deal", "Best prices", "Easy activation"],
+      image: "/images/Promo1.jpg",
+    },
+  },
+  {
+    id: "promo2",
+    title: "PROMO 2",
+    description: "Another fantastic promotion for you!",
+    image: "/images/promo2.jpg",
+    features: ["Great savings", "Limited time", "Premium value"],
+    cta: {
+      text: "Get Offer",
+      action: "/promo2",
+    },
+    details: {
+      title: "PROMO 2",
+      description: "Take advantage of this special promotion today!",
+      benefits: ["Unbeatable prices", "Quality service", "Quick setup"],
+      image: "/images/promo2.jpg",
+    },
+  },
+  {
+    id: "tiktok-bundle",
+    title: "TIKTOK BUNDLE",
+    description: "Enjoy TikTok with special data bundles!",
+    image: "/images/tiktok bundle.jpg",
+    features: ["TikTok optimized", "Great value", "Easy activation"],
+    cta: {
+      text: "Get Bundle",
+      action: "/tiktok-bundle",
+    },
+    details: {
+      title: "TIKTOK BUNDLE",
+      description: "Stay connected on TikTok with our special data bundles!",
+      benefits: ["Optimized for TikTok", "Best prices", "Quick setup"],
+      image: "/images/tiktok bundle.jpg",
+    },
+  },
 ]

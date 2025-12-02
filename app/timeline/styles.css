@@ -2223,7 +2223,7 @@ html {
   }
   
   .timeline_circle {
-    background-color: #fff;
+    background-color: #F98F1F;
     border-radius: 100%;
     width: 15px;
     min-width: 15px;
@@ -2233,12 +2233,12 @@ html {
     max-height: 15px;
     position: sticky;
     top: 50vh;
-    box-shadow: 0 0 0 8px #0a0a0a;
+    box-shadow: 0 0 0 8px #2563eb;
   }
   
   .timeline_progress {
     z-index: -2;
-    background-color: #414141;
+    background-color: #F98F1F;
     width: 3px;
     height: 100%;
     position: absolute;
@@ -2246,8 +2246,8 @@ html {
   
   .timeline_progress-bar {
     z-index: -1;
-    background-color: #fff;
-    background-image: linear-gradient(#ff7448, #ff4848 51%, #6248ff);
+    background-color: #2563eb;
+    background-image: linear-gradient(#F98F1F, #FF8400 51%, #2563eb);
     width: 3px;
     height: 50vh;
     position: fixed;
@@ -2256,12 +2256,12 @@ html {
   
   .section-timeline {
     z-index: -3;
-    background-color: #0a0a0a;
+    background-color: #F98F1F;
     position: relative;
   }
   
   .section-timeline-cta {
-    background-color: #0a0a0a;
+    background-color: #2563eb;
   }
   
   .margin-bottom-xlarge {

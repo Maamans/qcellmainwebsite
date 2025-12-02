@@ -93,17 +93,7 @@ const navItems = [
   },
     {
         title: "Support",
-        content: {
-            heading: "Here to Help, Anytime You Need.",
-            subheading: "24/7 Access expert assistance, helpful resources, and quick solutions to keep you connected and informed.",
-            links: [
-                { title: "Customer Care", href: "#" },
-                { title: "Check Balance", href: "#" },
-                { title: "Buy Bundle", href: "#" },
-                { title: "Know Your Number", href: "#" }
-            ]
-        },
-        href: 'support'
+        href: '/support'
     }
 ];
 const itemVariants = {
