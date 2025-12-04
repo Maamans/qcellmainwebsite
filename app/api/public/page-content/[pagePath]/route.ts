@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { isValidPagePath, isValidOrigin } from '@/lib/security';
 
 /**
  * GET /api/public/page-content/:pagePath
@@ -17,10 +18,27 @@ export async function GET(
   { params }: { params: Promise<{ pagePath: string }> }
 ) {
   try {
+    // Security: Validate origin
+    const origin = request.headers.get('origin');
+    if (origin && !isValidOrigin(origin)) {
+      return NextResponse.json(
+        { error: 'Invalid origin' },
+        { status: 403 }
+      );
+    }
+
     const { pagePath } = await params;
 
     // Decode the page path (it comes encoded from the URL)
     const decodedPagePath = decodeURIComponent(pagePath);
+    
+    // Security: Validate page path to prevent path traversal
+    if (!isValidPagePath(decodedPagePath)) {
+      return NextResponse.json(
+        { error: 'Invalid page path' },
+        { status: 400 }
+      );
+    }
 
     // Build backend URL
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';

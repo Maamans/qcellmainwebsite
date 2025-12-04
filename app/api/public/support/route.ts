@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { sanitizeCategory, isValidOrigin } from '@/lib/security';
+import { validateQueryParams } from '@/lib/validation';
 
 /**
  * GET /api/public/support
@@ -11,15 +13,36 @@ import { NextRequest, NextResponse } from 'next/server';
  */
 export async function GET(request: NextRequest) {
   try {
+    // Security: Validate origin
+    const origin = request.headers.get('origin');
+    if (origin && !isValidOrigin(origin)) {
+      return NextResponse.json(
+        { error: 'Invalid origin' },
+        { status: 403 }
+      );
+    }
+
+    // Security: Validate and sanitize query parameters
+    const validation = validateQueryParams(request.nextUrl.searchParams);
+    if (!validation.isValid) {
+      return NextResponse.json(
+        { error: 'Invalid query parameters', details: validation.errors },
+        { status: 400 }
+      );
+    }
+
     const searchParams = request.nextUrl.searchParams;
     const category = searchParams.get('category');
+    
+    // Security: Sanitize category
+    const sanitizedCategory = category ? sanitizeCategory(category) : undefined;
 
     // Build backend URL
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
     let url = `${backendUrl}/api/public/support`;
     
-    if (category) {
-      url += `?category=${encodeURIComponent(category)}`;
+    if (sanitizedCategory) {
+      url += `?category=${encodeURIComponent(sanitizedCategory)}`;
     }
 
     // Fetch from backend with timeout

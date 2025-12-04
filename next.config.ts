@@ -5,10 +5,20 @@ const nextConfig: NextConfig = {
   // Enable standalone output for Docker
   output: 'standalone',
   
+  // Security: Disable X-Powered-By header
+  poweredByHeader: false,
+  
+  // Security: Enable React strict mode
+  reactStrictMode: true,
+  
+  // Security: Disable source maps in production
+  productionBrowserSourceMaps: false,
+  
   env: {
     MAP_BOX_ACCESS_TOKEN: process.env.MAP_BOX_ACCESS_TOKEN,
   },
   images: {
+    // Security: Limit image domains
     remotePatterns: [
       { protocol: "https", hostname: "source.unsplash.com" },
       { protocol: "https", hostname: "unsplash.com" },
@@ -19,6 +29,49 @@ const nextConfig: NextConfig = {
       { protocol: "http", hostname: "backend" },
       { protocol: "https", hostname: "backend" },
     ],
+    // Security: Disable dangerous image optimization
+    dangerouslyAllowSVG: false,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+  },
+  
+  // Security: Headers configuration
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on'
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload'
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block'
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin'
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()'
+          },
+        ],
+      },
+    ]
   },
 };
 

@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { isValidPagePath, isValidOrigin } from '@/lib/security';
+import { validateQueryParams } from '@/lib/validation';
 
 /**
  * GET /api/public/hero-slides
@@ -11,8 +13,34 @@ import { NextRequest, NextResponse } from 'next/server';
  */
 export async function GET(request: NextRequest) {
   try {
+    // Security: Validate origin
+    const origin = request.headers.get('origin');
+    if (origin && !isValidOrigin(origin)) {
+      return NextResponse.json(
+        { error: 'Invalid origin' },
+        { status: 403 }
+      );
+    }
+
+    // Security: Validate query parameters
+    const validation = validateQueryParams(request.nextUrl.searchParams);
+    if (!validation.isValid) {
+      return NextResponse.json(
+        { error: 'Invalid query parameters', details: validation.errors },
+        { status: 400 }
+      );
+    }
+
     const searchParams = request.nextUrl.searchParams;
     const page = searchParams.get('page') || '/';
+    
+    // Security: Validate page path
+    if (!isValidPagePath(page)) {
+      return NextResponse.json(
+        { error: 'Invalid page path' },
+        { status: 400 }
+      );
+    }
 
     // Build backend URL
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
