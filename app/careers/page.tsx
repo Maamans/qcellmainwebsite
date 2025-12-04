@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react"
 import { motion, useInView } from "framer-motion"
 import Image from "next/image"
+import Link from "next/link"
 import Navigation from "@/components/nav"
 import Footer from "@/components/footer"
 
@@ -188,13 +189,15 @@ export default function CareersPage() {
                 </p>
               </div>
 
-              <motion.button
-                className="bg-[#F98F1F] text-white px-6 py-3 rounded-xl font-bold text-lg shadow-md hover:shadow-lg transition-all duration-300"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Apply Now
-              </motion.button>
+              <Link href="/careers/apply">
+                <motion.div
+                  className="inline-block bg-[#F98F1F] text-white px-6 py-3 rounded-xl font-bold text-lg shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Apply Now
+                </motion.div>
+              </Link>
             </motion.div>
           </div>
         </div>

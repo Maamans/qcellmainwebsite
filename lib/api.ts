@@ -77,26 +77,42 @@ export const api = {
 
   /**
    * Get hero slides for a specific page (NO AUTH NEEDED)
-   * @param page - Page path (e.g., '/about-us', '/devices'). Use '/' or null for homepage
+   * @param page - Page path (e.g., '/about-us', '/devices', '/careers/apply'). Use '/' or null for homepage
+   * Returns empty array if no slides found or backend unavailable (frontend uses fallback)
    */
   getHeroSlides: async (page?: string | null) => {
-    const pageParam = normalizePageParam(page);
-    // Try /api/public/hero-slides first, fallback to /api/hero-slides
-    let url = pageParam
-      ? `${API_URL}/api/public/hero-slides?page=${encodeURIComponent(pageParam)}`
-      : `${API_URL}/api/public/hero-slides`;
-    
-    let response = await fetch(url);
-    if (!response.ok && response.status === 404) {
-      url = pageParam
-        ? `${API_URL}/api/hero-slides?page=${encodeURIComponent(pageParam)}`
-        : `${API_URL}/api/hero-slides`;
-      response = await fetch(url);
+    try {
+      const pageParam = normalizePageParam(page);
+      // Try /api/public/hero-slides first, fallback to /api/hero-slides
+      let url = pageParam
+        ? `${API_URL}/api/public/hero-slides?page=${encodeURIComponent(pageParam)}`
+        : `${API_URL}/api/public/hero-slides`;
+      
+      let response = await fetch(url);
+      if (!response.ok && response.status === 404) {
+        url = pageParam
+          ? `${API_URL}/api/hero-slides?page=${encodeURIComponent(pageParam)}`
+          : `${API_URL}/api/hero-slides`;
+        response = await fetch(url);
+      }
+      
+      // If still 404 or error, return empty array (frontend will use fallback)
+      if (!response.ok) {
+        if (response.status === 404) {
+          return [];
+        }
+        // For other errors, log but return empty array
+        console.warn(`Failed to fetch hero slides for ${pageParam || '/'}: ${response.status}`);
+        return [];
+      }
+      
+      const data = await response.json();
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      // Network errors or other issues - return empty array (frontend uses fallback)
+      console.warn(`Error fetching hero slides for ${page || '/'}:`, error);
+      return [];
     }
-    if (!response.ok) {
-      throw new Error(`Failed to fetch hero slides: ${response.status} ${response.statusText}`);
-    }
-    return response.json();
   },
 
   /**
@@ -261,44 +277,80 @@ export const api = {
   /**
    * Get support items (NO AUTH NEEDED)
    * @param category - Optional category filter
+   * Returns empty array if no items found or backend unavailable (frontend uses fallback)
    */
   getSupport: async (category?: string) => {
-    // Try /api/public/support first, fallback to /api/support
-    let url = category
-      ? `${API_URL}/api/public/support?category=${encodeURIComponent(category)}`
-      : `${API_URL}/api/public/support`;
-    
-    let response = await fetch(url);
-    if (!response.ok && response.status === 404) {
-      url = category
-        ? `${API_URL}/api/support?category=${encodeURIComponent(category)}`
-        : `${API_URL}/api/support`;
-      response = await fetch(url);
+    try {
+      // Try /api/public/support first, fallback to /api/support
+      let url = category
+        ? `${API_URL}/api/public/support?category=${encodeURIComponent(category)}`
+        : `${API_URL}/api/public/support`;
+      
+      let response = await fetch(url);
+      if (!response.ok && response.status === 404) {
+        url = category
+          ? `${API_URL}/api/support?category=${encodeURIComponent(category)}`
+          : `${API_URL}/api/support`;
+        response = await fetch(url);
+      }
+      
+      // If still 404 or error, return empty array (frontend will use fallback)
+      if (!response.ok) {
+        if (response.status === 404) {
+          return [];
+        }
+        // For other errors, log but return empty array
+        console.warn(`Failed to fetch support items${category ? ` for category ${category}` : ''}: ${response.status}`);
+        return [];
+      }
+      
+      const data = await response.json();
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      // Network errors or other issues - return empty array (frontend uses fallback)
+      console.warn(`Error fetching support items${category ? ` for category ${category}` : ''}:`, error);
+      return [];
     }
-    if (!response.ok) {
-      throw new Error(`Failed to fetch support: ${response.status} ${response.statusText}`);
-    }
-    return response.json();
   },
 
   /**
    * Get page content sections (NO AUTH NEEDED)
-   * @param pagePath - Page path (e.g., '/about-us', '/careers')
+   * @param pagePath - Page path (e.g., '/about-us', '/careers/apply')
+   * Returns empty array if no content found or backend unavailable (frontend uses fallback)
+   * 
+   * API Endpoint Format: /api/public/page-content/{pagePath} (path parameter, not query)
+   * Example: /api/public/page-content/%2Fcareers%2Fapply
    */
   getPageContent: async (pagePath: string) => {
-    // Try /api/public/page-content/:path first, fallback to /api/page-content/:path
-    let response = await fetch(
-      `${API_URL}/api/public/page-content/${encodeURIComponent(pagePath)}`
-    );
-    if (!response.ok && response.status === 404) {
-      response = await fetch(
-        `${API_URL}/api/page-content/${encodeURIComponent(pagePath)}`
+    try {
+      // Use path parameter format (correct): /api/public/page-content/{pagePath}
+      // encodeURIComponent ensures proper encoding (e.g., /careers/apply becomes %2Fcareers%2Fapply)
+      let response = await fetch(
+        `${API_URL}/api/public/page-content/${encodeURIComponent(pagePath)}`
       );
+      if (!response.ok && response.status === 404) {
+        response = await fetch(
+          `${API_URL}/api/page-content/${encodeURIComponent(pagePath)}`
+        );
+      }
+      
+      // If still 404 or error, return empty array (frontend will use fallback)
+      if (!response.ok) {
+        if (response.status === 404) {
+          return [];
+        }
+        // For other errors, log but return empty array
+        console.warn(`Failed to fetch page content for ${pagePath}: ${response.status}`);
+        return [];
+      }
+      
+      const data = await response.json();
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      // Network errors or other issues - return empty array (frontend uses fallback)
+      console.warn(`Error fetching page content for ${pagePath}:`, error);
+      return [];
     }
-    if (!response.ok) {
-      throw new Error(`Failed to fetch page content: ${response.status} ${response.statusText}`);
-    }
-    return response.json();
   },
 
   /**

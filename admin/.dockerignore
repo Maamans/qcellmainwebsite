@@ -1,0 +1,17 @@
+# Same as frontend .dockerignore
+node_modules
+npm-debug.log*
+.next
+out
+dist
+.env
+.env*.local
+coverage
+.vscode
+.idea
+.git
+Dockerfile*
+docker-compose*.yml
+*.md
+!README.md
+

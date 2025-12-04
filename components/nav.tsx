@@ -490,21 +490,6 @@ useEffect(() => {
         </AnimatePresence>
         
       </motion.div>
-      {page == 'careers' && (
-        
-        <motion.header className="hidden fixed w-[90%] mx-auto text-white top-0 z-50 sm:flex items-center justify-between"
-          style={{
-            marginTop: isScrolled ? "55px" : "105px",
-            width: isScrolled ? "90%" : "90%",
-            transition: "all 0.5s",
-          }}>
-            <h2 className="">Careers at QCELL</h2>
-            <div className="flex gap-5">
-              <h3>Life at QCELL</h3>
-              <h3>Work at QCELL</h3>
-            </div>
-        </motion.header> )
-      }
       </motion.header>
 
       {/* Mobile Menu */}

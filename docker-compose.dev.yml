@@ -1,0 +1,129 @@
+# Development Docker Compose Configuration
+# Use: docker compose -f docker-compose.dev.yml up
+
+version: '3.8'
+
+services:
+  # Frontend - Development Mode with Hot Reload
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: qcell-frontend-dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:4000
+      - WATCHPACK_POLLING=true
+    volumes:
+      # Mount source code for hot reload
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+      - ./public:/app/public
+    depends_on:
+      - backend
+    networks:
+      - qcell-network
+    command: npm run dev
+    stdin_open: true
+    tty: true
+
+  # Backend - Development Mode with Hot Reload
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: qcell-backend-dev
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=development
+      - PORT=4000
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/qcell_db
+      - JWT_SECRET=dev-secret-change-in-production
+      - UPLOAD_DIR=/app/uploads
+    volumes:
+      # Mount source code for hot reload
+      - ./backend:/app
+      - /app/node_modules
+      - backend-uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - qcell-network
+    command: npm run dev
+    stdin_open: true
+    tty: true
+
+  # Admin Dashboard - Development Mode
+  admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile.dev
+    container_name: qcell-admin-dev
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:4000
+      - WATCHPACK_POLLING=true
+    volumes:
+      # Mount source code for hot reload
+      - ./admin:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - backend
+    networks:
+      - qcell-network
+    command: npm run dev
+    stdin_open: true
+    tty: true
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: qcell-postgres-dev
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=qcell_db
+    volumes:
+      - postgres-data-dev:/var/lib/postgresql/data
+    networks:
+      - qcell-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis - Development
+  redis:
+    image: redis:7-alpine
+    container_name: qcell-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data-dev:/data
+    networks:
+      - qcell-network
+    command: redis-server
+
+networks:
+  qcell-network:
+    driver: bridge
+
+volumes:
+  postgres-data-dev:
+    driver: local
+  redis-data-dev:
+    driver: local
+  backend-uploads:
+    driver: local
+

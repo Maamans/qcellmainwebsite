@@ -1,6 +1,75 @@
+"use client"
+
+import { useEffect, useState, useCallback } from "react"
 import Image from "next/image"
+import { api, getImageUrl } from "@/lib/api"
+
+interface HeroSlide {
+  id?: string | number
+  image?: string
+  title?: string
+  description?: string
+  isActive?: boolean
+}
+
+// Fallback images (used if backend unavailable)
+const fallbackImages = [
+  "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=1000&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1502680390469-be75c86b636f?q=80&w=1000&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1520333789090-1afc82db536a?q=80&w=1000&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1000&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?q=80&w=1000&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=1000&auto=format&fit=crop",
+]
 
 export default function SupportHero() {
+  const [heroImages, setHeroImages] = useState<string[]>(fallbackImages)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const loadHeroImages = useCallback(async () => {
+    if (!mounted) return
+
+    try {
+      const slides = await api.getHeroSlides("/support")
+      
+      if (Array.isArray(slides) && slides.length > 0) {
+        const activeSlides = slides
+          .filter((slide: HeroSlide) => slide.isActive !== false)
+          .slice(0, 6) // Limit to 6 images
+        
+        if (activeSlides.length > 0) {
+          const images = activeSlides.map((slide: HeroSlide) => 
+            slide.image ? getImageUrl(slide.image) : fallbackImages[0]
+          )
+          
+          // Fill remaining slots with fallback images if needed
+          while (images.length < 6) {
+            images.push(fallbackImages[images.length % fallbackImages.length])
+          }
+          
+          setHeroImages(images.slice(0, 6))
+          return
+        }
+      }
+      
+      // Use fallback images if no backend slides
+      setHeroImages(fallbackImages)
+    } catch (error) {
+      console.warn("Failed to load hero images from backend, using fallback:", error)
+      setHeroImages(fallbackImages)
+    }
+  }, [mounted])
+
+  useEffect(() => {
+    if (mounted) {
+      loadHeroImages()
+    }
+  }, [mounted, loadHeroImages])
+
   return (
     <div className="w-full bg-white py-16 md:py-24">
       <div className="container mx-auto px-4">
@@ -10,57 +79,98 @@ export default function SupportHero() {
             {/* Row 1 */}
             <div className="col-span-2 md:col-span-2 row-span-2 relative rounded-xl overflow-hidden h-48 md:h-64">
               <Image
-                src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=1000&auto=format&fit=crop"
-                alt="Person on phone"
+                src={heroImages[0] || fallbackImages[0]}
+                alt="Support image 1"
                 fill
                 className="object-cover"
                 unoptimized
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement
+                  if (!target.src.includes('unsplash')) {
+                    target.src = fallbackImages[0]
+                  }
+                }}
               />
             </div>
 
             <div className="col-span-2 md:col-span-3 row-span-2 relative rounded-xl overflow-hidden h-48 md:h-64">
               <Image
-                src="https://images.unsplash.com/photo-1502680390469-be75c86b636f?q=80&w=1000&auto=format&fit=crop"
-                alt="Family at sunset"
+                src={heroImages[1] || fallbackImages[1]}
+                alt="Support image 2"
                 fill
                 className="object-cover"
+                unoptimized
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement
+                  if (!target.src.includes('unsplash')) {
+                    target.src = fallbackImages[1]
+                  }
+                }}
               />
             </div>
 
             <div className="col-span-2 md:col-span-3 row-span-2 relative rounded-xl overflow-hidden h-48 md:h-64">
               <Image
-                src="https://images.unsplash.com/photo-1520333789090-1afc82db536a?q=80&w=1000&auto=format&fit=crop"
-                alt="Person with curly hair"
+                src={heroImages[2] || fallbackImages[2]}
+                alt="Support image 3"
                 fill
                 className="object-cover"
+                unoptimized
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement
+                  if (!target.src.includes('unsplash')) {
+                    target.src = fallbackImages[2]
+                  }
+                }}
               />
             </div>
 
             {/* Row 2 */}
             <div className="col-span-2 md:col-span-2 row-span-2 relative rounded-xl overflow-hidden h-48 md:h-64 md:mt-4">
               <Image
-                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1000&auto=format&fit=crop"
-                alt="People with laptops"
+                src={heroImages[3] || fallbackImages[3]}
+                alt="Support image 4"
                 fill
                 className="object-cover"
+                unoptimized
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement
+                  if (!target.src.includes('unsplash')) {
+                    target.src = fallbackImages[3]
+                  }
+                }}
               />
             </div>
 
             <div className="col-span-2 md:col-span-3 row-span-2 relative rounded-xl overflow-hidden h-48 md:h-64 md:mt-4">
               <Image
-                src="https://images.unsplash.com/photo-1605296867304-46d5465a13f1?q=80&w=1000&auto=format&fit=crop"
-                alt="Person with phone"
+                src={heroImages[4] || fallbackImages[4]}
+                alt="Support image 5"
                 fill
                 className="object-cover"
+                unoptimized
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement
+                  if (!target.src.includes('unsplash')) {
+                    target.src = fallbackImages[4]
+                  }
+                }}
               />
             </div>
 
             <div className="col-span-2 md:col-span-3 row-span-2 relative rounded-xl overflow-hidden h-48 md:h-64 md:mt-4">
               <Image
-                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=1000&auto=format&fit=crop"
-                alt="Home garden"
+                src={heroImages[5] || fallbackImages[5]}
+                alt="Support image 6"
                 fill
                 className="object-cover"
+                unoptimized
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement
+                  if (!target.src.includes('unsplash')) {
+                    target.src = fallbackImages[5]
+                  }
+                }}
               />
             </div>
           </div>

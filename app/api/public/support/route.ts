@@ -5,29 +5,65 @@ import { NextRequest, NextResponse } from 'next/server';
  * Get support items with optional category filter
  * Query param: ?category=category-name (optional)
  * NO AUTH NEEDED - Public endpoint
+ * 
+ * This endpoint proxies requests to the backend API at http://localhost:4000/api/public/support
+ * Falls back to empty array if backend is unavailable
  */
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const category = searchParams.get('category');
 
-    // TODO: Replace with actual database queries
-    // For now, returning empty array
+    // Build backend URL
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+    let url = `${backendUrl}/api/public/support`;
     
-    const supportItems: unknown[] = [];
+    if (category) {
+      url += `?category=${encodeURIComponent(category)}`;
+    }
 
-    // Filter by category if provided
-    const filteredItems = category
-      ? supportItems.filter((s) => (s as { category?: string }).category === category)
-      : supportItems;
+    // Fetch from backend with timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
-    return NextResponse.json(filteredItems, { status: 200 });
+    try {
+      const response = await fetch(url, {
+        signal: controller.signal,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      clearTimeout(timeoutId);
+
+      if (response.ok) {
+        const data = await response.json();
+        return NextResponse.json(data, { status: 200 });
+      }
+
+      // If backend returns 404, return empty array (frontend will use fallback)
+      if (response.status === 404) {
+        return NextResponse.json([], { status: 200 });
+      }
+
+      // For other errors, return empty array
+      console.warn(`Backend API returned ${response.status} for /api/public/support`);
+      return NextResponse.json([], { status: 200 });
+    } catch (fetchError) {
+      clearTimeout(timeoutId);
+      
+      // Network error or timeout - return empty array (frontend will use fallback)
+      if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+        console.warn('Backend API timeout for /api/public/support');
+      } else {
+        console.warn('Backend API error for /api/public/support:', fetchError);
+      }
+      return NextResponse.json([], { status: 200 });
+    }
   } catch (error) {
-    console.error('Error fetching support:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch support' },
-      { status: 500 }
-    );
+    console.error('Error in support API route:', error);
+    // Return empty array on any error (frontend will use fallback)
+    return NextResponse.json([], { status: 200 });
   }
 }
 
