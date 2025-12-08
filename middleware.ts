@@ -300,23 +300,21 @@ export function middleware(request: NextRequest) {
       "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com data:",
-      "img-src 'self' data: https: blob:",
-      "connect-src 'self' http://localhost:4000 https://api.mapbox.com https://*.tiles.mapbox.com",
+      "img-src 'self' data: https: blob: http://localhost:4000 http://localhost:3000 http://localhost:3001",
+      "connect-src 'self' http://localhost:4000 http://localhost:3000 http://localhost:3001 https://api.mapbox.com https://*.tiles.mapbox.com ws://localhost:* wss://localhost:*",
       "frame-src 'self'",
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
       "frame-ancestors 'none'",
       "upgrade-insecure-requests",
-      "require-trusted-types-for 'script'",
-      "trusted-types default",
     ].join('; '),
     
     // Strict Transport Security (HTTPS only - enable in production)
     // 'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
     
-    // Cross-Origin Embedder Policy
-    'Cross-Origin-Embedder-Policy': 'require-corp',
+    // Cross-Origin Embedder Policy (relaxed for Next.js compatibility)
+    // 'Cross-Origin-Embedder-Policy': 'require-corp',
     
     // Cross-Origin Opener Policy
     'Cross-Origin-Opener-Policy': 'same-origin',

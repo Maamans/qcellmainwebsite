@@ -18,9 +18,10 @@ export async function GET(
   { params }: { params: Promise<{ pagePath: string }> }
 ) {
   try {
-    // Security: Validate origin
+    // Security: Validate origin (only if origin header exists)
     const origin = request.headers.get('origin');
     if (origin && !isValidOrigin(origin)) {
+      console.warn(`Invalid origin blocked: ${origin}`);
       return NextResponse.json(
         { error: 'Invalid origin' },
         { status: 403 }
@@ -60,6 +61,7 @@ export async function GET(
 
       if (response.ok) {
         const data = await response.json();
+        console.log(`[Page Content API] Backend returned ${Array.isArray(data) ? data.length : 'non-array'} items for path: ${decodedPagePath}`);
         // Backend should return an array, but handle object format too
         if (Array.isArray(data)) {
           return NextResponse.json(data, { status: 200 });
@@ -71,6 +73,8 @@ export async function GET(
         // If no sections, return empty array
         return NextResponse.json([], { status: 200 });
       }
+      
+      console.warn(`[Page Content API] Backend returned ${response.status} for ${url}`);
 
       // If backend returns 404, return empty array (frontend will use fallback)
       if (response.status === 404) {

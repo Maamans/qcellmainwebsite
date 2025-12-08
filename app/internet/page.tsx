@@ -39,12 +39,20 @@ export default function InternetPage() {
     },
   ]
   const [currentHero, setCurrentHero] = useState(0)
+  const [bodyHeight, setBodyHeight] = useState<string>("100vh")
+  
   useEffect(() => {
     const id = setInterval(() => {
       setCurrentHero((prev) => (prev + 1) % heroSlides.length)
     }, 6000)
     return () => clearInterval(id)
   }, [heroSlides.length])
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && document.body) {
+      setBodyHeight(`${document.body.scrollHeight}px`)
+    }
+  }, [])
 
   return (
     <div>
@@ -93,24 +101,6 @@ export default function InternetPage() {
                   <p className="mx-auto max-w-3xl text-lg text-white/90 md:text-xl lg:text-2xl leading-relaxed">
                     {heroSlides[currentHero].subtitle}
                   </p>
-                  <div className="flex flex-wrap items-center justify-center gap-4 mt-4">
-                    <motion.a
-                      href={heroSlides[currentHero].cta.href}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="rounded-full bg-[#F98F1F] text-white px-8 py-3.5 text-base md:text-lg font-semibold hover:bg-[#ff9c33] transition-all shadow-lg hover:shadow-xl"
-                    >
-                      {heroSlides[currentHero].cta.text}
-                    </motion.a>
-                    <motion.a
-                      href="#plans"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="rounded-full border-2 border-white/80 text-white px-8 py-3.5 text-base md:text-lg font-semibold hover:bg-white/10 hover:border-white transition-all backdrop-blur-sm"
-                    >
-                      View Plans
-                    </motion.a>
-                  </div>
                 </motion.div>
               </AnimatePresence>
 
@@ -144,12 +134,10 @@ export default function InternetPage() {
 
       <Footer />
 
-      {typeof window !== "undefined" && (
       <div
         className="hidden backdrop-filter z-40 bg-black/40 absolute inset-0 transition-all"
-        style={{ height: `${document.body.scrollHeight}px` }}
+        style={{ height: bodyHeight }}
       ></div>
-    )}
     </div>
   )
 }

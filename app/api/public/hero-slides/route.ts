@@ -13,9 +13,10 @@ import { validateQueryParams } from '@/lib/validation';
  */
 export async function GET(request: NextRequest) {
   try {
-    // Security: Validate origin
+    // Security: Validate origin (only if origin header exists)
     const origin = request.headers.get('origin');
     if (origin && !isValidOrigin(origin)) {
+      console.warn(`Invalid origin blocked: ${origin}`);
       return NextResponse.json(
         { error: 'Invalid origin' },
         { status: 403 }
@@ -66,9 +67,12 @@ export async function GET(request: NextRequest) {
 
       if (response.ok) {
         const data = await response.json();
+        console.log(`[Hero Slides API] Backend returned ${Array.isArray(data) ? data.length : 'non-array'} items for page: ${page}`);
         // Backend should return an array
         return NextResponse.json(Array.isArray(data) ? data : [], { status: 200 });
       }
+      
+      console.warn(`[Hero Slides API] Backend returned ${response.status} for ${url}`);
 
       // If backend returns 404, return empty array (frontend will use fallback)
       if (response.status === 404) {

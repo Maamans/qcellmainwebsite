@@ -13,9 +13,10 @@ import { validateQueryParams } from '@/lib/validation';
  */
 export async function GET(request: NextRequest) {
   try {
-    // Security: Validate origin
+    // Security: Validate origin (only if origin header exists)
     const origin = request.headers.get('origin');
     if (origin && !isValidOrigin(origin)) {
+      console.warn(`Invalid origin blocked: ${origin}`);
       return NextResponse.json(
         { error: 'Invalid origin' },
         { status: 403 }
@@ -61,8 +62,11 @@ export async function GET(request: NextRequest) {
 
       if (response.ok) {
         const data = await response.json();
+        console.log(`[Support API] Backend returned ${Array.isArray(data) ? data.length : 'non-array'} items`);
         return NextResponse.json(data, { status: 200 });
       }
+      
+      console.warn(`[Support API] Backend returned ${response.status} for ${url}`);
 
       // If backend returns 404, return empty array (frontend will use fallback)
       if (response.status === 404) {
