@@ -9,26 +9,48 @@ import { ChevronLeft, ChevronRight, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import ServiceModal from "@/components/services/service-modal"
 import { api, getImageUrl } from "@/lib/api"
 
 // Service interface matching backend API response
 interface Service {
-  id: number
+  id: number | string
   name: string
   description: string
-  longDescription: string
+  longDescription?: string
+  detailsTitle?: string
+  detailsDescription?: string
+  detailsBenefits?: string[]
+  features?: string[]
   image: string
-  imageUrl: string | null
+  imageUrl?: string | null
   order: number
   isActive: boolean
   category?: string
+  ctaText?: string
+  ctaAction?: string
+  createdAt?: string
+  updatedAt?: string
+}
+
+// Backend API response type (may have title instead of name, etc.)
+interface ServiceApiResponse {
+  id: number | string
+  name?: string
+  title?: string
+  description?: string
+  longDescription?: string
+  detailsTitle?: string
+  detailsDescription?: string
+  detailsBenefits?: string[]
+  features?: string[]
+  image?: string
+  imageUrl?: string | null
+  order?: number
+  isActive?: boolean
+  category?: string
+  ctaText?: string
+  ctaAction?: string
   createdAt?: string
   updatedAt?: string
 }
@@ -90,7 +112,7 @@ export default function ServicesPage() {
 
   const containerRef = useRef<HTMLDivElement>(null)
   const heroRef = useRef<HTMLDivElement>(null)
-  const [selectedServiceId, setSelectedServiceId] = useState<number | null>(null)
+  const [selectedService, setSelectedService] = useState<Service | null>(null)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [services, setServices] = useState<Service[]>([])
   const [loading, setLoading] = useState(true)
@@ -391,17 +413,40 @@ export default function ServicesPage() {
         const data = await api.getServices()
         
         // Services are already filtered by isActive and sorted by order from backend
+        // Backend transforms: title → name, detailsDescription → longDescription
         if (data && data.length > 0) {
+          // Map backend services to match our Service interface
+          // Backend returns: { id, name (from title), description, longDescription (from detailsDescription), ... }
+          const backendServices: Service[] = data.map((s: ServiceApiResponse) => ({
+            id: s.id,
+            name: s.name || s.title || '',
+            description: s.description || '',
+            longDescription: s.longDescription || s.detailsDescription || '',
+            detailsTitle: s.detailsTitle,
+            detailsDescription: s.detailsDescription,
+            detailsBenefits: Array.isArray(s.detailsBenefits) ? s.detailsBenefits : [],
+            features: Array.isArray(s.features) ? s.features : [],
+            image: s.image || '',
+            imageUrl: s.imageUrl || null,
+            order: s.order || 0,
+            isActive: s.isActive !== false,
+            category: s.category,
+            ctaText: s.ctaText,
+            ctaAction: s.ctaAction,
+            createdAt: s.createdAt,
+            updatedAt: s.updatedAt,
+          }))
+          
           // Merge backend services with hardcoded fallback
           // Backend services take priority, but keep hardcoded as fallback
           // Combine both arrays, removing duplicates by name
-          const backendServiceNames = new Set(data.map((s: Service) => s.name.toLowerCase()))
+          const backendServiceNames = new Set(backendServices.map((s: Service) => s.name.toLowerCase()))
           const uniqueFallbackServices = fallbackServices.filter(
             fb => !backendServiceNames.has(fb.name.toLowerCase())
           )
           
           // Combine: backend services first (sorted by order), then fallback services
-          const combinedServices = [...data, ...uniqueFallbackServices].sort((a, b) => a.order - b.order)
+          const combinedServices = [...backendServices, ...uniqueFallbackServices].sort((a, b) => a.order - b.order)
           
           setServices(combinedServices)
         } else {
@@ -919,7 +964,7 @@ export default function ServicesPage() {
                                   {/* Plus Button at Bottom Right */}
                                   <div className="flex justify-end">
                                     <button
-                                      onClick={() => setSelectedServiceId(service.id)}
+                                      onClick={() => setSelectedService(service)}
                                       className="w-12 h-12 rounded-full bg-[#F98F1F] text-white flex items-center justify-center shadow-lg hover:bg-[#FF8400] hover:scale-110 transition-all group-hover:rotate-90"
                                       aria-label={`Learn more about ${service.name}`}
                                     >
@@ -959,55 +1004,11 @@ export default function ServicesPage() {
       </div>
 
       {/* Service Detail Modal */}
-      <Dialog open={selectedServiceId !== null} onOpenChange={(open) => !open && setSelectedServiceId(null)}>
-        <DialogContent className="max-w-6xl lg:max-w-7xl xl:max-w-[90vw] w-full h-[95vh] max-h-[95vh] overflow-hidden flex flex-col p-0">
-          {selectedServiceId !== null && (() => {
-            const selectedService = services.find(s => s.id === selectedServiceId)
-            if (!selectedService) return null
-            
-            return (
-            <div className="flex flex-col h-full overflow-hidden">
-              {/* Scrollable Content Area */}
-              <div className="flex-1 overflow-y-auto p-6 md:p-8 lg:p-10">
-                <DialogHeader className="mb-6">
-                  <DialogTitle className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900">
-                      {selectedService.name}
-                  </DialogTitle>
-                  <DialogDescription className="text-xl md:text-2xl text-gray-600 mt-3">
-                      {selectedService.description}
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="mt-8">
-                  <p className="text-lg md:text-xl lg:text-2xl text-gray-700 leading-relaxed">
-                      {selectedService.longDescription}
-                  </p>
-                </div>
-              </div>
-              
-              {/* Fixed Footer with Buttons */}
-              <div className="border-t border-gray-200 p-6 md:p-8 bg-white flex gap-4 justify-end">
-                <Button
-                    onClick={() => setSelectedServiceId(null)}
-                  className="bg-[#F98F1F] hover:bg-[#FF8400] text-white px-8 py-6 text-lg"
-                >
-                  Close
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    // Add action for "Learn More" or "Get Started"
-                      setSelectedServiceId(null)
-                  }}
-                  className="px-8 py-6 text-lg"
-                >
-                  Get Started
-                </Button>
-              </div>
-            </div>
-            )
-          })()}
-        </DialogContent>
-      </Dialog>
+      <ServiceModal 
+        service={selectedService} 
+        isOpen={selectedService !== null} 
+        onClose={() => setSelectedService(null)} 
+      />
       
       <Footer />
 

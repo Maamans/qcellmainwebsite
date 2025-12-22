@@ -5,10 +5,15 @@ import Image from "next/image"
 import { Plus } from "lucide-react"
 
 export interface InternetPlan {
-  id: string
+  id: string | number
   title: string
   description: string
   image: string
+  price?: string | number
+  speed?: string
+  dataLimit?: string
+  features?: string[]
+  type?: string
 }
 
 interface InternetPlanCardProps {

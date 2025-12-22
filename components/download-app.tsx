@@ -310,25 +310,28 @@ export default function DownloadApp() {
 
               {/* Phone frame */}
               <motion.div
-                className="relative overflow-hidden rounded-3xl border-[6px] border-[#F98F1F] bg-white shadow-xl"
+                className="relative overflow-hidden rounded-3xl border-[6px] border-[#F98F1F] bg-white shadow-xl w-[250px] h-[500px] md:w-[300px] md:h-[600px]"
                 whileHover={{
                   rotateY: 5,
                   scale: 1.02,
                   transition: { type: "spring", stiffness: 300, damping: 15 },
                 }}
               >
-                <Image
-                  src="/qcell-mobile-app.png"
-                  alt="Qcell Mobile App"
-                  width={300}
-                  height={600}
-                  className="h-auto w-full max-w-[300px]"
-                  unoptimized
-                />
+                <div className="relative w-full h-full">
+                  <Image
+                    src="/images/appscreen2.png"
+                    alt="Qcell Mobile App"
+                    fill
+                    className="object-cover object-top"
+                    sizes="(max-width: 768px) 250px, 300px"
+                    unoptimized
+                    priority
+                  />
+                </div>
 
                 {/* Animated overlay for screen interaction effect */}
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-t from-transparent to-white/10"
+                  className="absolute inset-0 bg-gradient-to-t from-transparent to-white/10 pointer-events-none"
                   animate={{
                     opacity: [0, 0.1, 0],
                   }}

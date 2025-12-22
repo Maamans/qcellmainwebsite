@@ -226,10 +226,10 @@ export default function AboutPage() {
                       </div>
                     </div>
                     
-                    {/* App Content - Using appscreen2.png */}
+                    {/* App Content - Using appscreen1.png */}
                     <div className="relative w-full h-[calc(100%-3rem)] overflow-hidden">
                       <Image
-                        src="/images/appscreen2.png"
+                        src="/images/appscreen1.png"
                         alt="QCell App Screen"
                         fill
                         className="object-cover object-top"

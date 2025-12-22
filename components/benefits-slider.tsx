@@ -1,157 +1,135 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useRef, useEffect } from "react"
-import { ChevronRight, ChevronLeft, Truck, Watch, CreditCard } from "lucide-react"
+import Image from "next/image"
+import { Check, Wifi } from "lucide-react"
 import { motion } from "framer-motion"
 
-interface BenefitItem {
-  id: string
-  icon: React.ReactNode
-  title: React.ReactNode
-  description: React.ReactNode
-}
-
 export default function BenefitsSlider() {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [sliderWidth, setSliderWidth] = useState(0)
-  const sliderRef = useRef<HTMLDivElement>(null)
-
-  // Update slider width on resize
-  useEffect(() => {
-    const updateWidth = () => {
-      if (sliderRef.current) {
-        setSliderWidth(sliderRef.current.offsetWidth)
-      }
-    }
-
-    updateWidth()
-    window.addEventListener("resize", updateWidth)
-    return () => window.removeEventListener("resize", updateWidth)
-  }, [])
-
-  const benefits: BenefitItem[] = [
-    {
-      id: "delivery",
-      icon: <Truck className="h-10 w-10 text-pink-500" />,
-      title: (
-        <>
-          Enjoy <span className="text-pink-500">two-hour delivery</span> from any QCELL Store, <span className="text-pink-500">free delivery</span>, or <span className="text-pink-500">easy pickup.</span><sup>2</sup>
-        </>
-      ),
-      description: "",
-    },
-    {
-      id: "watch",
-      icon: <Watch className="h-10 w-10 text-orange-500" />,
-      title: (
-        <>
-          <span className="text-orange-500">Lorem ipsum dolor sit amet..</span> Lorem, ipsum dolor. <span className="text-orange-500">Lorem, ipsum.</span>
-        </>
-      ),
-      description: "",
-    },
-    {
-      id: "payment",
-      icon: <CreditCard className="h-10 w-10 text-orange-500" />,
-      title: (
-        <>
-          Lorem ipsum dolor sit. Lorem, ipsum dolor. Lorem, ipsum.
-        </>
-      ),
-      description: "",
-    },
-  ]
-
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === benefits.length - 1 ? 0 : prevIndex + 1))
-  }
-
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? benefits.length - 1 : prevIndex - 1))
-  }
-
-  // Calculate how many items to show based on screen width
-  const getItemsToShow = () => {
-    if (typeof window !== "undefined") {
-      if (window.innerWidth < 640) return 1;
-      return 2;
-    }
-    return 2; // Default for SSR
-  };
-  const itemsToShow = getItemsToShow();
-  const maxIndex = benefits.length - itemsToShow
-
-  // Auto-slide effect
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex === maxIndex ? 0 : prevIndex + 1));
-    }, 4000); // Change slide every 4 seconds
-    return () => clearInterval(interval);
-  }, [maxIndex]);
-
   return (
-    <div className="w-full bg-gray-100 py-10">
-      <div className="container mx-auto px-4">
-        <h2 className="text-2xl md:text-3xl font-medium mb-8">
-          <span className="text-red-500">The QCELL difference.</span> Even more reasons to shop with us.
-        </h2>
+    <section className="w-full py-16 md:py-24 overflow-hidden bg-gradient-to-br from-blue-50 via-sky-50 to-white">
+      <div className="max-w-[95%] lg:max-w-[92%] xl:max-w-[90%] mx-auto px-4 md:px-8 lg:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          {/* Left Section - Image with Curved Shape */}
+          <motion.div
+            className="relative h-[500px] md:h-[600px] lg:h-[700px] order-2 lg:order-1"
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="relative w-full h-full">
+              {/* Curved White Shape from Bottom-Left */}
+              <div className="absolute bottom-0 left-0 w-full h-[85%] bg-white rounded-tl-[60%] rounded-tr-[40%] rounded-br-[20%] rounded-bl-[10%] z-10 shadow-2xl"></div>
+              
+              {/* Main Image Container */}
+              <div className="absolute inset-0 z-20 flex items-center justify-center px-8">
+                <div className="relative w-full h-[70%] rounded-2xl overflow-hidden">
+                  <Image
+                    src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1000&auto=format&fit=crop"
+                    alt="Woman working with laptop and headphones"
+                    fill
+                    className="object-cover object-center"
+                    unoptimized
+                  />
+                </div>
+              </div>
 
-        <div className="relative">
-          <div ref={sliderRef} className="overflow-hidden">
-            <motion.div
-              className="flex"
-              animate={{ x: -currentIndex * (sliderWidth / itemsToShow) }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            >
-              {benefits.map((benefit) => (
-                <div
-                  key={benefit.id}
-                  className="flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 p-0.5"
-                >
-                  <div className="bg-white rounded-lg p-3 h-full shadow-sm">
-                    <div className="mb-4">{benefit.icon}</div>
-                    <p className="text-lg font-medium">{benefit.title}</p>
-                    {benefit.description && <p className="mt-2 text-gray-600">{benefit.description}</p>}
+              {/* Wi-Fi Icon - Bottom Left */}
+              <motion.div
+                className="absolute bottom-8 left-8 z-30"
+                initial={{ opacity: 0, scale: 0 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4, type: "spring" }}
+              >
+                <div className="bg-blue-600 p-4 rounded-xl shadow-xl">
+                  <Wifi className="h-8 w-8 text-white" />
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+
+          {/* Right Section - Text Content */}
+          <motion.div
+            className="relative z-10 order-1 lg:order-2 h-[500px] md:h-[600px] lg:h-[700px] flex items-center"
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="space-y-4 md:space-y-5 lg:space-y-6 w-full">
+              {/* Main Headline */}
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
+                Want To Go Faster? Upgrade to Premium Devices
+              </h2>
+
+              {/* Introductory Paragraph */}
+              <p className="text-base md:text-lg text-gray-700 leading-relaxed">
+                Upgrade to the latest smartphones and gadgets and unlock a world of seamless connectivity with QCell&apos;s premium device solutions.
+              </p>
+
+              {/* Feature Sections */}
+              <div className="space-y-3 md:space-y-4">
+                {/* Feature 1: Reliable & Fast Devices */}
+                <div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-5 h-5 bg-blue-600 rounded flex items-center justify-center mt-0.5">
+                      <Check className="h-3 w-3 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1">
+                        1. Reliable & Fast Devices
+                      </h3>
+                      <ul className="space-y-0.5 text-gray-700">
+                        <li className="text-sm md:text-base">• Get reliable and high-performance devices.</li>
+                        <li className="text-sm md:text-base">• Transparent pricing with no hidden fees.</li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
-              ))}
-            </motion.div>
-          </div>
 
-          {/* Navigation buttons */}
-          <button
-            onClick={prevSlide}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 bg-white rounded-full p-2 shadow-md z-10"
-            aria-label="Previous slide"
-            disabled={currentIndex === 0}
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </button>
+                {/* Feature 2: Exceptional Support */}
+                <div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-5 h-5 bg-blue-600 rounded flex items-center justify-center mt-0.5">
+                      <Check className="h-3 w-3 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1">
+                        2. Exceptional Support
+                      </h3>
+                      <ul className="space-y-0.5 text-gray-700">
+                        <li className="text-sm md:text-base">• 24/7 customer support for assistance.</li>
+                        <li className="text-sm md:text-base">• Secure devices and protection against threats.</li>
+                        <li className="text-sm md:text-base">• Diverse devices to meet different needs.</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
 
-          <button
-            onClick={nextSlide}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 bg-white rounded-full p-2 shadow-md z-10"
-            aria-label="Next slide"
-            disabled={currentIndex >= maxIndex}
-          >
-            <ChevronRight className="h-6 w-6" />
-          </button>
-        </div>
-
-        {/* Dots indicator */}
-        <div className="flex justify-center mt-6 space-x-2">
-          {Array.from({ length: maxIndex + 1 }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={`h-2 w-2 rounded-full ${currentIndex === index ? "bg-gray-800" : "bg-gray-300"}`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
+                {/* Feature 3: Advanced Features */}
+                <div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-5 h-5 bg-blue-600 rounded flex items-center justify-center mt-0.5">
+                      <Check className="h-3 w-3 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1">
+                        3. Advanced Features
+                      </h3>
+                      <ul className="space-y-0.5 text-gray-700">
+                        <li className="text-sm md:text-base">• Transparent policies and practices.</li>
+                        <li className="text-sm md:text-base">• Latest technology for improved performance.</li>
+                        <li className="text-sm md:text-base">• Advanced security features for device safety.</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
-    </div>
+    </section>
   )
 }

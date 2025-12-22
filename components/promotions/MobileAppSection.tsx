@@ -40,14 +40,17 @@ export default function MobileAppSection() {
         </div>
         <div className="flex-1 flex justify-end items-center mt-8 md:mt-0 relative">
           <div className="relative p-3">
-            <Image 
-              src="/qcell-mobile-app.png" 
-              alt="QCell App" 
-              width={260} 
-              height={400} 
-              className="rounded-2xl shadow-2xl border-2 border-[#F98F1F]/30 transform rotate-[12deg] hover:rotate-[8deg] transition-transform duration-300 bg-white" 
-              unoptimized 
-            />
+            <div className="relative w-[280px] h-[500px] md:w-[320px] md:h-[600px] lg:w-[360px] lg:h-[700px] rounded-2xl shadow-2xl border-2 border-[#F98F1F]/30 bg-white overflow-hidden">
+              <Image 
+                src="/images/appscreen2.png" 
+                alt="QCell App" 
+                fill
+                className="object-cover object-top"
+                sizes="(max-width: 768px) 280px, (max-width: 1024px) 320px, 360px"
+                unoptimized 
+                priority
+              />
+            </div>
             {/* Floating labels */}
             <div className="absolute -top-4 -left-8 z-10 bg-[#F98F1F] text-white px-4 py-1.5 rounded-xl shadow font-semibold text-xs md:text-sm border border-white rotate-[-10deg] opacity-90">
               Seamless Experience

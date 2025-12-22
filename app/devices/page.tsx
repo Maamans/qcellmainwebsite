@@ -53,7 +53,7 @@ const fallbackHeroSlides: FallbackHeroSlide[] = [
     id: "devices-hero-1",
     title: "Devices that keep you connected.",
     description: "Explore smartphones, routers, and gadgets — all powered by QCell.",
-    image: "/images/device1.jpg",
+    image: "/images/devc1.png",
     ctaText: "See all devices",
     ctaLink: "#devices",
   },
@@ -61,7 +61,23 @@ const fallbackHeroSlides: FallbackHeroSlide[] = [
     id: "devices-hero-2",
     title: "Devices that keep you connected.",
     description: "Explore smartphones, routers, and gadgets — all powered by QCell.",
-    image: "/images/device2.jpg",
+    image: "/images/devc2.png",
+    ctaText: "See all devices",
+    ctaLink: "#devices",
+  },
+  {
+    id: "devices-hero-3",
+    title: "Devices that keep you connected.",
+    description: "Explore smartphones, routers, and gadgets — all powered by QCell.",
+    image: "/images/devc3.png",
+    ctaText: "See all devices",
+    ctaLink: "#devices",
+  },
+  {
+    id: "devices-hero-4",
+    title: "Devices that keep you connected.",
+    description: "Explore smartphones, routers, and gadgets — all powered by QCell.",
+    image: "/images/devc4.jpg",
     ctaText: "See all devices",
     ctaLink: "#devices",
   },
@@ -108,6 +124,7 @@ export default function DevicesPage() {
   const [imageOnlyHeroSlidesPayload, setImageOnlyHeroSlidesPayload] = useState<ImageOnlyHeroSlidePayload[]>([])
   const [devices, setDevices] = useState<DeviceContent[]>([])
   const [featuredDevices, setFeaturedDevices] = useState<DeviceContent[]>([])
+  const [isPaused, setIsPaused] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -222,12 +239,21 @@ export default function DevicesPage() {
   }, [cmsSlides, imageOnlyHeroSlides])
 
   useEffect(() => {
-    if (heroSlides.length <= 1) return
+    if (heroSlides.length <= 1 || isPaused) return
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length)
     }, 6000)
     return () => clearInterval(timer)
-  }, [heroSlides.length])
+  }, [heroSlides.length, isPaused])
+
+  const handleSlideClick = (index: number) => {
+    setCurrentSlide(index)
+    setIsPaused(true)
+    // Resume auto-play after 10 seconds
+    setTimeout(() => {
+      setIsPaused(false)
+    }, 10000)
+  }
 
   const activeSlide = heroSlides[currentSlide]
   // Get image - it should already be a full URL from getImageUrl, but ensure it's a string
@@ -320,9 +346,9 @@ export default function DevicesPage() {
               {heroSlides.map((_, index) => (
                 <button
                   key={index}
-                  onClick={() => setCurrentSlide(index)}
-                  className={`h-2 w-8 rounded-full transition-all ${
-                    index === currentSlide ? "bg-[#F98F1F]" : "bg-gray-200"
+                  onClick={() => handleSlideClick(index)}
+                  className={`h-2 w-8 rounded-full transition-all cursor-pointer ${
+                    index === currentSlide ? "bg-[#F98F1F]" : "bg-gray-200 hover:bg-gray-300"
                   }`}
                   aria-label={`Go to slide ${index + 1}`}
                 />

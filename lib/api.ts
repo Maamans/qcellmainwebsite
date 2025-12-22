@@ -207,40 +207,72 @@ export const api = {
 
   /**
    * Get internet plans (NO AUTH NEEDED)
+   * Returns empty array if no plans found or backend unavailable (frontend uses fallback)
    */
   getInternetPlans: async () => {
-    // Try /api/public/internet-plans first, fallback to /api/internet-plans
-    let response = await fetch(`${API_URL}/api/public/internet-plans`);
-    if (!response.ok && response.status === 404) {
-      response = await fetch(`${API_URL}/api/internet-plans`);
+    try {
+      // Try /api/public/internet-plans first, fallback to /api/internet-plans
+      let response = await fetch(`${API_URL}/api/public/internet-plans`);
+      if (!response.ok && response.status === 404) {
+        response = await fetch(`${API_URL}/api/internet-plans`);
+      }
+      
+      // If still 404 or error, return empty array (frontend will use fallback)
+      if (!response.ok) {
+        if (response.status === 404) {
+          return [];
+        }
+        // For other errors, log but return empty array
+        console.warn(`Failed to fetch internet plans: ${response.status}`);
+        return [];
+      }
+      
+      const data = await response.json();
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      // Network errors or other issues - return empty array (frontend uses fallback)
+      console.warn(`Error fetching internet plans:`, error);
+      return [];
     }
-    if (!response.ok) {
-      throw new Error(`Failed to fetch internet plans: ${response.status} ${response.statusText}`);
-    }
-    return response.json();
   },
 
   /**
    * Get services (NO AUTH NEEDED)
    * @param category - Optional category filter
+   * Returns empty array if no services found or backend unavailable (frontend uses fallback)
    */
   getServices: async (category?: string) => {
-    // Try /api/public/services first, fallback to /api/services
-    let url = category
-      ? `${API_URL}/api/public/services?category=${encodeURIComponent(category)}`
-      : `${API_URL}/api/public/services`;
-    
-    let response = await fetch(url);
-    if (!response.ok && response.status === 404) {
-      url = category
-        ? `${API_URL}/api/services?category=${encodeURIComponent(category)}`
-        : `${API_URL}/api/services`;
-      response = await fetch(url);
+    try {
+      // Try /api/public/services first, fallback to /api/services
+      let url = category
+        ? `${API_URL}/api/public/services?category=${encodeURIComponent(category)}`
+        : `${API_URL}/api/public/services`;
+      
+      let response = await fetch(url);
+      if (!response.ok && response.status === 404) {
+        url = category
+          ? `${API_URL}/api/services?category=${encodeURIComponent(category)}`
+          : `${API_URL}/api/services`;
+        response = await fetch(url);
+      }
+      
+      // If still 404 or error, return empty array (frontend will use fallback)
+      if (!response.ok) {
+        if (response.status === 404) {
+          return [];
+        }
+        // For other errors, log but return empty array
+        console.warn(`Failed to fetch services${category ? ` for category ${category}` : ''}: ${response.status}`);
+        return [];
+      }
+      
+      const data = await response.json();
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      // Network errors or other issues - return empty array (frontend uses fallback)
+      console.warn(`Error fetching services${category ? ` for category ${category}` : ''}:`, error);
+      return [];
     }
-    if (!response.ok) {
-      throw new Error(`Failed to fetch services: ${response.status} ${response.statusText}`);
-    }
-    return response.json();
   },
 
   /**
