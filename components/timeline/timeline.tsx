@@ -187,6 +187,8 @@ const TimelineItem = ({ item, index }: { item: TimelineItemInterface; index: num
                                 alt="" 
                                 fill
                                 className="object-cover group-hover:scale-110 transition-transform duration-500"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+                                unoptimized
                             />
                             {/* Gradient Overlay */}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
@@ -209,6 +211,8 @@ const TimelineItem = ({ item, index }: { item: TimelineItemInterface; index: num
                                             alt={item.quote.author}
                                             fill
                                             className="object-cover"
+                                            sizes="64px"
+                                            unoptimized
                                         />
                                     </div>
                                 )}

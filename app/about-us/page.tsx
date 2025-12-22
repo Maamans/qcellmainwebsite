@@ -233,7 +233,9 @@ export default function AboutPage() {
                         alt="QCell App Screen"
                         fill
                         className="object-cover object-top"
-                        style={{ objectFit: 'cover', objectPosition: 'top' }}
+                        sizes="(max-width: 768px) 100vw, 360px"
+                        unoptimized
+                        priority
                       />
                     </div>
                   </div>

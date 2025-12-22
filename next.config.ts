@@ -32,7 +32,10 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "backend" },
     ],
     // Allow unoptimized images for backend (faster loading)
-    unoptimized: false,
+    // Set to true if image optimization fails on hosting platform
+    unoptimized: process.env.NODE_ENV === 'production' ? false : false,
+    // Ensure images are properly loaded
+    formats: ['image/avif', 'image/webp'],
     // Security: Disable dangerous image optimization
     dangerouslyAllowSVG: false,
     contentDispositionType: 'attachment',

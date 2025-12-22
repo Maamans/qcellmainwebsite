@@ -37,6 +37,8 @@ export default function QCellAboutSection() {
                   alt="QCell Team"
                   fill
                   className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  unoptimized
                 />
                 {/* Play Button Badge */}
                 <div className="absolute bottom-2 left-2 w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white z-20">
@@ -59,6 +61,8 @@ export default function QCellAboutSection() {
                   alt="QCell Professional"
                   fill
                   className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  unoptimized
                 />
               </motion.div>
 
@@ -75,6 +79,8 @@ export default function QCellAboutSection() {
                   alt="QCell Work"
                   fill
                   className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  unoptimized
                 />
               </motion.div>
 
@@ -91,6 +97,8 @@ export default function QCellAboutSection() {
                   alt="QCell Collaboration"
                   fill
                   className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  unoptimized
                 />
               </motion.div>
             </div>
@@ -144,11 +152,11 @@ export default function QCellAboutSection() {
                 QCell is Sierra Leone&apos;s only African-owned telecom company, pioneering mobile and internet services nationwide.
               </p>
               <p>
-                QCell is the very first Mobile company to conduct a soft launch by offering services not only in the capital city Freetown but also to all provincial district headquarter towns with 3G mobile internet service as well as enhanced voice and SMS services.
-              </p>
+            QCell is the very first Mobile company to conduct a soft launch by offering services not only in the capital city Freetown but also to all provincial district headquarter towns with 3G mobile internet service as well as enhanced voice and SMS services.
+          </p>
               <p>
-                QCell has coverage presence in all 16 districts in the country today offering 3G/4G services across the country. 5G roll out is on the cards as few deployment sites are currently been on trial.
-              </p>
+            QCell has coverage presence in all 16 districts in the country today offering 3G/4G services across the country. 5G roll out is on the cards as few deployment sites are currently been on trial.
+          </p>
             </motion.div>
 
             {/* Statistics */}
@@ -170,7 +178,7 @@ export default function QCellAboutSection() {
               <div>
                 <div className="text-4xl md:text-5xl font-bold text-[#FF8C00] mb-2">100%</div>
                 <div className="text-sm text-gray-600">Nationwide</div>
-              </div>
+        </div>
             </motion.div>
 
             {/* Signature Section */}
