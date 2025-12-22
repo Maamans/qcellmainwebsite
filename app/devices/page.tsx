@@ -285,7 +285,7 @@ export default function DevicesPage() {
     return (
         <>
             <Navigation page="devices" />
-            <motion.header className="relative h-auto min-h-[60vh] md:h-screen md:flex md:flex-row-reverse md:justify-center md:items-center">
+            <motion.header className="relative h-auto min-h-[60vh] md:h-screen md:flex md:flex-row-reverse md:justify-center md:items-center bg-white">
                 <motion.div className="relative w-full">
           <div className="relative w-full h-[45vh] md:h-screen flex items-center justify-center">
             {heroImage ? (

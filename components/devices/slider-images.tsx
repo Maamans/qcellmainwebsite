@@ -34,7 +34,7 @@ export default function SliderImages () {
             <AnimatePresence initial={false}>
                 <motion.div
                 key={currentSlide}
-                className="absolute inset-0 z-0 bg-[#F98F1F]"
+                className="absolute inset-0 z-0 bg-white"
                 initial={{ opacity: 0, scale: 1.05 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
