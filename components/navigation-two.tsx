@@ -18,15 +18,15 @@ function cn(...classes: (string | false | null | undefined)[]) {
 
 const staticHeroSlides = [
   {
-    image: "/images/expand your world (1).jpg",
+    image: "/images/weeks.jpg",
     content: { title: "", description: "", cta: "" },
   },
   {
-    image: "/images/Weekend Freedom.jpg",
+    image: "/images/app.jpg",
     content: { title: "", description: "", cta: "" },
   },
   {
-    image: "/images/QCell SL App.jpg",
+    image: "/images/final poll.jpg",
     content: { title: "", description: "", cta: "" },
   },
 ]
@@ -220,21 +220,27 @@ export default function Navigation() {
       content: slide.content,
     }))
     
-    if (sanitizedBackendSlides.length > 0 && sanitizedBackendSlides[0]?.image) {
-      // Use first backend slide image, but merge content from first static slide if backend has no content
-      const firstBackendSlide = sanitizedBackendSlides[0]
-      const firstStaticSlide = staticSlides[0]
-      const firstSlide = {
-        image: firstBackendSlide.image,
-        content: (firstBackendSlide.content?.title || firstBackendSlide.content?.description || firstBackendSlide.content?.cta)
-          ? firstBackendSlide.content
-          : firstStaticSlide.content, // Use static slide content if backend has no content
-      }
+    // Filter backend slides to only include those with valid images
+    const validBackendSlides = sanitizedBackendSlides.filter(
+      (slide) => slide.image && slide.image.trim() !== ""
+    )
+    
+    if (validBackendSlides.length > 0) {
+      // Use all backend slides first, then fill remaining slots with static slides
+      const backendSlidesWithContent = validBackendSlides.map((backendSlide, index) => {
+        // If backend slide has no content, use content from corresponding static slide if available
+        const hasContent = backendSlide.content?.title || backendSlide.content?.description || backendSlide.content?.cta
+        const staticSlide = staticSlides[index] || staticSlides[0]
+        
+        return {
+          image: backendSlide.image,
+          content: hasContent ? backendSlide.content : staticSlide.content,
+        }
+      })
       
-      // Use first slide (backend image + text), then use last 2 static slides
-      // This ensures "QCell SL App.jpg" (3rd static slide) is included
-      const merged = [firstSlide, ...staticSlides.slice(1)]
-      return merged.slice(0, 3) // Limit to 3 slides total
+      // Merge: backend slides first, then static slides to fill up to 3 total
+      const merged = [...backendSlidesWithContent, ...staticSlides].slice(0, 3)
+      return merged
     }
     
     return staticSlides

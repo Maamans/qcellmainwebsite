@@ -3,8 +3,7 @@ import React from 'react';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
 import Image from "next/image";
-import './styles.css'
-
+import { motion } from 'framer-motion';
 
 interface TimelineItemInterface {
     date: string;
@@ -77,115 +76,209 @@ const timelineItems: TimelineItemsInterface = { items: [
     }
 ]};
 
-
-const TimelineItem = ({ item }: { item: TimelineItemInterface }) => {
+const TimelineItem = ({ item, index }: { item: TimelineItemInterface; index: number }) => {
     const ref = useRef(null);
-    const inView = useInView(ref, { once: false, margin: '-50% 0px -50% 0px' });
+    const inView = useInView(ref, { once: false, margin: '-100px' });
 
     return (
-        <div ref={ref} className="timeline_item">
-            <div id="w-node-_24c49997-4a3d-4bd7-0915-1f0630d904af-8b0ae424" className="timeline_left" style={{"willChange": "opacity", "opacity": inView ? 1 : 0.25}}><div className="timeline_date-text">{item.date}</div></div>
-            <div id="w-node-_24c49997-4a3d-4bd7-0915-1f0630d904b2-8b0ae424" className="timeline_centre"><div className="timeline_circle" style={{"willChange": "background", "backgroundColor": "rgb(65, 65, 65)"}}></div></div>
-            <div className="timeline_right" style={{opacity: inView ? 1 : 0.25, transition: 'opacity 0.5s ease',}}>
-                {item.milestone ? <div className="timeline_milestone-badge"><div>{item.milestone}</div></div> : ""}
-                {/*<div className="timeline_milestone-badge"><div>🚀 relume launches</div></div> NEED TO RENDER THE TIMELINE TEXT BELOW*/}
-                <div className="margin-bottom-medium">
-                    {item.text.map((text: string, index: number) => (
-                        <React.Fragment key={index}>
-                        <div className="timeline_text">{text}<br /></div>
-                        {item.text.length -1 !== index ? <br /> : ""}
-                        </React.Fragment>
-                    ))}
+        <motion.div 
+            ref={ref} 
+            className="relative mb-24 md:mb-32"
+            initial={{ opacity: 0, y: 50 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0.3, y: 50 }}
+            transition={{ duration: 0.6, delay: index * 0.2 }}
+        >
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                {/* Left Column - Date */}
+                <div className="lg:col-span-3 flex flex-col items-start lg:items-end">
+                    <motion.div
+                        className="relative"
+                        initial={{ scale: 0 }}
+                        animate={inView ? { scale: 1 } : { scale: 0 }}
+                        transition={{ delay: index * 0.2 + 0.3, type: "spring", stiffness: 200 }}
+                    >
+                        {/* Date Badge */}
+                        <div className="bg-gradient-to-br from-[#FF8C00] to-[#FFA500] text-white px-6 py-3 rounded-full shadow-lg font-bold text-xl md:text-2xl">
+                            {item.date}
+                        </div>
+                        {/* Connecting Line */}
+                        <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-[#FF8C00] to-transparent"></div>
+                    </motion.div>
                 </div>
-                {item.detailText && item.detailText.length > 0 ?
-                <div className="margin-bottom-xlarge">
-                    {item.detailText.map((text: string, index: number) => (
-                        <p key={index} className="text-colour-lightgrey"> {text}<br /></p>
-                    ))}
-                </div> : ""}
 
-                {item.link && (item.link.url || item.link.text) ?
-                <div className="margin-bottom-xlarge">
-                    <div className="inline-block">
-                        <a href={item.link.url} target="_blank" className="timeline_link w-inline-block">
-                            <div>{item.link.text}</div>
-                            {item.link.imageUrl && (
-                                <Image
-                                    src={item.link.imageUrl}
-                                    alt=""
-                                    width={16}
-                                    height={16}
-                                    className="link-icon"
-                                />
-                            )}
-                        </a>
-                    </div>
-                </div> : ""}
-                {item.definition && (item.definition.term || item.definition.pronunciation || item.definition.meaning ) ? 
-                <div className="margin-bottom-xlarge">
-                    <div className="timeline_definition-wrapper">
-                        <p className="text-colour-black">{item.definition.term}<br /></p>
-                        <div className="timeline_badge"><div>{item.definition.partOfSpeech}</div></div>
-                        <p className="text-colour-lightgrey">
-                            [{item.definition.pronunciation}]<br />
-                            <span className="text-colour-black">{item.definition.meaning}</span>
-                        </p>
-                    </div>
-                </div> : ""}
-                <div className="timeline_image-wrapper">
-                    <Image src={item.image} alt="" width={480} height={320} className="w-full h-auto" />
+                {/* Center Column - Timeline Dot */}
+                <div className="hidden lg:flex lg:col-span-1 justify-center relative">
+                    {/* Vertical Line */}
+                    <div className="absolute top-0 bottom-0 w-1 bg-gradient-to-b from-[#FF8C00] via-[#FFA500] to-[#FF8C00] opacity-30"></div>
+                    {/* Animated Dot */}
+                    <motion.div
+                        className="relative z-10 mt-6"
+                        initial={{ scale: 0 }}
+                        animate={inView ? { scale: 1 } : { scale: 0 }}
+                        transition={{ delay: index * 0.2 + 0.4, type: "spring", stiffness: 200 }}
+                    >
+                        <div className="w-6 h-6 bg-gradient-to-br from-[#FF8C00] to-[#FFA500] rounded-full shadow-lg border-4 border-white"></div>
+                        {/* Pulse Effect */}
+                        {inView && (
+                            <motion.div
+                                className="absolute inset-0 bg-[#FF8C00] rounded-full"
+                                animate={{ scale: [1, 2, 2], opacity: [0.6, 0, 0] }}
+                                transition={{ duration: 2, repeat: Infinity }}
+                            />
+                        )}
+                    </motion.div>
                 </div>
-                {item.quote && (item.quote.text || item.quote.author || item.quote.authorImage) ?
-                <>
-                <br/>
-                <div className="timeline_quote-wrapper">
-                    {item.quote.authorImage && (
-                        <Image
-                            src={item.quote.authorImage}
-                            alt=""
-                            width={64}
-                            height={64}
-                            className="timeline_quote-image"
-                        />
+
+                {/* Right Column - Content */}
+                <div className="lg:col-span-8 space-y-6">
+                    {/* Milestone Badge */}
+                    {item.milestone && (
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                            transition={{ delay: index * 0.2 + 0.2 }}
+                        >
+                            <div className="inline-block bg-gradient-to-r from-[#FFF7ED] to-[#FFE8D1] border-2 border-[#FF8C00] px-4 py-2 rounded-full">
+                                <span className="text-[#FF8C00] font-bold text-sm">{item.milestone}</span>
+                            </div>
+                        </motion.div>
                     )}
-                    <div className="timeline_quote-text-wrapper">
-                        <p className="timeline_quote">
-                            {item.quote.text}<br />
-                        </p>
-                        <p className="timeline_quote-title">{item.quote.author}<br /></p>
-                    </div>
-                </div>
-                </> : "" }
-            </div>
-        </div>
-    )
 
+                    {/* Main Text */}
+                    <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                        transition={{ delay: index * 0.2 + 0.3 }}
+                    >
+                        {item.text.map((text: string, textIndex: number) => (
+                            <p key={textIndex} className="text-lg md:text-xl text-gray-800 leading-relaxed mb-4">
+                                {text}
+                            </p>
+                        ))}
+                    </motion.div>
+
+                    {/* Detail Text */}
+                    {item.detailText && item.detailText.length > 0 && (
+                        <motion.div
+                            className="bg-gray-50 rounded-xl p-6 border-l-4 border-[#FF8C00]"
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                            transition={{ delay: index * 0.2 + 0.4 }}
+                        >
+                            {item.detailText.map((text: string, textIndex: number) => (
+                                <p key={textIndex} className="text-gray-600 leading-relaxed mb-2">
+                                    {text}
+                                </p>
+                            ))}
+                        </motion.div>
+                    )}
+
+                    {/* Image */}
+                    <motion.div
+                        className="relative rounded-2xl overflow-hidden shadow-2xl group"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
+                        transition={{ delay: index * 0.2 + 0.5 }}
+                        whileHover={{ scale: 1.02 }}
+                    >
+                        <div className="aspect-video relative overflow-hidden">
+                            <Image 
+                                src={item.image} 
+                                alt="" 
+                                fill
+                                className="object-cover group-hover:scale-110 transition-transform duration-500"
+                            />
+                            {/* Gradient Overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                        </div>
+                    </motion.div>
+
+                    {/* Quote */}
+                    {item.quote && (
+                        <motion.div
+                            className="bg-gradient-to-br from-[#FFF7ED] to-[#FFE8D1] rounded-2xl p-6 md:p-8 border-2 border-[#FF8C00]/30 shadow-lg"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                            transition={{ delay: index * 0.2 + 0.6 }}
+                        >
+                            <div className="flex items-start gap-4">
+                                {item.quote.authorImage && (
+                                    <div className="relative w-16 h-16 rounded-full overflow-hidden flex-shrink-0 border-2 border-[#FF8C00]">
+                                        <Image
+                                            src={item.quote.authorImage}
+                                            alt={item.quote.author}
+                                            fill
+                                            className="object-cover"
+                                        />
+                                    </div>
+                                )}
+                                <div className="flex-1">
+                                    <div className="text-4xl text-[#FF8C00] mb-2">&quot;</div>
+                                    <p className="text-lg md:text-xl text-gray-800 italic leading-relaxed mb-4">
+                                        {item.quote.text}
+                                    </p>
+                                    <div className="text-right">
+                                        <p className="font-bold text-[#FF8C00]">{item.quote.author}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </div>
+            </div>
+        </motion.div>
+    );
 }
 
 const Timeline = () => {
-
     return (
-        <>
-        <div className="container">
-        <div className="timeline_component">
-            <div className="timeline_progress"><div data-w-id="d5abcf1f-3370-3eea-ccfd-66f076babfdd" className="timeline_progress-bar" style={{"willChange": "opacity", "opacity": 1}}></div></div>
-            {
-                timelineItems.items.map((item: TimelineItemInterface, index: number) => (
-                    <TimelineItem key={index} item={item} />
-                ))
-            }
-            
-            <div className="overlay-fade-bottom"></div>
-            <div className="overlay-fade-top"></div>
-        </div>
-    </div>
+        <section className="relative py-24 md:py-32 px-4 md:px-8 bg-gradient-to-b from-white via-blue-50/30 to-white overflow-hidden">
+            {/* Background Decorative Elements */}
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                <div className="absolute top-20 right-10 w-72 h-72 bg-[#FF8C00]/5 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-20 left-10 w-96 h-96 bg-blue-200/10 rounded-full blur-3xl"></div>
+            </div>
 
+            <div className="container mx-auto max-w-7xl relative z-10">
+                {/* Section Header */}
+                <motion.div
+                    className="text-center mb-16 md:mb-24"
+                    initial={{ opacity: 0, y: -20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                >
+                    <p className="text-[#FF8C00] font-semibold text-sm uppercase tracking-wider mb-4">Our Journey</p>
+                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
+                        <span className="text-gray-900">Building</span>{' '}
+                        <span className="text-[#FF8C00]">Connections</span>
+                    </h2>
+                    <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                        From our founding to today, discover the milestones that shaped QCell into Sierra Leone&apos;s leading telecommunications provider.
+                    </p>
+                </motion.div>
 
+                {/* Timeline Items */}
+                <div className="relative">
+                    {timelineItems.items.map((item: TimelineItemInterface, index: number) => (
+                        <TimelineItem key={index} item={item} index={index} />
+                    ))}
+                </div>
 
-    <style jsx>{`
-        
-    `}</style>
-    </>
+                {/* Bottom CTA */}
+                <motion.div
+                    className="text-center mt-16 md:mt-24"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                >
+                    <div className="inline-block bg-gradient-to-r from-[#FF8C00] to-[#FFA500] text-white px-8 py-4 rounded-full shadow-lg font-semibold text-lg hover:shadow-xl transition-all duration-300">
+                        Join Us on This Journey
+                    </div>
+                </motion.div>
+            </div>
+        </section>
     );
 };
 

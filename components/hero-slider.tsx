@@ -20,7 +20,7 @@ interface SlideData {
 
 const fallbackSlides: SlideData[] = [
   {
-    backgroundImage: "/images/expand your world 1.jpg",
+    backgroundImage: "/images/weeks.jpg",
     title: "Expand Your World with Seamless Connectivity",
     description:
       "Experience the fastest, cheapest, and most reliable network in Sierra Leone. Empowering your digital journey, one connection at a time.",
@@ -30,7 +30,7 @@ const fallbackSlides: SlideData[] = [
     },
   },
   {
-    backgroundImage: "/images/hero-bg-2.jpg",
+    backgroundImage: "/images/app.jpg",
     title: "Unleash the Power of 4G",
     description: "Surf, stream, and connect at lightning speeds with our cutting-edge 4G network.",
     cta: {
@@ -39,7 +39,7 @@ const fallbackSlides: SlideData[] = [
     },
   },
   {
-    backgroundImage: "/images/hero-bg-3.jpg",
+    backgroundImage: "/images/final poll.jpg",
     title: "Join the Qcell Family",
     description: "Be part of Sierra Leone's fastest-growing network and enjoy unparalleled services and support.",
     cta: {
@@ -85,32 +85,47 @@ export default function HeroSlider() {
           : []
 
         // Build slides: backend slides first, then fallback slides
-        const backendSlides: SlideData[] = activeSlides.map((slide) => {
-          const sanitizedTitle = (slide.title || "").trim()
-          const hideTitle = sanitizedTitle.toLowerCase() === "homepage slide"
-          const sanitizedDescription = (slide.description || "").trim()
-          const sanitizedCta = (slide.ctaText || "").trim()
+        const backendSlides: SlideData[] = activeSlides
+          .map((slide) => {
+            const sanitizedTitle = (slide.title || "").trim()
+            const hideTitle = sanitizedTitle.toLowerCase() === "homepage slide"
+            const sanitizedDescription = (slide.description || "").trim()
+            const sanitizedCta = (slide.ctaText || "").trim()
+            const imageUrl = getImageUrl(slide.image)
 
-          return {
-            id: slide.id,
-            backgroundImage: getImageUrl(slide.image) || "",
-            title: hideTitle ? "" : sanitizedTitle,
-            description: sanitizedDescription,
-            cta: {
-              primary: {
-                text: sanitizedCta || "Explore Plans",
-                href: slide.ctaLink || "#",
+            return {
+              id: slide.id,
+              backgroundImage: imageUrl || "",
+              title: hideTitle ? "" : sanitizedTitle,
+              description: sanitizedDescription,
+              cta: {
+                primary: {
+                  text: sanitizedCta || "Explore Plans",
+                  href: slide.ctaLink || "#",
+                },
+                secondary: { text: "Learn more about us", href: "#" },
               },
-              secondary: { text: "Learn more about us", href: "#" },
-            },
-          }
-        })
+            }
+          })
+          .filter((slide) => slide.backgroundImage && slide.backgroundImage.trim() !== "") // Filter out slides with no image
 
         const maxSlides = 3
-        const finalSlides =
-          backendSlides.length > 0
-            ? [...backendSlides, ...fallbackSlides].slice(0, maxSlides)
-            : fallbackSlides.slice(0, maxSlides)
+        // Prioritize backend slides: use all backend slides first, then fill remaining slots with fallback slides
+        let finalSlides: SlideData[] = []
+        if (backendSlides.length > 0) {
+          // Use backend slides first, then fill remaining slots with fallback slides
+          finalSlides = [...backendSlides, ...fallbackSlides].slice(0, maxSlides)
+        } else {
+          // No backend slides, use fallback slides only
+          finalSlides = fallbackSlides.slice(0, maxSlides)
+        }
+        
+        console.log("Hero slides loaded:", {
+          backendCount: backendSlides.length,
+          finalCount: finalSlides.length,
+          slides: finalSlides.map(s => ({ id: s.id, image: s.backgroundImage }))
+        })
+        
         setHeroSlides(finalSlides)
       } catch (error) {
         console.error("Failed to load hero slides:", error)
@@ -162,7 +177,7 @@ export default function HeroSlider() {
         >
           <div className="absolute inset-0 w-full h-full overflow-hidden">
             <Image
-              src={slidesToRender[currentSlide]?.backgroundImage || "/placeholder.svg"}
+              src={slidesToRender[currentSlide]?.backgroundImage || "/images/weeks.jpg"}
               alt={slidesToRender[currentSlide]?.title || "Hero slide"}
               fill
               className="object-cover"
@@ -178,6 +193,14 @@ export default function HeroSlider() {
               sizes="100vw"
               priority={currentSlide === 0}
               unoptimized
+              onError={(e) => {
+                console.error("Failed to load hero image:", slidesToRender[currentSlide]?.backgroundImage)
+                // Fallback to weeks.jpg if image fails to load
+                const target = e.target as HTMLImageElement
+                if (!target.src.includes("weeks.jpg")) {
+                  target.src = "/images/weeks.jpg"
+                }
+              }}
             />
           </div>
           <div className="absolute inset-0 bg-black bg-opacity-50" />

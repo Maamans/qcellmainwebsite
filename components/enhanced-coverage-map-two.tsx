@@ -4,10 +4,9 @@
 import { useEffect, useRef, useState } from "react"
 import mapboxgl from "mapbox-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
-import { motion, AnimatePresence, useInView } from "framer-motion"
-import { Wifi, Signal, Map, ChevronRight, ChevronDown, ChevronUp } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Wifi, Signal, Map, ChevronRight, ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { Feature, Point } from "geojson";
 
 // Initialize Mapbox
 mapboxgl.accessToken = "pk.eyJ1IjoiZGF2aWRjb250ZWgiLCJhIjoiY202OWltNXdhMDlsaDJqcjlwaGtneWhlYSJ9.xtv9kE0JHaW2H85UjUldFw";
@@ -16,28 +15,38 @@ interface CoverageArea {
   id: number
   name: string
   coordinates: [number, number]
-  type: "4G" | "3G" | "5G"
+  type: "4G" | "3G"
   signalStrength: number
   population: number
 }
 
-const coverageAreas: CoverageArea[] = [
-  { id: 1, name: "Freetown", coordinates: [-13.2343, 8.4847], type: "4G", signalStrength: 95, population: 1200000 },
-  { id: 2, name: "Bo", coordinates: [-11.74, 7.9647], type: "4G", signalStrength: 90, population: 174354 },
-  { id: 3, name: "Kenema", coordinates: [-11.19, 7.8767], type: "4G", signalStrength: 88, population: 200354 },
-  { id: 4, name: "Makeni", coordinates: [-12.0444, 8.8833], type: "4G", signalStrength: 92, population: 112489 },
-  { id: 5, name: "Lunsar", coordinates: [-12.535, 8.6833], type: "3G", signalStrength: 85, population: 34000 },
-  { id: 6, name: "Segbwema", coordinates: [-10.95, 7.9833], type: "3G", signalStrength: 82, population: 16889 },
-  { id: 7, name: "Moyamba", coordinates: [-12.4333, 8.16], type: "3G", signalStrength: 84, population: 12000 },
-  { id: 8, name: "Port Loko", coordinates: [-12.787, 8.7666], type: "4G", signalStrength: 88, population: 45000 },
-  { id: 9, name: "Kambia", coordinates: [-12.9189, 9.1261], type: "3G", signalStrength: 80, population: 11000 },
-  { id: 10, name: "Lungi", coordinates: [-13.205, 8.6167], type: "4G", signalStrength: 90, population: 20000 },
-  { id: 11, name: "Bonthe", coordinates: [-12.505, 7.5264], type: "3G", signalStrength: 78, population: 9000 },
-  { id: 12, name: "Kono", coordinates: [-10.9719, 8.6542], type: "4G", signalStrength: 86, population: 87000 },
-  { id: 13, name: "Kabala", coordinates: [-11.5526, 9.5883], type: "3G", signalStrength: 82, population: 19000 },
-  { id: 14, name: "Kamakwei", coordinates: [-12.2406, 9.4968], type: "3G", signalStrength: 80, population: 8000 },
-  { id: 15, name: "Kailahun", coordinates: [-10.5736, 8.2783], type: "3G", signalStrength: 78, population: 14000 },
-  { id: 16, name: "Pujehun", coordinates: [-11.7208, 7.3578], type: "3G", signalStrength: 76, population: 8000 },
+// Province color mapping - Black and Orange theme
+const provinceColors: Record<string, string> = {
+  "Western Area": "#FF8C00",
+  "Northern": "#FF8C00",
+  "Southern": "#FF8C00",
+  "Eastern": "#FF8C00",
+  "North-Western": "#FF8C00",
+}
+
+// All 16 districts with province info
+const coverageAreas: (CoverageArea & { province: string })[] = [
+  { id: 1, name: "Western Area Urban (Freetown)", coordinates: [-13.2343, 8.4847], type: "4G", signalStrength: 95, population: 1200000, province: "Western Area" },
+  { id: 2, name: "Western Area Rural", coordinates: [-13.2, 8.4], type: "4G", signalStrength: 90, population: 442951, province: "Western Area" },
+  { id: 3, name: "Bo", coordinates: [-11.74, 7.9647], type: "4G", signalStrength: 90, population: 574201, province: "Southern" },
+  { id: 4, name: "Bonthe", coordinates: [-12.505, 7.5264], type: "3G", signalStrength: 78, population: 200781, province: "Southern" },
+  { id: 5, name: "Moyamba", coordinates: [-12.4333, 8.16], type: "3G", signalStrength: 84, population: 318588, province: "Southern" },
+  { id: 6, name: "Pujehun", coordinates: [-11.7208, 7.3578], type: "3G", signalStrength: 76, population: 345577, province: "Southern" },
+  { id: 7, name: "Kenema", coordinates: [-11.19, 7.8767], type: "4G", signalStrength: 88, population: 609891, province: "Eastern" },
+  { id: 8, name: "Kailahun", coordinates: [-10.5736, 8.2783], type: "3G", signalStrength: 78, population: 525372, province: "Eastern" },
+  { id: 9, name: "Kono", coordinates: [-10.9719, 8.6542], type: "4G", signalStrength: 86, population: 505491, province: "Eastern" },
+  { id: 10, name: "Bombali", coordinates: [-12.0444, 8.8833], type: "4G", signalStrength: 92, population: 606544, province: "Northern" },
+  { id: 11, name: "Koinadugu", coordinates: [-11.5526, 9.5883], type: "3G", signalStrength: 82, population: 409372, province: "Northern" },
+  { id: 12, name: "Tonkolili", coordinates: [-11.95, 8.7], type: "4G", signalStrength: 85, population: 530776, province: "Northern" },
+  { id: 13, name: "Falaba", coordinates: [-11.2833, 9.6667], type: "3G", signalStrength: 80, population: 205353, province: "Northern" },
+  { id: 14, name: "Kambia", coordinates: [-12.9189, 9.1261], type: "3G", signalStrength: 80, population: 345474, province: "North-Western" },
+  { id: 15, name: "Port Loko", coordinates: [-12.787, 8.7666], type: "4G", signalStrength: 88, population: 614063, province: "North-Western" },
+  { id: 16, name: "Karene", coordinates: [-12.5, 9.1], type: "3G", signalStrength: 82, population: 285546, province: "North-Western" },
 ]
 
 interface RoamingPartner {
@@ -120,14 +129,11 @@ const roamingPartners: RoamingPartner[] = [
 
 export default function EnhancedCoverageMap() {
   const mapContainer = useRef<HTMLDivElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
   const map = useRef<mapboxgl.Map | null>(null)
   const [selectedArea, setSelectedArea] = useState<CoverageArea | null>(null)
   const [mapLoaded, setMapLoaded] = useState(false)
   const [showList, setShowList] = useState(false)
   const [activeTab, setActiveTab] = useState<"map" | "list">("map")
-  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false)
-  const isInView = useInView(containerRef, { once: false, amount: 0.2 })
 
   const coverageStats = {
     total: coverageAreas.length,
@@ -137,258 +143,133 @@ export default function EnhancedCoverageMap() {
   }
 
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        // Close drawer on small screens by default
-        setMobileDrawerOpen(false)
-      } else {
-        // Always open on larger screens
-        setMobileDrawerOpen(true)
-      }
-    }
-
-    // Set initial state
-    handleResize()
-
-    // Add event listener
-    window.addEventListener("resize", handleResize)
-
-    // Clean up
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
-
-  useEffect(() => {
     if (!mapContainer.current) return
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: "mapbox://styles/mapbox/dark-v11", // Darkmode: mapbox://styles/mapbox/dark-v11 mapbox://styles/mapbox/satellite-streets-v12
-      center: [0, 0], //[-11.7799, 8.4606],
-      zoom: 0, //7
-      pitch: 45, //45
+      style: "mapbox://styles/mapbox/dark-v11", // Dark style for black background
+      center: [-11.7799, 8.4606],
+      zoom: 7.2, // Slightly zoomed out to fit all districts
+      pitch: 45,
       bearing: 0,
+      maxBounds: [
+        [-14, 6.5],
+        [-10, 10.5],
+      ],
+      fadeDuration: 0, // Immediate rendering
+      antialias: true,
     })
 
-    // Add custom styling to match Qcell's branding
     map.current.on("load", () => {
       setMapLoaded(true)
 
-      // Customize map colors to match Qcell's branding
-      map.current?.setPaintProperty("water", "fill-color", "#0D1117") //#0D1117
-      map.current?.setPaintProperty("land", "background-color", "#1A1A1A")
+      if (!map.current) return
 
-      // Add a copper/bronze glow to the map
-      map.current?.addLayer({
-        id: "qcell-glow",
-        type: "heatmap",
-        source: {
-          type: "geojson",
-          data: {
-            type: "FeatureCollection",
-            features: coverageAreas.map((area) => ({
-              type: "Feature",
-              properties: {
-                intensity: area.type === "4G" ? 1 : 0.7,
-              },
-              geometry: {
-                type: "Point",
-                coordinates: area.coordinates,
-              },
-            })),
-          },
-        },
-        paint: {
-          "heatmap-weight": ["get", "intensity"],
-          "heatmap-intensity": 0.6,
-          "heatmap-color": [
-            "interpolate",
-            ["linear"],
-            ["heatmap-density"],
-            0,
-            "rgba(205, 127, 50, 0)",
-            0.2,
-            "rgba(205, 127, 50, 0.2)",
-            0.4,
-            "rgba(205, 127, 50, 0.4)",
-            0.6,
-            "rgba(205, 127, 50, 0.6)",
-            0.8,
-            "rgba(205, 127, 50, 0.8)",
-            1,
-            "rgba(205, 127, 50, 1)",
-          ],
-          "heatmap-radius": 40,
-          "heatmap-opacity": 0.7,
-        },
-      })
+      // Force map to resize and be visible
+      setTimeout(() => {
+        if (map.current) {
+          map.current.resize()
+        }
+      }, 100)
+
+      // Customize map colors to black and orange theme
+      try {
+        // Set background color to black
+        if (map.current.getLayer("background")) {
+          map.current.setPaintProperty("background", "background-color", "#000000")
+        }
+        // Make water dark
+        if (map.current.getLayer("water")) {
+          map.current.setPaintProperty("water", "fill-color", "#1a1a1a")
+        }
+        // Make land dark but visible
+        if (map.current.getLayer("land")) {
+          map.current.setPaintProperty("land", "fill-color", "#1a1a1a")
+        }
+        // Make administrative boundaries orange and visible
+        const style = map.current.getStyle()
+        if (style && style.layers) {
+          style.layers.forEach((layer: any) => {
+            if (!map.current) return
+            if (layer.id && layer.id.includes('boundary') && layer.type === 'line') {
+              try {
+                map.current.setPaintProperty(layer.id, "line-color", "#FF8C00")
+                map.current.setPaintProperty(layer.id, "line-width", 2.5)
+                map.current.setPaintProperty(layer.id, "line-opacity", 1)
+              } catch (e) {
+                // Layer might not support these properties
+              }
+            }
+            // Make place labels white and visible
+            if (layer.type === 'symbol' && layer.id && layer.id.includes('place')) {
+              try {
+                if (layer.layout && layer.layout['text-size']) {
+                  map.current.setLayoutProperty(layer.id, "text-size", 14)
+                }
+                if (layer.paint && map.current.getPaintProperty(layer.id, 'text-color')) {
+                  map.current.setPaintProperty(layer.id, "text-color", "#FFFFFF")
+                  map.current.setPaintProperty(layer.id, "text-halo-color", "#000000")
+                  map.current.setPaintProperty(layer.id, "text-halo-width", 2)
+                }
+              } catch (e) {
+                // Layer might not support these properties
+              }
+            }
+          })
+        }
+      } catch (e) {
+        console.log("Could not customize all map layers:", e)
+      }
 
       // Add 3D terrain
-      map.current?.addSource("mapbox-dem", {
-        type: "raster-dem",
-        url: "mapbox://mapbox.mapbox-terrain-dem-v1",
-        tileSize: 512,
-        maxzoom: 14,
-      })
-      map.current?.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 })
+      if (map.current) {
+        map.current.addSource("mapbox-dem", {
+          type: "raster-dem",
+          url: "mapbox://mapbox.mapbox-terrain-dem-v1",
+          tileSize: 512,
+          maxzoom: 14,
+        })
+        map.current.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 })
+      }
 
-      // Add coverage areas with enhanced markers
+      // Add coverage areas with orange markers
       coverageAreas.forEach((area) => {
         const el = document.createElement("div")
-        el.className = `coverage-marker ${area.type.toLowerCase()}`
-
-        // Enhanced marker with more visual impact
+        el.className = `coverage-marker ${area.type.toLowerCase()} province-${area.province.replace(/\s/g, "-")}`
         el.innerHTML = `
-          <div class="marker-container">
-            <div class="pulse-container">
-              <div class="pulse" style="animation-duration: ${3 - area.signalStrength / 50}s"></div>
-              <div class="pulse pulse-delay" style="animation-duration: ${3.5 - area.signalStrength / 50}s; animation-delay: 0.5s;"></div>
-            </div>
-            <div class="marker-icon">${area.type}</div>
-          </div>
-          <div class="marker-label">${area.name}</div>
+          <div class="pulse" style="background: ${provinceColors[area.province]}; animation-duration: ${3 - area.signalStrength / 50}s"></div>
+          <div class="marker-icon">${area.type}</div>
+          <div class="marker-label">${area.name}<br/><span style='font-size:10px;color:#FF8C00;'>${area.province} Province</span></div>
         `
 
-        const marker = new mapboxgl.Marker({
-          element: el,
-          anchor: 'center'
-        })
+        new mapboxgl.Marker(el)
           .setLngLat(area.coordinates)
           .setPopup(
-            new mapboxgl.Popup({ offset: 25, closeButton: false }).setHTML(`
-              <div class="p-3">
-                <h3 class="font-bold text-[#CD7F32]">${area.name}</h3>
-                <p class="text-sm mb-2">${area.type} Coverage</p>
+            new mapboxgl.Popup({ offset: 25 }).setHTML(`
+              <div class="p-2" style="background: rgba(0, 0, 0, 0.95); color: white; border: 2px solid #FF8C00;">
+                <h3 class="font-bold" style="color: #FF8C00;">${area.name}</h3>
+                <p class="text-sm" style="color: #FFA500;">${area.type} Coverage</p>
+                <p class="text-xs" style="color:#FF8C00;">${area.province} Province</p>
                 <div class="mt-2 h-2 w-full rounded-full bg-white/20">
-                  <div class="h-full rounded-full bg-[#CD7F32]" style="width: ${area.signalStrength}%"></div>
+                  <div class="h-full rounded-full" style="background:#FF8C00;width: ${area.signalStrength}%"></div>
                 </div>
                 <p class="mt-1 text-xs">Signal Strength: ${area.signalStrength}%</p>
-                <p class="mt-1 text-xs">Population: ${area.population.toLocaleString()}</p>
               </div>
             `),
           )
           .addTo(map.current!)
 
-        // Add a click event to the marker
         el.addEventListener("click", () => {
           setSelectedArea(area)
           map.current?.flyTo({
             center: area.coordinates,
-            zoom: 12,
+            zoom: 11.5,
             pitch: 60,
             bearing: 30,
             duration: 2000,
           })
         })
       })
-
-      // Add a coverage visualization layer
-      const coveragePoints: Feature<Point>[] = []
-      coverageAreas.forEach((area) => {
-        // Create a circle of points around each coverage area
-        const radius = area.type === "4G" ? 0.2 : 0.15 // Radius in degrees
-        const points = 20 // Number of points in the circle
-
-        for (let i = 0; i < points; i++) {
-          const angle = (i / points) * Math.PI * 2
-          const lng = area.coordinates[0] + Math.cos(angle) * radius * (0.7 + Math.random() * 0.6)
-          const lat = area.coordinates[1] + Math.sin(angle) * radius * (0.7 + Math.random() * 0.6)
-
-          coveragePoints.push({
-            type: "Feature",
-            properties: {
-              strength:
-                area.type === "4G" ? 0.7 + (area.signalStrength / 100) * 0.3 : 0.5 + (area.signalStrength / 100) * 0.3,
-            },
-            geometry: {
-              type: "Point",
-              coordinates: [lng, lat],
-            },
-          })
-        }
-
-        // Add the center point with full strength
-        coveragePoints.push({
-          type: "Feature",
-          properties: {
-            strength: 1,
-          },
-          geometry: {
-            type: "Point",
-            coordinates: area.coordinates,
-          },
-        })
-      })
-
-      // Add the coverage layer
-      map.current?.addSource("coverage-areas", {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: coveragePoints,
-        },
-      })
-
-      map.current?.addLayer(
-        {
-          id: "coverage-layer",
-          type: "heatmap",
-          source: "coverage-areas",
-          paint: {
-            "heatmap-weight": ["get", "strength"],
-            "heatmap-intensity": 0.8,
-            "heatmap-color": [
-              "interpolate",
-              ["linear"],
-              ["heatmap-density"],
-              0,
-              "rgba(205, 127, 50, 0)",
-              0.2,
-              "rgba(205, 127, 50, 0.2)",
-              0.4,
-              "rgba(205, 127, 50, 0.4)",
-              0.6,
-              "rgba(205, 127, 50, 0.6)",
-              0.8,
-              "rgba(205, 127, 50, 0.8)",
-              1,
-              "rgba(205, 127, 50, 1)",
-            ],
-            "heatmap-radius": 30,
-            "heatmap-opacity": 0.7,
-          },
-        },
-        "qcell-glow",
-      )
-
-      // Add an initial animation to highlight coverage areas
-      if (mapLoaded) {
-        coverageAreas.forEach((area, index) => {
-          setTimeout(() => {
-            map.current?.flyTo({
-              center: area.coordinates,
-              zoom: 9,
-              pitch: 60,
-              bearing: Math.random() * 60 - 30,
-              duration: 2000,
-              essential: true,
-            })
-          }, index * 300)
-        })
-
-        // Return to overview after showcasing areas
-        setTimeout(
-          () => {
-            map.current?.flyTo({
-              center: [-11.7799, 8.4606],
-              zoom: 7,
-              pitch: 45,
-              bearing: 0,
-              duration: 3000,
-            })
-          },
-          coverageAreas.length * 300 + 1000,
-        )
-      }
     })
 
     return () => {
@@ -396,168 +277,81 @@ export default function EnhancedCoverageMap() {
         map.current.remove()
       }
     }
-  }, [mapLoaded])
-
-  useEffect(() => {
-    if (mapLoaded) {
-      coverageAreas.forEach((area, index) => {
-        setTimeout(() => {
-          map.current?.flyTo({
-            center: area.coordinates,
-            zoom: 9,
-            pitch: 60,
-            bearing: Math.random() * 60 - 30,
-            duration: 2000,
-            essential: true,
-          })
-        }, index * 300)
-      })
-
-      // Return to overview after showcasing areas
-      setTimeout(
-        () => {
-          map.current?.flyTo({
-            center: [-11.7799, 8.4606],
-            zoom: 7,
-            pitch: 45,
-            bearing: 0,
-            duration: 3000,
-          })
-        },
-        coverageAreas.length * 300 + 1000,
-      )
-    }
-  }, [mapLoaded])
-
-  // in view perform the initial animation to highlight coverage areas
-  useEffect(() => {
-    if (mapLoaded) {
-      coverageAreas.forEach((area, index) => {
-        setTimeout(() => {
-          map.current?.flyTo({
-            center: area.coordinates,
-            zoom: 9,
-            pitch: 60,
-            bearing: Math.random() * 60 - 30,
-            duration: 2000,
-            essential: true,
-          })
-        }, index * 300)
-      })
-
-      // Return to overview after showcasing areas
-      setTimeout(
-        () => {
-          map.current?.flyTo({
-            center: [-11.7799, 8.4606],
-            zoom: 7,
-            pitch: 45,
-            bearing: 0,
-            duration: 3000,
-          })
-        },
-        coverageAreas.length * 300 + 1000,
-      )
-    }
-  }, [isInView])
+  }, [])
 
   return (
-    <div ref={containerRef} className="relative h-[600px] w-full overflow-hidden bg-gray-50 lg:w-full xl:h-[800px] rounded-2xl shadow-sm"> {/* rounded-xl */}
+    <div className="relative h-[700px] w-full overflow-hidden rounded-xl bg-black">
       <style jsx global>{`
         .coverage-marker {
           width: 30px;
           height: 30px;
-          position: absolute;
-          cursor: pointer;
-          z-index: 2;
-        }
-
-        .coverage-marker .marker-container {
           position: relative;
-          width: 100%;
-          height: 100%;
+          cursor: pointer;
         }
-
-        .coverage-marker .pulse-container {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          top: 0;
-          left: 0;
-        }
-
         .coverage-marker .marker-icon {
           position: absolute;
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
-          background: #CD7F32;
+          background: #FF8C00;
           color: white;
           border-radius: 50%;
-          width: 24px;
-          height: 24px;
+          width: 28px;
+          height: 28px;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 10px;
+          font-size: 11px;
           font-weight: bold;
           z-index: 3;
-          box-shadow: 0 0 10px rgba(205, 127, 50, 0.8);
+          box-shadow: 0 0 15px rgba(255, 140, 0, 1);
+          border: 2px solid white;
         }
-
+        .coverage-marker.type-4g .marker-icon {
+          background: #FF8C00;
+          box-shadow: 0 0 20px rgba(255, 140, 0, 1);
+        }
+        .coverage-marker.type-3g .marker-icon {
+          background: #FFA500;
+          box-shadow: 0 0 15px rgba(255, 165, 0, 0.9);
+        }
         .coverage-marker .marker-label {
           position: absolute;
           left: 50%;
           bottom: 100%;
           transform: translateX(-50%);
-          background: rgba(0, 0, 0, 0.8);
+          background: rgba(0, 0, 0, 0.95);
           color: white;
-          padding: 4px 8px;
-          border-radius: 4px;
-          font-size: 12px;
+          padding: 6px 10px;
+          border-radius: 6px;
+          font-size: 13px;
           white-space: nowrap;
           opacity: 0;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+          border: 2px solid #FF8C00;
           transition: opacity 0.2s;
           pointer-events: none;
           z-index: 4;
+          margin-bottom: 8px;
         }
-
         .coverage-marker:hover .marker-label {
           opacity: 1;
         }
-
-        .coverage-marker.4g .marker-icon {
-          background: #CD7F32;
-          box-shadow: 0 0 15px rgba(205, 127, 50, 0.9);
-        }
-
-        .coverage-marker.3g .marker-icon {
-          background: #B87333;
-          box-shadow: 0 0 12px rgba(184, 115, 51, 0.8);
-        }
-
         .pulse {
-          width: 100%;
-          height: 100%;
+          width: 30px;
+          height: 30px;
           border-radius: 50%;
           position: absolute;
           top: 0;
           left: 0;
           animation: pulse 2s ease-out infinite;
         }
-
-        .pulse-delay {
-          animation-delay: 0.5s;
+        .coverage-marker.type-4g .pulse {
+          background: rgba(255, 140, 0, 0.6);
         }
-
-        .coverage-marker.4g .pulse {
-          background: rgba(205, 127, 50, 0.8);
+        .coverage-marker.type-3g .pulse {
+          background: rgba(255, 165, 0, 0.5);
         }
-
-        .coverage-marker.3g .pulse {
-          background: rgba(184, 115, 51, 0.8);
-        }
-
         @keyframes pulse {
           0% {
             transform: scale(0.5);
@@ -568,275 +362,211 @@ export default function EnhancedCoverageMap() {
             opacity: 0;
           }
         }
-
         .mapboxgl-popup-content {
-          background: rgba(26, 26, 26, 0.95) !important;
+          background: rgba(0, 0, 0, 0.95) !important;
           color: white;
-          border-radius: 8px;
-          padding: 12px;
+          border-radius: 10px;
+          padding: 14px;
           font-family: system-ui, -apple-system, sans-serif;
-          border: 1px solid rgba(205, 127, 50, 0.4);
-          box-shadow: 0 0 20px rgba(205, 127, 50, 0.3);
+          border: 2px solid #FF8C00 !important;
+          box-shadow: 0 0 25px rgba(255, 140, 0, 0.6);
         }
-
         .mapboxgl-popup-tip {
-          border-top-color: rgba(26, 26, 26, 0.95) !important;
-          border-bottom-color: rgba(26, 26, 26, 0.95) !important;
+          border-top-color: rgba(0, 0, 0, 0.95) !important;
+          border-bottom-color: rgba(0, 0, 0, 0.95) !important;
         }
       `}</style>
 
-      {/* Desktop title */}
-      <div className="absolute inset-x-0 top-0 z-10 bg-gradient-to-b from-black/60 to-transparent p-8 text-white hidden md:block">
+      <div className="absolute inset-x-0 top-0 z-10 bg-gradient-to-b from-black/80 to-transparent p-8 text-white flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-4xl font-bold">
-          With Qcell, <br />
-          <span className="relative bg-gradient-to-r from-[#CD7F32] to-[#B87333] bg-clip-text text-transparent">
-            You&apos;re always{" "}
-            <span className="after:absolute after:w-[42%] after:h-1/6 after:bg-white after:right-0 after:-bottom-1">
-              connected
-            </span>
+          With Qcell,{" "}
+          <br />
+          <span className="relative bg-gradient-to-r from-[#FF8C00] to-[#FFA500] bg-clip-text text-transparent">
+            You&apos;re always <span className="after:absolute after:w-[42%] after:h-1/6 after:bg-[#FF8C00] after:right-0 after:-bottom-1">connected</span>
           </span>
         </motion.h1>
-      </div>
-
-      {/* Mobile title - more compact */}
-      <div className="absolute inset-x-0 top-10 z-10 bg-gradient-to-b from-black/60 to-transparent p-4 text-white md:hidden">
-        <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-4xl font-bold">
-            <span className="relative bg-gradient-to-r from-[#CD7F32] to-[#f3f0ee] bg-clip-text text-transparent"> {/* from-[#CD7F32] to-[#B87333] */}
-            Stay connected with Qcell, Wherever you are
-            </span>
-        </motion.h1>
-      </div>
-
-      {/* Mobile drawer handle - only visible on small screens */}
-      <div
-        className="md:hidden absolute top-0 left-0 right-0 z-20 bg-black/80 backdrop-blur-sm p-2 py-4 flex justify-center cursor-pointer"
-        onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
-      >
-        <div className="w-12 h-1 bg-white/30 rounded-full" />
-        <div className="absolute right-4 top-2">
-          {mobileDrawerOpen ? (
-            <ChevronUp className="h-5 w-5 text-white/60" />
-          ) : (
-            <ChevronRight className="h-5 w-5 text-white/60" />
-          )}
+        {/* Coverage legend */}
+        <div className="flex flex-wrap gap-3 items-center bg-black/80 rounded-lg px-4 py-2 border border-[#FF8C00]/50 shadow-sm">
+          <span className="font-semibold text-[#FF8C00] text-sm mr-2">Coverage:</span>
+          <span className="flex items-center gap-1 text-xs font-medium text-white">
+            <span style={{ background: '#FF8C00', width: 12, height: 12, borderRadius: '50%', display: 'inline-block', marginRight: 4, border: '2px solid white' }}></span>
+            4G
+          </span>
+          <span className="flex items-center gap-1 text-xs font-medium text-white">
+            <span style={{ background: '#FFA500', width: 12, height: 12, borderRadius: '50%', display: 'inline-block', marginRight: 4, border: '2px solid white' }}></span>
+            3G
+          </span>
         </div>
       </div>
 
-      {/* Responsive sidebar/drawer md:inset-y-0 md:right-0 md:w-80 md:sm:w-96 md:rounded-l-xl
-      absolute z-10 bg-black/80 backdrop-blur-sm overflow-y-auto
-      ${
-            mobileDrawerOpen ? "inset-x-0 bottom-0 rounded-t-xl max-h-[70vh]" : "inset-x-0 bottom-0 h-0 overflow-hidden"
-          }`} */}
-      <motion.div
-        className={`absolute bottom-0 inset-y-0 sm:inset-y-0 sm:right-0 z-10 w-full sm:w-96 bg-black/80 p-6 backdrop-blur-sm overflow-hidden
-          
-          `}
-        animate={{
-          height: mobileDrawerOpen ? "auto" : "0px",
-          y: mobileDrawerOpen ? 0 : 0,
-        }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      >
-        <div className="p-6">
-          <div className="mb-6 flex gap-4 sticky">
-            <button
-              onClick={() => setActiveTab("map")}
-              className={cn(
-                "flex-1 sticky rounded-lg px-4 py-2 text-sm font-medium transition-colors",
-                activeTab === "map"
-                  ? "bg-[#CD7F32] text-white"
-                  : "bg-white/10 text-white/60 hover:bg-white/20 hover:text-white",
-              )}
-            >
-              <Map className="mr-2 inline-block h-4 w-4" />
-              Map View
-            </button>
-            <button
-              onClick={() => setActiveTab("list")}
-              className={cn(
-                "flex-1 sticky rounded-lg px-4 py-2 text-sm font-medium transition-colors",
-                activeTab === "list"
-                  ? "bg-[#CD7F32] text-white"
-                  : "bg-white/10 text-white/60 hover:bg-white/20 hover:text-white",
-              )}
-            >
-              <Signal className="mr-2 inline-block h-4 w-4" />
-              Coverage List
-            </button>
-          </div>
-
-          <AnimatePresence mode="wait">
-            {activeTab === "map" ? (
-              <motion.div
-                key="map-panel"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
-              >
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-white">Coverage Statistics</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="rounded-lg bg-white/10 p-4">
-                      <div className="text-2xl font-bold text-[#CD7F32]">{coverageStats.total}</div>
-                      <div className="text-sm text-white/60">Coverage Areas</div>
-                    </div>
-                    <div className="rounded-lg bg-white/10 p-4">
-                      <div className="text-2xl font-bold text-[#CD7F32]">
-                        {(coverageStats.totalPopulation / 1000000).toFixed(1)}M
-                      </div>
-                      <div className="text-sm text-white/60">People Covered</div>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Signal className="h-4 w-4 text-[#CD7F32]" />
-                        <span className="text-sm text-white/80">4G Coverage</span>
-                      </div>
-                      <span className="font-mono text-sm text-white/60">{coverageStats.fourG} areas</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Wifi className="h-4 w-4 text-[#B87333]" />
-                        <span className="text-sm text-white/80">3G Coverage</span>
-                      </div>
-                      <span className="font-mono text-sm text-white/60">{coverageStats.threeG} areas</span>
-                    </div>
-                  </div>
-                </div>
-
-                {selectedArea && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="rounded-lg bg-white/10 p-4"
-                  >
-                    <div className="mb-2 flex items-center justify-between">
-                      <h3 className="text-lg font-semibold">{selectedArea.name}</h3>
-                      <span
-                        className={cn(
-                          "rounded-full px-2 py-1 text-xs font-medium",
-                          selectedArea.type === "4G"
-                            ? "bg-[#CD7F32]/20 text-[#CD7F32]"
-                            : "bg-[#B87333]/20 text-[#B87333]",
-                        )}
-                      >
-                        {selectedArea.type}
-                      </span>
-                    </div>
-                    <div className="mt-4 space-y-4">
-                      <div>
-                        <div className="mb-1 flex items-center justify-between text-sm">
-                          <span className="text-white/60">Signal Strength</span>
-                          <span className="font-mono text-white">{selectedArea.signalStrength}%</span>
-                        </div>
-                        <div className="h-2 overflow-hidden rounded-full bg-white/10">
-                          <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ width: `${selectedArea.signalStrength}%` }}
-                            transition={{ duration: 1, type: "spring" }}
-                            className="h-full bg-[#CD7F32]"
-                          />
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-white/60">Population Covered</span>
-                        <span className="font-mono text-white">{selectedArea.population.toLocaleString()} people</span>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => setShowList(true)}
-                  className="w-full rounded-lg bg-[#CD7F32] px-4 py-2 text-sm font-medium text-white transition-colors overflow-hidden hover:bg-[#CD7F32]/90"
-                >
-                  List of Roaming Partners
-                </motion.button>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="list-panel"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-4 h-[490px] mb-5 overflow-y-scroll"
-              >
-                <div className="space-y-2 flex flex-col items-center justify-between">
-                  {coverageAreas.map((area) => (
-                    <motion.button
-                      key={area.id}
-                      onClick={() => {
-                        setSelectedArea(area)
-                        setActiveTab("map")
-                        if (window.innerWidth < 400) {
-                          setMobileDrawerOpen(!mobileDrawerOpen)
-                        }
-                        map.current?.flyTo({
-                          center: area.coordinates,
-                          zoom: 12,
-                          pitch: 60,
-                          bearing: 30,
-                          duration: 2000,
-                        })
-                      }}
-                      className="flex w-full items-center justify-between rounded-lg bg-white/10 p-4 text-left transition-colors hover:bg-white/20"
-                    >
-                      <div>
-                        <h3 className="font-medium text-white">{area.name}</h3>
-                        <p className="text-sm text-white/60">{area.type} Coverage</p>
-                      </div>
-                      <ChevronRight className="h-4 w-4 text-white/40" />
-                    </motion.button>
-                  ))}
-                </div>
-              </motion.div>
+      <div className="absolute inset-y-0 right-0 z-10 w-80 sm:w-96 bg-black/90 p-6 shadow-xl backdrop-blur-md overflow-y-auto border-l border-[#FF8C00]/50">
+        <div className="mb-6 flex gap-4 sticky">
+          <button
+            onClick={() => setActiveTab("map")}
+            className={cn(
+              "flex-1 sticky rounded-lg px-4 py-2 text-sm font-medium transition-colors",
+              activeTab === "map"
+                ? "bg-[#FF8C00] text-white"
+                : "bg-white/10 text-white/60 hover:bg-white/20 hover:text-white",
             )}
-          </AnimatePresence>
+          >
+            <Map className="mr-2 inline-block h-4 w-4" />
+            Map View
+          </button>
+          <button
+            onClick={() => setActiveTab("list")}
+            className={cn(
+              "flex-1 sticky rounded-lg px-4 py-2 text-sm font-medium transition-colors",
+              activeTab === "list"
+                ? "bg-[#CD7F32] text-white"
+                : "bg-white/10 text-white/60 hover:bg-white/20 hover:text-white",
+            )}
+          >
+            <Signal className="mr-2 inline-block h-4 w-4" />
+            Coverage List
+          </button>
         </div>
-      </motion.div>
 
-      {/* Add a legend to the map */}
-      <div className="absolute bottom-16 md:bottom-4 left-4 z-10 bg-black/80 p-3 rounded-lg backdrop-blur-sm">
-        <h4 className="text-white text-sm font-medium mb-2">Coverage Legend</h4>
-        <div className="flex items-center gap-2 mb-1">
-          <div className="w-4 h-4 rounded-full bg-[#CD7F32]"></div>
-          <span className="text-white/80 text-xs">4G Coverage</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-[#B87333]"></div>
-          <span className="text-white/80 text-xs">3G Coverage</span>
-        </div>
+        <AnimatePresence mode="wait">
+          {activeTab === "map" ? (
+            <motion.div
+              key="map-panel"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-6"
+            >
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-[#FF8C00]">Coverage Statistics</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="rounded-lg bg-white/10 p-4 border border-[#FF8C00]/50">
+                    <div className="text-2xl font-bold text-[#FF8C00]">{coverageStats.total}</div>
+                    <div className="text-sm text-white/60">Coverage Areas</div>
+                  </div>
+                  <div className="rounded-lg bg-white/10 p-4 border border-[#FF8C00]/50">
+                    <div className="text-2xl font-bold text-[#FF8C00]">
+                      {(coverageStats.totalPopulation / 1000000).toFixed(1)}M
+                    </div>
+                    <div className="text-sm text-white/60">People Covered</div>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Signal className="h-4 w-4 text-[#FF8C00]" />
+                    <span className="text-sm text-white/80">4G Coverage</span>
+                  </div>
+                  <span className="font-mono text-sm text-white/60">{coverageStats.fourG} areas</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Wifi className="h-4 w-4 text-[#FFA500]" />
+                    <span className="text-sm text-white/80">3G Coverage</span>
+                  </div>
+                  <span className="font-mono text-sm text-white/60">{coverageStats.threeG} areas</span>
+                  </div>
+                </div>
+              </div>
+
+              {selectedArea && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="rounded-lg bg-white/10 p-4 border border-[#FF8C00]/50"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-white">{selectedArea.name}</h3>
+                    <span
+                      className={cn(
+                        "rounded-full px-2 py-1 text-xs font-medium",
+                        selectedArea.type === "4G"
+                          ? "bg-[#FF8C00]/20 text-[#FF8C00]"
+                          : "bg-[#FFA500]/20 text-[#FFA500]",
+                      )}
+                    >
+                      {selectedArea.type}
+                    </span>
+                  </div>
+                  <div className="mt-4 space-y-4">
+                    <div>
+                      <div className="mb-1 flex items-center justify-between text-sm">
+                        <span className="text-white/60">Signal Strength</span>
+                        <span className="font-mono text-[#FF8C00]">{selectedArea.signalStrength}%</span>
+                      </div>
+                      <div className="h-2 overflow-hidden rounded-full bg-white/10">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${selectedArea.signalStrength}%` }}
+                          transition={{ duration: 1, type: "spring" }}
+                          className="h-full bg-gradient-to-r from-[#FF8C00] to-[#FFA500]"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-white/60">Population Covered</span>
+                      <span className="font-mono text-white">{selectedArea.population.toLocaleString()} people</span>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setShowList(true)}
+                className="w-full rounded-lg bg-gradient-to-r from-[#FF8C00] to-[#FFA500] px-4 py-2 text-sm font-medium text-white transition-colors overflow-hidden hover:from-[#FFA500] hover:to-[#FF8C00]"
+              >
+                List of Roaming Partners
+              </motion.button>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="list-panel"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-4"
+            >
+              <div className="space-y-2">
+                {coverageAreas.map((area) => (
+                  <motion.button
+                    key={area.id}
+                    onClick={() => {
+                      setSelectedArea(area)
+                      setActiveTab("map")
+                      map.current?.flyTo({
+                        center: area.coordinates,
+                        zoom: 12,
+                        pitch: 60,
+                        bearing: 30,
+                        duration: 2000,
+                      })
+                    }}
+                    className="flex w-full items-center justify-between rounded-lg bg-white/10 border border-[#FF8C00]/50 p-4 text-left transition-colors hover:bg-white/20"
+                  >
+                    <div>
+                      <h3 className="font-medium text-white">{area.name}</h3>
+                      <p className="text-sm text-white/60">{area.type} Coverage</p>
+                    </div>
+                    <ChevronRight className="h-4 w-4 text-white/40" />
+                  </motion.button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* Mobile floating action button */}
-      <div className="md:hidden absolute bottom-16 right-4 z-10 flex flex-col gap-2">
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={() => {
-            setMobileDrawerOpen(true)
-            setActiveTab("map")
-          }}
-          className={`rounded-full p-3 shadow-lg ${activeTab === "map" ? "bg-[#CD7F32]" : "bg-black/70"}`}
-        >
-          <Map className="h-5 w-5 text-white" />
-        </motion.button>
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={() => {
-            setMobileDrawerOpen(true)
-            setActiveTab("list")
-          }}
-          className={`rounded-full p-3 shadow-lg ${activeTab === "list" ? "bg-[#CD7F32]" : "bg-black/70"}`}
-        >
-          <Signal className="h-5 w-5 text-white" />
-        </motion.button>
-      </div>
-
-      <div ref={mapContainer} className="h-full w-full" />
+      <div 
+        ref={mapContainer} 
+        className="h-full w-full rounded-xl shadow-lg border border-[#FF8C00]/30"
+        style={{
+          minHeight: '700px',
+          backgroundColor: '#000000',
+          display: 'block',
+          visibility: 'visible',
+        }}
+      />
 
       <AnimatePresence>
         {showList && (
@@ -844,13 +574,13 @@ export default function EnhancedCoverageMap() {
             initial={{ opacity: 0, y: "100%" }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: "100%" }}
-            className="absolute inset-0 z-20 overflow-y-auto bg-black/95 p-8 backdrop-blur-sm"
+            className="absolute inset-0 z-20 overflow-y-auto bg-black/95 p-8 backdrop-blur-md"
           >
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-white">Roaming Partners</h2>
+              <h2 className="text-2xl font-bold text-[#FF8C00]">Roaming Partners</h2>
               <button
                 onClick={() => setShowList(false)}
-                className="rounded-full bg-white/10 p-2 text-white/60 hover:bg-white/20 hover:text-white"
+                className="rounded-full bg-white/10 p-2 text-white/60 hover:bg-white/20 hover:text-white border border-[#FF8C00]/50"
               >
                 <ChevronDown className="h-6 w-6" />
               </button>
@@ -862,7 +592,7 @@ export default function EnhancedCoverageMap() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="rounded-lg bg-white/10 p-4"
+                  className="rounded-lg bg-white/10 border border-[#FF8C00]/50 p-4"
                 >
                   <div className="flex items-center gap-3">
                     <div className="text-4xl">{partner.flag}</div>
