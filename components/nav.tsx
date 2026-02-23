@@ -27,13 +27,13 @@ interface NavItem {
 
 const navItems: NavItem[] = [
     {
-        title: "Personal",
+        title: "Home",
         href: "/",
     },
     {
         title: "About us",
         content: {
-        heading: "About Qcell",
+        heading: "About QCell",
         subheading: "Learn about our mission, leadership, and impact on Sierra Leone",
         links: [
           { title: "Our Impact", href: "/our-impact" },
@@ -268,7 +268,7 @@ useEffect(() => {
               <Link href="/" className="flex items-center">
                 <Image
                   src={QcellLogo || "/placeholder.svg"}
-                  alt="Qcell Logo"
+                  alt="QCell Logo"
                   width={64}
                   height={64}
                   className="h-[52px] w-auto object-contain rounded-md rounded-tr-none rounded-br-none xl:rounded-none"
@@ -298,7 +298,7 @@ useEffect(() => {
                       ease: [0.22, 1, 0.36, 1],
                     }}
                   >
-                    {item.title === "Personal" ? (
+                    {item.title === "Home" ? (
                       <motion.button
                         className={cn(
                           "group flex items-center py-2 text-sm font-medium text-white transition-colors",
@@ -507,7 +507,7 @@ useEffect(() => {
                 <Link href="/" className="flex items-center" onClick={() => setMobileMenuOpen(false)}>
                   <Image
                     src={QcellLogo || "/placeholder.svg"}
-                    alt="Qcell Logo"
+                    alt="QCell Logo"
                     width={48}
                     height={48}
                     className="h-12 w-auto object-contain rounded-md"
@@ -539,7 +539,7 @@ useEffect(() => {
                         ease: [0.22, 1, 0.36, 1],
                       }}
                     >
-                      {item.title === "Personal" ? (
+                      {item.title === "Home" ? (
                         <motion.button
                           className="flex w-full items-center justify-between text-left text-base font-medium text-white"
                           onClick={e => {

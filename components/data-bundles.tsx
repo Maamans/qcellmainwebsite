@@ -11,7 +11,7 @@ export default function DataBundles() {
       transition={{ duration: 0.5 }}
       className="text-2xl font-bold text-black/60 mb-6"
     >
-      Qcell offers you the Fastest High Speed Internet Service to browse the internet, upload and download data
+      QCell offers you the Fastest High Speed Internet Service to browse the internet, upload and download data
       files.
     </motion.h2>
 

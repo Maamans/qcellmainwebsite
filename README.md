@@ -1,2 +1,2 @@
-# Qcell-website
+# QCell-website
 The new qcell website.

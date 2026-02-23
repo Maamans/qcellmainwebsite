@@ -33,7 +33,7 @@ export default function CareersApplyPage() {
 
   useEffect(() => {
     setMounted(true)
-    document.title = 'Apply for Careers - Qcell'
+    document.title = 'Apply for Careers - QCell'
   }, [])
 
   // Load hero slide and page content from backend

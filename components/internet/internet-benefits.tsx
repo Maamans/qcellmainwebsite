@@ -53,7 +53,7 @@ export default function InternetBenefits() {
         >
           <div className="mx-auto max-w-6xl">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 leading-[1.1]">
-              Why Choose <span className="bg-gradient-to-r from-[#F98F1F] to-[#CD7F32] bg-clip-text text-transparent">Qcell Internet</span>
+              Why Choose <span className="bg-gradient-to-r from-[#F98F1F] to-[#CD7F32] bg-clip-text text-transparent">QCell Internet</span>
             </h2>
             <div className="mt-4 flex justify-center">
               <span className="h-1 w-24 md:w-32 rounded-full bg-gradient-to-r from-[#F98F1F] to-[#CD7F32]" />
@@ -100,7 +100,7 @@ export default function InternetBenefits() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div>
                 <h3 className="text-white text-2xl md:text-3xl font-bold tracking-tight">Ready to get connected?</h3>
-                <p className="text-white/90 mt-2 md:mt-3 max-w-2xl">Find the plan that fits your lifestyle and enjoy fast, secure, and reliable internet with Qcell.</p>
+                <p className="text-white/90 mt-2 md:mt-3 max-w-2xl">Find the plan that fits your lifestyle and enjoy fast, secure, and reliable internet with QCell.</p>
               </div>
               <div className="flex gap-3">
                 <a href="#" className="rounded-full bg-white text-[#F98F1F] px-6 py-3 text-sm md:text-base font-semibold hover:bg-orange-50 transition-colors shadow">

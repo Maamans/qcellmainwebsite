@@ -27,7 +27,7 @@ export default function DeviceModal({ device, isOpen, onClose }: DeviceModalProp
   const ctaAction =
     device.ctaAction ?? (typeof data?.["ctaAction"] === "string" ? (data?.["ctaAction"] as string) : undefined)
   const imageSrc = getImageUrl(device.image ?? dataImage ?? "/images/qmobile.png")
-  const title = device.title ?? "Qcell device"
+  const title = device.title ?? "QCell device"
   const description = device.description ?? dataDescription ?? ""
   const benefits = device.features?.length ? device.features : benefitsFromData ?? []
   const priceLabel =

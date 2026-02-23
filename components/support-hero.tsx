@@ -75,7 +75,7 @@ export default function SupportHero() {
       <div className="container mx-auto px-4">
         <div className="relative">
           {/* Image Grid */}
-          <div className="grid grid-cols-4 md:grid-cols-8 gap-3 md:gap-4">
+          <div className="grid grid-cols-4 md:grid-cols-8 gap-3 md:gap-4 mt-4 md:mt-6">
             {/* Row 1 */}
             <div className="col-span-2 md:col-span-2 row-span-2 relative rounded-xl overflow-hidden h-48 md:h-64">
               <Image

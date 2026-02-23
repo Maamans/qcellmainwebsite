@@ -66,7 +66,7 @@ export default function Promotions () {
                                 Big offers.
                             </motion.p>
                             <motion.p className='block transition-all duration-75 flex-shrink-0 z-10 hover:scale-150 hover:-translate-y-5 hover:text-[#f98f1f]'>Bigger wins. </motion.p> 
-                            <motion.p className='block transition-all duration-75 flex-shrink-0 hover:text-[#f98f1f]'>Only from <motion.p className='inline-block text-[#F98F1F]'>Qcell.</motion.p></motion.p>
+                            <motion.p className='block transition-all duration-75 flex-shrink-0 hover:text-[#f98f1f]'>Only from <motion.p className='inline-block text-[#F98F1F]'>QCell.</motion.p></motion.p>
                         </motion.p>
                         <motion.div className="absolute right-0 bg-white w-[2px] h-full mix-blend-overlay"
                             initial={{ opacity: 0, y: 40, scale: 0.95 }}

@@ -12,7 +12,7 @@ export default function CareersPage() {
   const isInView = useInView(containerRef, { once: true, amount: 0.1 })
 
   useEffect(() => {
-    document.title = 'Careers - Qcell'
+    document.title = 'Careers - QCell'
   }, [])
 
   const perks = [

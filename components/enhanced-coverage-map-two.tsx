@@ -2,14 +2,19 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import mapboxgl from "mapbox-gl"
-import "mapbox-gl/dist/mapbox-gl.css"
+import L from "leaflet"
+import "leaflet/dist/leaflet.css"
 import { motion, AnimatePresence } from "framer-motion"
 import { Wifi, Signal, Map, ChevronRight, ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-// Initialize Mapbox
-mapboxgl.accessToken = "pk.eyJ1IjoiZGF2aWRjb250ZWgiLCJhIjoiY202OWltNXdhMDlsaDJqcjlwaGtneWhlYSJ9.xtv9kE0JHaW2H85UjUldFw";
+// Fix Leaflet default marker icons in Next.js
+delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })._getIconUrl
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
+  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+})
 
 interface CoverageArea {
   id: number
@@ -20,7 +25,6 @@ interface CoverageArea {
   population: number
 }
 
-// Province color mapping - Black and Orange theme
 const provinceColors: Record<string, string> = {
   "Western Area": "#FF8C00",
   "Northern": "#FF8C00",
@@ -29,7 +33,6 @@ const provinceColors: Record<string, string> = {
   "North-Western": "#FF8C00",
 }
 
-// All 16 districts with province info
 const coverageAreas: (CoverageArea & { province: string })[] = [
   { id: 1, name: "Western Area Urban (Freetown)", coordinates: [-13.2343, 8.4847], type: "4G", signalStrength: 95, population: 1200000, province: "Western Area" },
   { id: 2, name: "Western Area Rural", coordinates: [-13.2, 8.4], type: "4G", signalStrength: 90, population: 442951, province: "Western Area" },
@@ -57,21 +60,11 @@ interface RoamingPartner {
 }
 
 const roamingPartners: RoamingPartner[] = [
-  {
-    id: 1,
-    country: "United Arab Emirates",
-    flag: "🇦🇪",
-    operator: "'DU'-Emirate Integrated Telecommunicatios Company PJSC",
-  },
+  { id: 1, country: "United Arab Emirates", flag: "🇦🇪", operator: "'DU'-Emirate Integrated Telecommunicatios Company PJSC" },
   { id: 2, country: "Lebanon", flag: "🇱🇧", operator: "Mobile Interim Company 1 (MIC1)" },
   { id: 3, country: "South Africa", flag: "🇿🇦", operator: "MTN PTY LTD" },
   { id: 4, country: "Kenya", flag: "🇰🇪", operator: "Airtel Network Kenya Limited (ex-Celtel Kenya LTD.'Zain')" },
-  {
-    id: 5,
-    country: "Ethiopia",
-    flag: "🇪🇹",
-    operator: "Ethio Telecom 'ETC' (Ex-ethiopia Telecommunications Corporation)",
-  },
+  { id: 5, country: "Ethiopia", flag: "🇪🇹", operator: "Ethio Telecom 'ETC' (Ex-ethiopia Telecommunications Corporation)" },
   { id: 6, country: "Morocco", flag: "🇲🇦", operator: "Maroc Telecom Iam" },
   { id: 7, country: "Guinea", flag: "🇬🇳", operator: "MTN" },
   { id: 8, country: "Senegal", flag: "🇸🇳", operator: "Orange (Sonatel Mobiles)" },
@@ -129,7 +122,8 @@ const roamingPartners: RoamingPartner[] = [
 
 export default function EnhancedCoverageMap() {
   const mapContainer = useRef<HTMLDivElement>(null)
-  const map = useRef<mapboxgl.Map | null>(null)
+  const map = useRef<L.Map | null>(null)
+  const markersRef = useRef<L.Marker[]>([])
   const [selectedArea, setSelectedArea] = useState<CoverageArea | null>(null)
   const [mapLoaded, setMapLoaded] = useState(false)
   const [showList, setShowList] = useState(false)
@@ -143,144 +137,98 @@ export default function EnhancedCoverageMap() {
   }
 
   useEffect(() => {
-    if (!mapContainer.current) return
+    if (!mapContainer.current || typeof window === "undefined") return
 
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: "mapbox://styles/mapbox/dark-v11", // Dark style for black background
-      center: [-11.7799, 8.4606],
-      zoom: 7.2, // Slightly zoomed out to fit all districts
-      pitch: 45,
-      bearing: 0,
-      maxBounds: [
-        [-14, 6.5],
-        [-10, 10.5],
-      ],
-      fadeDuration: 0, // Immediate rendering
-      antialias: true,
+    // Leaflet uses [lat, lng], our data has [lng, lat]
+    const mapInstance = L.map(mapContainer.current, {
+      center: [8.4606, -11.7799] as L.LatLngExpression,
+      zoom: 7,
+      zoomControl: false,
+      scrollWheelZoom: false, // Allow page scrolling over map - use +/- buttons to zoom
     })
 
-    map.current.on("load", () => {
+    // Add OpenStreetMap tiles - free, no API key needed
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      maxZoom: 19,
+    }).addTo(mapInstance)
+
+    // Add zoom control to bottom right
+    L.control.zoom({ position: "bottomright" }).addTo(mapInstance)
+
+    // Set bounds for Sierra Leone
+    const bounds = L.latLngBounds(
+      [6.5, -14],
+      [10.5, -10]
+    )
+    mapInstance.setMaxBounds(bounds)
+
+    mapInstance.whenReady(() => {
       setMapLoaded(true)
-
-      if (!map.current) return
-
-      // Force map to resize and be visible
-      setTimeout(() => {
-        if (map.current) {
-          map.current.resize()
-        }
-      }, 100)
-
-      // Customize map colors to black and orange theme
-      try {
-        // Set background color to black
-        if (map.current.getLayer("background")) {
-          map.current.setPaintProperty("background", "background-color", "#000000")
-        }
-        // Make water dark
-        if (map.current.getLayer("water")) {
-          map.current.setPaintProperty("water", "fill-color", "#1a1a1a")
-        }
-        // Make land dark but visible
-        if (map.current.getLayer("land")) {
-          map.current.setPaintProperty("land", "fill-color", "#1a1a1a")
-        }
-        // Make administrative boundaries orange and visible
-        const style = map.current.getStyle()
-        if (style && style.layers) {
-          style.layers.forEach((layer: any) => {
-            if (!map.current) return
-            if (layer.id && layer.id.includes('boundary') && layer.type === 'line') {
-              try {
-                map.current.setPaintProperty(layer.id, "line-color", "#FF8C00")
-                map.current.setPaintProperty(layer.id, "line-width", 2.5)
-                map.current.setPaintProperty(layer.id, "line-opacity", 1)
-              } catch (e) {
-                // Layer might not support these properties
-              }
-            }
-            // Make place labels white and visible
-            if (layer.type === 'symbol' && layer.id && layer.id.includes('place')) {
-              try {
-                if (layer.layout && layer.layout['text-size']) {
-                  map.current.setLayoutProperty(layer.id, "text-size", 14)
-                }
-                if (layer.paint && map.current.getPaintProperty(layer.id, 'text-color')) {
-                  map.current.setPaintProperty(layer.id, "text-color", "#FFFFFF")
-                  map.current.setPaintProperty(layer.id, "text-halo-color", "#000000")
-                  map.current.setPaintProperty(layer.id, "text-halo-width", 2)
-                }
-              } catch (e) {
-                // Layer might not support these properties
-              }
-            }
-          })
-        }
-      } catch (e) {
-        console.log("Could not customize all map layers:", e)
+      if (mapContainer.current) {
+        mapInstance.invalidateSize()
       }
-
-      // Add 3D terrain
-      if (map.current) {
-        map.current.addSource("mapbox-dem", {
-          type: "raster-dem",
-          url: "mapbox://mapbox.mapbox-terrain-dem-v1",
-          tileSize: 512,
-          maxzoom: 14,
-        })
-        map.current.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 })
-      }
-
-      // Add coverage areas with orange markers
-      coverageAreas.forEach((area) => {
-        const el = document.createElement("div")
-        el.className = `coverage-marker ${area.type.toLowerCase()} province-${area.province.replace(/\s/g, "-")}`
-        el.innerHTML = `
-          <div class="pulse" style="background: ${provinceColors[area.province]}; animation-duration: ${3 - area.signalStrength / 50}s"></div>
-          <div class="marker-icon">${area.type}</div>
-          <div class="marker-label">${area.name}<br/><span style='font-size:10px;color:#FF8C00;'>${area.province} Province</span></div>
-        `
-
-        new mapboxgl.Marker(el)
-          .setLngLat(area.coordinates)
-          .setPopup(
-            new mapboxgl.Popup({ offset: 25 }).setHTML(`
-              <div class="p-2" style="background: rgba(0, 0, 0, 0.95); color: white; border: 2px solid #FF8C00;">
-                <h3 class="font-bold" style="color: #FF8C00;">${area.name}</h3>
-                <p class="text-sm" style="color: #FFA500;">${area.type} Coverage</p>
-                <p class="text-xs" style="color:#FF8C00;">${area.province} Province</p>
-                <div class="mt-2 h-2 w-full rounded-full bg-white/20">
-                  <div class="h-full rounded-full" style="background:#FF8C00;width: ${area.signalStrength}%"></div>
-                </div>
-                <p class="mt-1 text-xs">Signal Strength: ${area.signalStrength}%</p>
-              </div>
-            `),
-          )
-          .addTo(map.current!)
-
-        el.addEventListener("click", () => {
-          setSelectedArea(area)
-          map.current?.flyTo({
-            center: area.coordinates,
-            zoom: 11.5,
-            pitch: 60,
-            bearing: 30,
-            duration: 2000,
-          })
-        })
-      })
     })
+
+    // Add coverage markers
+    coverageAreas.forEach((area) => {
+      const [lng, lat] = area.coordinates
+      const el = document.createElement("div")
+      el.className = `coverage-marker ${area.type.toLowerCase()}`
+      el.innerHTML = `
+        <div class="pulse" style="background: ${provinceColors[area.province]}; animation-duration: ${3 - area.signalStrength / 50}s"></div>
+        <div class="marker-icon">${area.type}</div>
+        <div class="marker-label">${area.name}<br/><span style='font-size:10px;color:#FF8C00;'>${area.province} Province</span></div>
+      `
+
+      const popupContent = `
+        <div class="p-2" style="background: #1a1a1a; color: white; border: 2px solid #FF8C00; border-radius: 8px; min-width: 180px;">
+          <h3 class="font-bold text-base" style="color: #FF8C00;">${area.name}</h3>
+          <p class="text-sm" style="color: #FFA500;">${area.type} Coverage</p>
+          <p class="text-xs" style="color:#FF8C00;">${area.province} Province</p>
+          <div class="mt-2 h-2 w-full rounded-full bg-white/20 overflow-hidden">
+            <div class="h-full rounded-full" style="background:#FF8C00;width: ${area.signalStrength}%"></div>
+          </div>
+          <p class="mt-1 text-xs">Signal Strength: ${area.signalStrength}%</p>
+        </div>
+      `
+
+      const marker = L.marker([lat, lng], {
+        icon: L.divIcon({
+          html: el,
+          className: "custom-marker",
+          iconSize: [30, 30],
+          iconAnchor: [15, 15],
+        }),
+      })
+        .bindPopup(popupContent)
+        .addTo(mapInstance)
+
+      el.addEventListener("click", () => {
+        setSelectedArea(area)
+        mapInstance.flyTo([lat, lng], 10, { duration: 1.5 })
+      })
+
+      markersRef.current.push(marker)
+    })
+
+    map.current = mapInstance
 
     return () => {
-      if (map.current) {
-        map.current.remove()
-      }
+      markersRef.current.forEach((m) => m.remove())
+      markersRef.current = []
+      mapInstance.remove()
+      map.current = null
     }
   }, [])
 
+  const flyToArea = (area: CoverageArea & { province: string }) => {
+    const [lng, lat] = area.coordinates
+    map.current?.flyTo([lat, lng], 10, { duration: 1.5 })
+  }
+
   return (
-    <div className="relative h-[700px] w-full overflow-hidden rounded-xl bg-black">
+    <div className="relative h-[700px] w-full overflow-hidden rounded-xl bg-white shadow-2xl">
       <style jsx global>{`
         .coverage-marker {
           width: 30px;
@@ -320,7 +268,7 @@ export default function EnhancedCoverageMap() {
           left: 50%;
           bottom: 100%;
           transform: translateX(-50%);
-          background: rgba(0, 0, 0, 0.95);
+          background: rgba(26, 26, 26, 0.95);
           color: white;
           padding: 6px 10px;
           border-radius: 6px;
@@ -346,226 +294,194 @@ export default function EnhancedCoverageMap() {
           left: 0;
           animation: pulse 2s ease-out infinite;
         }
-        .coverage-marker.type-4g .pulse {
-          background: rgba(255, 140, 0, 0.6);
-        }
-        .coverage-marker.type-3g .pulse {
-          background: rgba(255, 165, 0, 0.5);
-        }
         @keyframes pulse {
-          0% {
-            transform: scale(0.5);
-            opacity: 1;
-          }
-          100% {
-            transform: scale(2.5);
-            opacity: 0;
-          }
+          0% { transform: scale(0.5); opacity: 1; }
+          100% { transform: scale(2.5); opacity: 0; }
         }
-        .mapboxgl-popup-content {
-          background: rgba(0, 0, 0, 0.95) !important;
-          color: white;
-          border-radius: 10px;
-          padding: 14px;
-          font-family: system-ui, -apple-system, sans-serif;
-          border: 2px solid #FF8C00 !important;
-          box-shadow: 0 0 25px rgba(255, 140, 0, 0.6);
-        }
-        .mapboxgl-popup-tip {
-          border-top-color: rgba(0, 0, 0, 0.95) !important;
-          border-bottom-color: rgba(0, 0, 0, 0.95) !important;
-        }
+        .custom-marker { background: transparent !important; border: none !important; }
+        .leaflet-container { font-family: inherit; z-index: 0; }
       `}</style>
 
-      <div className="absolute inset-x-0 top-0 z-10 bg-gradient-to-b from-black/80 to-transparent p-8 text-white flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="absolute inset-x-0 top-0 z-10 bg-gradient-to-b from-slate-800/60 to-transparent p-8 text-white flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-4xl font-bold">
-          With Qcell,{" "}
+          With QCell,{" "}
           <br />
           <span className="relative bg-gradient-to-r from-[#FF8C00] to-[#FFA500] bg-clip-text text-transparent">
             You&apos;re always <span className="after:absolute after:w-[42%] after:h-1/6 after:bg-[#FF8C00] after:right-0 after:-bottom-1">connected</span>
           </span>
         </motion.h1>
-        {/* Coverage legend */}
-        <div className="flex flex-wrap gap-3 items-center bg-black/80 rounded-lg px-4 py-2 border border-[#FF8C00]/50 shadow-sm">
+        <div className="flex flex-wrap gap-3 items-center bg-white/90 rounded-lg px-4 py-2 border border-[#FF8C00]/50 shadow-sm">
           <span className="font-semibold text-[#FF8C00] text-sm mr-2">Coverage:</span>
-          <span className="flex items-center gap-1 text-xs font-medium text-white">
+          <span className="flex items-center gap-1 text-xs font-medium text-slate-800">
             <span style={{ background: '#FF8C00', width: 12, height: 12, borderRadius: '50%', display: 'inline-block', marginRight: 4, border: '2px solid white' }}></span>
             4G
           </span>
-          <span className="flex items-center gap-1 text-xs font-medium text-white">
+          <span className="flex items-center gap-1 text-xs font-medium text-slate-800">
             <span style={{ background: '#FFA500', width: 12, height: 12, borderRadius: '50%', display: 'inline-block', marginRight: 4, border: '2px solid white' }}></span>
             3G
           </span>
         </div>
       </div>
 
-      <div className="absolute inset-y-0 right-0 z-10 w-80 sm:w-96 bg-black/90 p-6 shadow-xl backdrop-blur-md overflow-y-auto border-l border-[#FF8C00]/50">
-        <div className="mb-6 flex gap-4 sticky">
-          <button
-            onClick={() => setActiveTab("map")}
-            className={cn(
-              "flex-1 sticky rounded-lg px-4 py-2 text-sm font-medium transition-colors",
-              activeTab === "map"
-                ? "bg-[#FF8C00] text-white"
-                : "bg-white/10 text-white/60 hover:bg-white/20 hover:text-white",
-            )}
-          >
-            <Map className="mr-2 inline-block h-4 w-4" />
-            Map View
-          </button>
-          <button
-            onClick={() => setActiveTab("list")}
-            className={cn(
-              "flex-1 sticky rounded-lg px-4 py-2 text-sm font-medium transition-colors",
-              activeTab === "list"
-                ? "bg-[#CD7F32] text-white"
-                : "bg-white/10 text-white/60 hover:bg-white/20 hover:text-white",
-            )}
-          >
-            <Signal className="mr-2 inline-block h-4 w-4" />
-            Coverage List
-          </button>
-        </div>
-
-        <AnimatePresence mode="wait">
-          {activeTab === "map" ? (
-            <motion.div
-              key="map-panel"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="space-y-6"
-            >
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-[#FF8C00]">Coverage Statistics</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="rounded-lg bg-white/10 p-4 border border-[#FF8C00]/50">
-                    <div className="text-2xl font-bold text-[#FF8C00]">{coverageStats.total}</div>
-                    <div className="text-sm text-white/60">Coverage Areas</div>
-                  </div>
-                  <div className="rounded-lg bg-white/10 p-4 border border-[#FF8C00]/50">
-                    <div className="text-2xl font-bold text-[#FF8C00]">
-                      {(coverageStats.totalPopulation / 1000000).toFixed(1)}M
-                    </div>
-                    <div className="text-sm text-white/60">People Covered</div>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Signal className="h-4 w-4 text-[#FF8C00]" />
-                    <span className="text-sm text-white/80">4G Coverage</span>
-                  </div>
-                  <span className="font-mono text-sm text-white/60">{coverageStats.fourG} areas</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Wifi className="h-4 w-4 text-[#FFA500]" />
-                    <span className="text-sm text-white/80">3G Coverage</span>
-                  </div>
-                  <span className="font-mono text-sm text-white/60">{coverageStats.threeG} areas</span>
-                  </div>
-                </div>
-              </div>
-
-              {selectedArea && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="rounded-lg bg-white/10 p-4 border border-[#FF8C00]/50"
-                >
-                  <div className="mb-2 flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-white">{selectedArea.name}</h3>
-                    <span
-                      className={cn(
-                        "rounded-full px-2 py-1 text-xs font-medium",
-                        selectedArea.type === "4G"
-                          ? "bg-[#FF8C00]/20 text-[#FF8C00]"
-                          : "bg-[#FFA500]/20 text-[#FFA500]",
-                      )}
-                    >
-                      {selectedArea.type}
-                    </span>
-                  </div>
-                  <div className="mt-4 space-y-4">
-                    <div>
-                      <div className="mb-1 flex items-center justify-between text-sm">
-                        <span className="text-white/60">Signal Strength</span>
-                        <span className="font-mono text-[#FF8C00]">{selectedArea.signalStrength}%</span>
-                      </div>
-                      <div className="h-2 overflow-hidden rounded-full bg-white/10">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${selectedArea.signalStrength}%` }}
-                          transition={{ duration: 1, type: "spring" }}
-                          className="h-full bg-gradient-to-r from-[#FF8C00] to-[#FFA500]"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-white/60">Population Covered</span>
-                      <span className="font-mono text-white">{selectedArea.population.toLocaleString()} people</span>
-                    </div>
-                  </div>
-                </motion.div>
+      {/* Right sidebar - light cream/white with orange accents */}
+      <div className="absolute inset-y-0 right-0 z-10 w-80 sm:w-96 bg-white/95 backdrop-blur-md shadow-xl overflow-y-auto border-l border-[#FF8C00]/30">
+        <div className="p-6">
+          <div className="mb-6 flex gap-4">
+            <button
+              onClick={() => setActiveTab("map")}
+              className={cn(
+                "flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors",
+                activeTab === "map"
+                  ? "bg-[#FF8C00] text-white shadow-md"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-800",
               )}
-
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => setShowList(true)}
-                className="w-full rounded-lg bg-gradient-to-r from-[#FF8C00] to-[#FFA500] px-4 py-2 text-sm font-medium text-white transition-colors overflow-hidden hover:from-[#FFA500] hover:to-[#FF8C00]"
-              >
-                List of Roaming Partners
-              </motion.button>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="list-panel"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="space-y-4"
             >
-              <div className="space-y-2">
-                {coverageAreas.map((area) => (
-                  <motion.button
-                    key={area.id}
-                    onClick={() => {
-                      setSelectedArea(area)
-                      setActiveTab("map")
-                      map.current?.flyTo({
-                        center: area.coordinates,
-                        zoom: 12,
-                        pitch: 60,
-                        bearing: 30,
-                        duration: 2000,
-                      })
-                    }}
-                    className="flex w-full items-center justify-between rounded-lg bg-white/10 border border-[#FF8C00]/50 p-4 text-left transition-colors hover:bg-white/20"
-                  >
-                    <div>
-                      <h3 className="font-medium text-white">{area.name}</h3>
-                      <p className="text-sm text-white/60">{area.type} Coverage</p>
+              <Map className="mr-2 inline-block h-4 w-4" />
+              Map View
+            </button>
+            <button
+              onClick={() => setActiveTab("list")}
+              className={cn(
+                "flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors",
+                activeTab === "list"
+                  ? "bg-[#CD7F32] text-white shadow-md"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-800",
+              )}
+            >
+              <Signal className="mr-2 inline-block h-4 w-4" />
+              Coverage List
+            </button>
+          </div>
+
+          <AnimatePresence mode="wait">
+            {activeTab === "map" ? (
+              <motion.div
+                key="map-panel"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-6"
+              >
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-[#FF8C00]">Coverage Statistics</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="rounded-lg bg-[#FFF7ED] p-4 border border-[#FF8C00]/30">
+                      <div className="text-2xl font-bold text-[#FF8C00]">{coverageStats.total}</div>
+                      <div className="text-sm text-slate-600">Coverage Areas</div>
                     </div>
-                    <ChevronRight className="h-4 w-4 text-white/40" />
-                  </motion.button>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                    <div className="rounded-lg bg-[#FFF7ED] p-4 border border-[#FF8C00]/30">
+                      <div className="text-2xl font-bold text-[#FF8C00]">
+                        {(coverageStats.totalPopulation / 1000000).toFixed(1)}M
+                      </div>
+                      <div className="text-sm text-slate-600">People Covered</div>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Signal className="h-4 w-4 text-[#FF8C00]" />
+                        <span className="text-sm text-slate-700">4G Coverage</span>
+                      </div>
+                      <span className="font-mono text-sm text-slate-500">{coverageStats.fourG} areas</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Wifi className="h-4 w-4 text-[#FFA500]" />
+                        <span className="text-sm text-slate-700">3G Coverage</span>
+                      </div>
+                      <span className="font-mono text-sm text-slate-500">{coverageStats.threeG} areas</span>
+                    </div>
+                  </div>
+                </div>
+
+                {selectedArea && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="rounded-lg bg-[#FFF7ED] p-4 border border-[#FF8C00]/30"
+                  >
+                    <div className="mb-2 flex items-center justify-between">
+                      <h3 className="text-lg font-semibold text-slate-800">{selectedArea.name}</h3>
+                      <span
+                        className={cn(
+                          "rounded-full px-2 py-1 text-xs font-medium",
+                          selectedArea.type === "4G"
+                            ? "bg-[#FF8C00]/20 text-[#FF8C00]"
+                            : "bg-[#FFA500]/20 text-[#FFA500]",
+                        )}
+                      >
+                        {selectedArea.type}
+                      </span>
+                    </div>
+                    <div className="mt-4 space-y-4">
+                      <div>
+                        <div className="mb-1 flex items-center justify-between text-sm">
+                          <span className="text-slate-600">Signal Strength</span>
+                          <span className="font-mono text-[#FF8C00]">{selectedArea.signalStrength}%</span>
+                        </div>
+                        <div className="h-2 overflow-hidden rounded-full bg-slate-200">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${selectedArea.signalStrength}%` }}
+                            transition={{ duration: 1, type: "spring" }}
+                            className="h-full bg-gradient-to-r from-[#FF8C00] to-[#FFA500]"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-slate-600">Population Covered</span>
+                        <span className="font-mono text-slate-800">{selectedArea.population.toLocaleString()} people</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setShowList(true)}
+                  className="w-full rounded-lg bg-gradient-to-r from-[#FF8C00] to-[#FFA500] px-4 py-2 text-sm font-medium text-white transition-colors hover:from-[#FFA500] hover:to-[#FF8C00]"
+                >
+                  List of Roaming Partners
+                </motion.button>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="list-panel"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-4"
+              >
+                <div className="space-y-2">
+                  {coverageAreas.map((area) => (
+                    <motion.button
+                      key={area.id}
+                      onClick={() => {
+                        setSelectedArea(area)
+                        setActiveTab("map")
+                        flyToArea(area)
+                      }}
+                      className="flex w-full items-center justify-between rounded-lg bg-slate-50 border border-[#FF8C00]/20 p-4 text-left transition-colors hover:bg-[#FFF7ED] hover:border-[#FF8C00]/40"
+                    >
+                      <div>
+                        <h3 className="font-medium text-slate-800">{area.name}</h3>
+                        <p className="text-sm text-slate-500">{area.type} Coverage</p>
+                      </div>
+                      <ChevronRight className="h-4 w-4 text-slate-400" />
+                    </motion.button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
 
-      <div 
-        ref={mapContainer} 
-        className="h-full w-full rounded-xl shadow-lg border border-[#FF8C00]/30"
-        style={{
-          minHeight: '700px',
-          backgroundColor: '#000000',
-          display: 'block',
-          visibility: 'visible',
-        }}
+      <div
+        ref={mapContainer}
+        className="absolute inset-0 z-0 h-full w-full rounded-xl"
+        style={{ minHeight: "700px" }}
       />
 
       <AnimatePresence>
@@ -574,13 +490,13 @@ export default function EnhancedCoverageMap() {
             initial={{ opacity: 0, y: "100%" }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: "100%" }}
-            className="absolute inset-0 z-20 overflow-y-auto bg-black/95 p-8 backdrop-blur-md"
+            className="absolute inset-0 z-20 overflow-y-auto bg-white/98 p-8 backdrop-blur-md"
           >
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold text-[#FF8C00]">Roaming Partners</h2>
               <button
                 onClick={() => setShowList(false)}
-                className="rounded-full bg-white/10 p-2 text-white/60 hover:bg-white/20 hover:text-white border border-[#FF8C00]/50"
+                className="rounded-full bg-slate-100 p-2 text-slate-600 hover:bg-slate-200 hover:text-slate-800 border border-[#FF8C00]/30"
               >
                 <ChevronDown className="h-6 w-6" />
               </button>
@@ -592,13 +508,13 @@ export default function EnhancedCoverageMap() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="rounded-lg bg-white/10 border border-[#FF8C00]/50 p-4"
+                  className="rounded-lg bg-slate-50 border border-[#FF8C00]/20 p-4"
                 >
                   <div className="flex items-center gap-3">
                     <div className="text-4xl">{partner.flag}</div>
                     <div>
-                      <h3 className="font-medium text-white">{partner.country}</h3>
-                      <p className="mt-1 text-sm text-white/60">{partner.operator}</p>
+                      <h3 className="font-medium text-slate-800">{partner.country}</h3>
+                      <p className="mt-1 text-sm text-slate-500">{partner.operator}</p>
                     </div>
                   </div>
                 </motion.div>

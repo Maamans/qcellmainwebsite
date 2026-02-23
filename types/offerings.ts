@@ -41,7 +41,7 @@ export const offerings: Offering[] = [
       benefits: ["Save more", "All-in-one", "Easy activation"],
       quickActions: [
         { text: "Dial *335#", action: "*335#" },
-        { text: "Open Qcell App", action: "app://qcell" },
+        { text: "Open QCell App", action: "app://qcell" },
       ],
       ctas: [
         { text: "Buy Combo Bundle", action: "/tariffs/alternative" },

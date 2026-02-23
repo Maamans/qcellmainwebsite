@@ -38,7 +38,7 @@ const slides: SlideData[] = [
   },
   {
     backgroundImage: "/images/hero-bg-3.jpg",
-    title: "Join the Qcell Family",
+    title: "Join the QCell Family",
     description: "Be part of Sierra Leone's fastest-growing network and enjoy unparalleled services and support.",
     cta: {
       primary: { text: "Sign Up Today", href: "#" },

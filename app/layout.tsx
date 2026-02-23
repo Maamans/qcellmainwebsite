@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Qcell - Expand your world",
+  title: "QCell - Expand your world",
   description: "The FASTEST, CHEAPEST, and most RELIABLE network in Sierra Leone.",
   icons: "/images/logo.png",
 };

@@ -54,16 +54,16 @@ const dropdownVariants = {
 };
 const navItems = [
     {
-        title: "Personal",
+        title: "Home",
         href: "/",
     },
   {
     title: "About us",
     content: {
-      heading: "About Qcell",
+      heading: "About QCell",
       subheading: "Learn about our mission, leadership, and impact on Sierra Leone",
       links: [
-        { title: "About Qcell", href: "/about-us" },
+        { title: "About QCell", href: "/about-us" },
         { title: "Our Impact", href: "/our-impact" },
         { title: "Careers", href: "/careers" },
         { title: "Business", href: "/business" }
@@ -455,7 +455,7 @@ export default function Navigation() {
               <Link href="/" className="flex items-center">
                 <Image
                   src={QcellLogo || "/placeholder.svg"}
-                  alt="Qcell Logo"
+                  alt="QCell Logo"
                   width={64}
                   height={64}
                   className="h-[52px] w-auto object-contain rounded-md rounded-tr-none rounded-br-none xl:rounded-none"
@@ -697,7 +697,7 @@ export default function Navigation() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1, duration: 0.4 }}
                   >
-                    Search Qcell
+                    Search QCell
                   </motion.h2>
                   <motion.button
                     className="rounded-full bg-white/20 p-2 text-white"
@@ -831,7 +831,7 @@ export default function Navigation() {
                 <Link href="/" className="flex items-center" onClick={() => setMobileMenuOpen(false)}>
                   <Image
                     src={QcellLogo || "/placeholder.svg"}
-                    alt="Qcell Logo"
+                    alt="QCell Logo"
                     width={48}
                     height={48}
                     className="h-12 w-auto object-contain rounded-md"
@@ -1180,7 +1180,7 @@ export default function Navigation() {
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
+            </div>
         </div>
       </div>
     </>

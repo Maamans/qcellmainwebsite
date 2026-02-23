@@ -12,7 +12,7 @@ export default function WorkAtQcell() {
     <div className="flex flex-col w-full bg-black text-white">
       {/* Top section */}
       <div className="p-8 pb-12 flex flex-col items-center text-center mt-[150px]">
-        <p className="text-2xl sm:text-3xl md:text-5xl mb-2">Work at Qcell</p>
+        <p className="text-2xl sm:text-3xl md:text-5xl mb-2">Work at QCell</p>
 
         <h2 className="text-5xl sm:text-6xl md:text-8xl font-bold my-10">
           Join a <span className="text-amber-400">team and inspire</span> the work.
@@ -24,7 +24,7 @@ export default function WorkAtQcell() {
         </p>
 
         <Link href="#" className="text-blue-400 text-sm flex items-center mt-14 hover:underline">
-          Learn about Work at Qcell &gt;
+          Learn about Work at QCell &gt;
         </Link>
       </div>
 
@@ -32,7 +32,7 @@ export default function WorkAtQcell() {
       <div className="relative">
         <Image
           src="/images/workatqcell-qcell-employee.jpg"
-          alt="Qcell employee"
+          alt="QCell employee"
           width={500}
           height={400}
           className="w-full h-[800px] object-cover object-center"

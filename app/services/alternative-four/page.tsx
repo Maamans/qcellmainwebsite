@@ -7,7 +7,7 @@ import TypingEffect from "@/components/TypingEffect"
 
 export default function ServicesPage() {
   useEffect(() => {
-    document.title = "Our Services - Qcell"
+    document.title = "Our Services - QCell"
   }, [])
 
   const containerRef = useRef<HTMLDivElement>(null)

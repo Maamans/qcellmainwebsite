@@ -40,7 +40,7 @@ const fallbackSlides: SlideData[] = [
   },
   {
     backgroundImage: "/images/final poll.jpg",
-    title: "Join the Qcell Family",
+    title: "Join the QCell Family",
     description: "Be part of Sierra Leone's fastest-growing network and enjoy unparalleled services and support.",
     cta: {
       primary: { text: "Sign Up Today", href: "#" },

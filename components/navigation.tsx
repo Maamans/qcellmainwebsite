@@ -30,7 +30,7 @@ const navItems: NavItem[] = [
       subheading: "Stay up to date with our newest offerings",
       links: [
         { title: "Home", href: "/" },
-        { title: "About Qcell", href: "/about-us" },
+        { title: "About QCell", href: "/about-us" },
         { title: "Careers", href: "/careers" }
       ]
     }
@@ -50,7 +50,7 @@ const navItems: NavItem[] = [
   {
     title: "Devices",
     content: {
-      heading: "Stay Connected, Anywhere, Anytime with Qcell Mobile Plans.",
+      heading: "Stay Connected, Anywhere, Anytime with QCell Mobile Plans.",
       links: [
         { title: "Home", href: "/" },
         { title: "Indoor Routers", href: "#" },
@@ -76,7 +76,7 @@ const navItems: NavItem[] = [
     title: "Services",
     content: {
       heading: "Explore a wide range of services designed to keep you connected and productive.",
-      subheading: "From fast internet solutions to innovative business tools, Qcell is here to empower your journey.",
+      subheading: "From fast internet solutions to innovative business tools, QCell is here to empower your journey.",
       links: [
         { title: "Home", href: "/" },
         { title: "Instant Roaming", href: "#" },
@@ -97,7 +97,7 @@ const navItems: NavItem[] = [
         { title: "Home", href: "/" },
         { title: "Emergency Sites", href: "#" },
         { title: "Recharge Bonanza", href: "#" },
-        { title: "Qcell Bonanza", href: "#" },
+        { title: "QCell Bonanza", href: "#" },
         { title: "Tok En Browse", href: "#" },
         { title: "Qnite", href: "#" }
       ]
@@ -147,7 +147,7 @@ export default function Navigation() {
           <Link href="/" className="rounded-tl-[8px] flex-shrink-0 rounded-bl-[8px] flex items-center justify-center overflow-hidden mr-4 sm:-mt-5 sm:mr-0">
             <Image
               src={QcellLogo}
-              alt="Qcell Logo"
+              alt="QCell Logo"
               width={64}
               height={64}
               className="h-[52px] w-auto object-contain flex-shrink-0"
@@ -276,7 +276,7 @@ export default function Navigation() {
               transition={{ duration: 0.5, delay: 0.9 }}
             >
               Expand Your World with Seamless Connectivity
-            </motion.h1> pk.eyJ1IjoiZGF2aWRjb250ZWgiLCJhIjoiY202OWltNXdhMDlsaDJqcjlwaGtneWhlYSJ9.xtv9kE0JHaW2H85UjUldFw*/}
+            </motion.h1> */}
             <motion.div
               className="max-w-2xl text-5xl font-bold z-10 mt-32"
               initial={{ opacity: 0, y: 20 }}

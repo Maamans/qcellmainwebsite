@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
   // Enable standalone output for Docker
   output: 'standalone',
   
+  // Fix workspace root detection with multiple lockfiles
+  // This ensures Next.js uses the correct directory as the root
+  outputFileTracingRoot: process.cwd(),
+  
   // Security: Disable X-Powered-By header
   poweredByHeader: false,
   

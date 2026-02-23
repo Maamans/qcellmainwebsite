@@ -32,7 +32,7 @@ interface HeroSlideResponse {
 export default function InternetPage() {
   // set the document title
   useEffect(() => {
-    document.title = 'Internet | Qcell'
+    document.title = 'Internet | QCell'
   }, [])
 
   // Fallback slides if backend is unavailable

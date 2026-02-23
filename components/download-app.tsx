@@ -155,7 +155,7 @@ export default function DownloadApp() {
                 Mobile Experience
               </motion.span>
               <h2 className="text-3xl font-bold tracking-tighter text-gray-900 sm:text-4xl md:text-5xl">
-                Ready to experience the Qcell difference?
+                Ready to experience the QCell difference?
               </h2>
             </motion.div>
 
@@ -172,7 +172,7 @@ export default function DownloadApp() {
               </motion.div>
               <p className="text-lg text-gray-700 md:text-xl mt-4">
                 Everything you need at your fingertips. Manage your account, buy bundles, check balance, and enjoy
-                exclusive offers with the Qcell app.
+                exclusive offers with the QCell app.
               </p>
             </motion.div>
 
@@ -320,7 +320,7 @@ export default function DownloadApp() {
                 <div className="relative w-full h-full">
                   <Image
                     src="/images/appscreen2.png"
-                    alt="Qcell Mobile App"
+                    alt="QCell Mobile App"
                     fill
                     className="object-cover object-top"
                     sizes="(max-width: 768px) 250px, 300px"
@@ -411,7 +411,7 @@ export default function DownloadApp() {
           <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
             <div>
               <h3 className="text-xl font-semibold text-gray-900 md:text-2xl">
-                Ready to experience the Qcell difference?
+                Ready to experience the QCell difference?
               </h3>
               <AnimatePresence mode="wait">
                 <motion.p

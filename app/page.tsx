@@ -1,11 +1,15 @@
 "use client"
 
+import dynamic from "next/dynamic"
 import { motion } from "framer-motion"
 import Navigation from "@/components/navigation-two"
 import Cursor from "@/components/cursor"
-import EnhancedCoverageMap from "@/components/enhanced-coverage-map-two"
-
 import OfferingsSlider from "@/components/offering-slider"
+
+const EnhancedCoverageMap = dynamic(
+  () => import("@/components/enhanced-coverage-map-two"),
+  { ssr: false, loading: () => <div className="h-[700px] w-full bg-slate-100 animate-pulse rounded-xl flex items-center justify-center"><span className="text-slate-400">Loading map...</span></div> }
+)
 import DownloadApp from "@/components/download-app"
 import Footer from "@/components/footer"
 

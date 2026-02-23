@@ -9,8 +9,8 @@ import { Wifi, Signal, Map, ChevronRight, ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Feature, Point } from "geojson";
 
-// Initialize Mapbox
-mapboxgl.accessToken = "pk.eyJ1IjoiZGF2aWRjb250ZWgiLCJhIjoiY202OWltNXdhMDlsaDJqcjlwaGtneWhlYSJ9.xtv9kE0JHaW2H85UjUldFw"
+// Initialize Mapbox - use env variable (see MAPBOX_TOKEN_SETUP.md)
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || ""
 
 interface CoverageArea {
   id: number
@@ -156,7 +156,12 @@ export default function EnhancedCoverageMap() {
   }, [])
 
   useEffect(() => {
-    if (!mapContainer.current) return
+    if (!mapContainer.current) {
+      console.error("Map container not found")
+      return
+    }
+
+    console.log("Initializing map...", mapContainer.current)
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
@@ -167,13 +172,43 @@ export default function EnhancedCoverageMap() {
       bearing: 0,
     })
 
-    // Add custom styling to match Qcell's branding
+    map.current.on("error", (e) => {
+      console.error("Mapbox error:", e)
+    })
+
+    // Add custom styling to match QCell's branding
     map.current.on("load", () => {
       setMapLoaded(true)
+      console.log("Map loaded, setting background color...")
 
-      // Customize map colors to match Qcell's branding
-      map.current?.setPaintProperty("water", "fill-color", "#0D1117")
-      map.current?.setPaintProperty("land", "background-color", "#1A1A1A")
+      // Set map background to a bright unique color so it's visible
+      // First, try to add a background layer if it doesn't exist
+      if (!map.current?.getLayer("map-bg-color")) {
+        map.current?.addLayer({
+          id: "map-bg-color",
+          type: "background",
+          paint: {
+            "background-color": "#00FF00"
+          }
+        })
+        console.log("Added background layer with green color")
+      }
+      
+      // Also try to set the background property if it exists
+      try {
+        map.current?.setPaintProperty("background", "background-color", "#00FF00")
+        console.log("Set background color on existing background layer")
+      } catch (e) {
+        console.log("Background layer doesn't exist, using added layer:", e)
+      }
+      
+      // Customize map colors to match QCell's branding
+      try {
+        map.current?.setPaintProperty("water", "fill-color", "#0D1117")
+        map.current?.setPaintProperty("land", "background-color", "#1A1A1A")
+      } catch (e) {
+        console.log("Could not set water/land colors:", e)
+      }
 
       // Add a copper/bronze glow to the map
       map.current?.addLayer({
@@ -551,7 +586,7 @@ export default function EnhancedCoverageMap() {
       {/* Desktop title */}
       <div className="absolute inset-x-0 top-0 z-10 bg-gradient-to-b from-black/60 to-transparent p-8 text-white hidden md:block">
         <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-4xl font-bold">
-          With Qcell, <br />
+          With QCell, <br />
           <span className="relative bg-gradient-to-r from-[#CD7F32] to-[#B87333] bg-clip-text text-transparent">
             You&apos;re always{" "}
             <span className="after:absolute after:w-[42%] after:h-1/6 after:bg-white after:right-0 after:-bottom-1">
@@ -565,7 +600,7 @@ export default function EnhancedCoverageMap() {
       <div className="absolute inset-x-0 top-0 z-10 bg-gradient-to-b from-black/60 to-transparent p-4 text-white md:hidden">
         <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-2xl font-bold">
           <span className="relative bg-gradient-to-r from-[#CD7F32] to-[#B87333] bg-clip-text text-transparent">
-            Qcell Coverage
+            QCell Coverage
           </span>
         </motion.h1>
       </div>
@@ -794,7 +829,7 @@ export default function EnhancedCoverageMap() {
         </motion.button>
       </div>
 
-      <div ref={mapContainer} className="h-full w-full" />
+      <div ref={mapContainer} className="absolute inset-0 h-full w-full z-0" style={{ minHeight: '600px' }} />
 
       <AnimatePresence>
         {showList && (

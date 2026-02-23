@@ -20,7 +20,7 @@ export default function OfferingCard({ offering }: OfferingCardProps) {
           {/* Only image, no text content overlay */}
           <Image
             src={offering.details.image ?? offering.image ?? "/images/qmobile.png"}
-            alt={offering.details.title ?? offering.title ?? "Qcell offering"}
+            alt={offering.details.title ?? offering.title ?? "QCell offering"}
             fill
             className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
             unoptimized

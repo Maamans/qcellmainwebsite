@@ -110,7 +110,7 @@ const fallbackCsrCards: CSRCard[] = [
     eyebrow: "Healthcare",
     title: "Rural Health Initiative",
     description:
-      "Qcell partnered with local health organizations to provide free medical check-ups and supplies in rural communities across Sierra Leone.",
+      "QCell partnered with local health organizations to provide free medical check-ups and supplies in rural communities across Sierra Leone.",
     image: "/images/images.jpeg",
   },
 ]
@@ -148,7 +148,7 @@ export default function OurImpactPage() {
   >([])
 
   useEffect(() => {
-    document.title = "Our Impact - Qcell"
+    document.title = "Our Impact - QCell"
   }, [])
 
   useEffect(() => {

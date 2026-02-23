@@ -10,8 +10,8 @@ const cards = [
   },
   {
     image: "/images/qmusic.jpg",
-    title: "Qcell Music",
-    desc: "Stream your favorite songs and discover new music with Qcell Music.",
+    title: "QCell Music",
+    desc: "Stream your favorite songs and discover new music with QCell Music.",
     cta: "Try Now",
     bg: "from-purple-100 via-white to-purple-200"
   }

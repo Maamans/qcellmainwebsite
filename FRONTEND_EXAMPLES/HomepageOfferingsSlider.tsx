@@ -75,7 +75,7 @@ const normalizeOffering = (item: RemoteOffering, fallback: Offering, index: numb
   )
 
   const normalizedDetails: Offering["details"] = {
-    title: item.details?.title ?? fallback.details.title ?? item.title ?? "Qcell Offering",
+    title: item.details?.title ?? fallback.details.title ?? item.title ?? "QCell Offering",
     description: item.details?.description ?? fallback.details.description ?? item.description ?? "",
     benefits:
       Array.isArray(item.details?.benefits) && item.details.benefits.length > 0

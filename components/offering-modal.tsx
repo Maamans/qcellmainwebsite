@@ -43,7 +43,7 @@ export default function OfferingModal({ offering, isOpen, onClose }: OfferingMod
             <div className="relative w-full md:w-1/2 h-[260px] md:h-[400px] rounded-2xl overflow-hidden shadow-2xl border-2 border-[#F98F1F]/30">
               <Image
                 src={heroImage}
-                alt={offering.details.title ?? offering.title ?? "Qcell Offering"}
+                alt={offering.details.title ?? offering.title ?? "QCell Offering"}
                 fill
                 unoptimized
                 className="object-cover object-center"

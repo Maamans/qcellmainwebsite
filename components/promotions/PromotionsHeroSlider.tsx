@@ -44,7 +44,7 @@ const hardcodedSlides: SlideData[] = [
     backgroundImage: "/images/tokenbrowse.jpg",
     video: "/videos/promotion1.mp4",
     title: "Unbeatable Offers Just for You!",
-    description: "Big offers. Bigger wins. Only from Qcell.",
+    description: "Big offers. Bigger wins. Only from QCell.",
     cta: {
       primary: { text: "Explore Promotions", href: "#promotions" },
       secondary: { text: "Learn More", href: "/promotions" },

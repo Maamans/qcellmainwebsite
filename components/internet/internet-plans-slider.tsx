@@ -31,7 +31,7 @@ const fallbackPlans: InternetPlan[] = [
     id: "4g-lte",
     title: "4G LTE",
     description:
-      "Experience blazing fast mobile internet with Qcell's 4G LTE network. Perfect for streaming, browsing, and staying connected on the go.",
+      "Experience blazing fast mobile internet with QCell's 4G LTE network. Perfect for streaming, browsing, and staying connected on the go.",
     image:
       "https://images.unsplash.com/photo-1550525811-e5869dd03032?q=80&w=1470&auto=format&fit=crop",
   },

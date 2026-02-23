@@ -50,7 +50,7 @@ export default function WhatDrivesUs() {
         <div className="max-w-full mx-auto">
           <h2 className="font-bold text-5xl mt-10 mb-32 md:text-6xl lg:text-7xl container sm:w-[550px] lg:w-[700px] mx-auto p-5">Ways you can 
             <span className="block text-center w-full text-amber-400">make a difference</span> 
-            <span className="block w-full text-right pr-32">at Qcell</span></h2>
+            <span className="block w-full text-right pr-32">at QCell</span></h2>
           
           <Carousel
             opts={{

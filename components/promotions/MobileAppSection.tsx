@@ -9,7 +9,7 @@ export default function MobileAppSection() {
       <div className="w-[90vw] max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 px-4">
         <div className="flex-1 flex flex-col justify-center items-start pl-2 md:pl-8">
           <h3 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-gray-900">
-            <span className="text-[#F98F1F]">Enjoy Qcell Promotions </span>
+            <span className="text-[#F98F1F]">Enjoy QCell Promotions </span>
             <span className="text-gray-900">Seamlessly</span>
           </h3>
           <p className="text-gray-700 text-lg md:text-xl mb-8 leading-relaxed max-w-xl">

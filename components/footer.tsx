@@ -74,7 +74,7 @@ export default function Footer() {
       links: customerCareShopsColumnC.map((shop) => ({ name: shop, href: "#" })),
     },
     {
-      title: "Qcell Values",
+      title: "QCell Values",
       links: [
         { name: "Accessibility", href: "#" },
         { name: "Environment", href: "#" },
@@ -86,7 +86,7 @@ export default function Footer() {
     {
       title: "For Business",
       links: [
-        { name: "Qcell for Business", href: "#" },
+        { name: "QCell for Business", href: "#" },
         { name: "Shop for Business", href: "#" },
         { name: "Business Solutions", href: "#" },
         { name: "Enterprise Connectivity", href: "#" },
@@ -212,7 +212,7 @@ export default function Footer() {
             transition={{ duration: 0.6 }}
           >
             <div className="max-w-md">
-              <h3 className="text-2xl font-bold text-gray-900">Stay connected with Qcell</h3>
+              <h3 className="text-2xl font-bold text-gray-900">Stay connected with QCell</h3>
               <p className="mt-2 text-gray-600">Subscribe to our newsletter for exclusive offers and updates</p>
             </div>
             <form onSubmit={handleSubmit} className="w-full max-w-md">
@@ -367,7 +367,7 @@ export default function Footer() {
                 whileHover={{ x: 5 }}
               >
                 <MapPin className="mr-3 h-5 w-5 text-[#F98F1F]" />
-                <span className="text-sm text-gray-600">Qcell House, 16 Wilkinson Road, Freetown, Sierra Leone</span>
+                <span className="text-sm text-gray-600">QCell House, 16 Wilkinson Road, Freetown, Sierra Leone</span>
               </motion.li>
               <motion.li
                 className="flex items-center"
@@ -430,7 +430,7 @@ export default function Footer() {
                 transition={{ delay: 0.4, type: "spring", stiffness: 200 }}
                 whileHover={{ scale: 1.05 }}
               >
-                <Image src="/images/logo.jpg" alt="Qcell Logo" width={120} height={50} className="h-12 w-auto" unoptimized />
+                <Image src="/images/logo.jpg" alt="QCell Logo" width={120} height={50} className="h-12 w-auto" unoptimized />
               </motion.div>
             </div>
           </motion.div>
@@ -444,7 +444,7 @@ export default function Footer() {
           transition={{ duration: 0.5, delay: 0.3 }}
         >
           <div>
-            <p>Copyright © {new Date().getFullYear()} Qcell Ltd. All rights reserved.</p>
+            <p>Copyright © {new Date().getFullYear()} QCell Ltd. All rights reserved.</p>
           </div>
           <div className="flex flex-wrap justify-center gap-4 md:justify-end">
             {["Privacy Policy", "Terms of Use", "Sales & Refunds", "Legal", "Site Map"].map((item, index) => (

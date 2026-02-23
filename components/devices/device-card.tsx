@@ -18,7 +18,7 @@ export default function DeviceCard({ device, isActive, onClick }: DeviceCardProp
   const data = device.data as Record<string, unknown> | undefined
   const dataImage = typeof data?.["image"] === "string" ? (data?.["image"] as string) : undefined
   const imageSrc = getImageUrl(device.image ?? dataImage ?? "/images/qmobile.png")
-  const title = device.title ?? "Qcell device"
+  const title = device.title ?? "QCell device"
 
   return (
     <motion.div

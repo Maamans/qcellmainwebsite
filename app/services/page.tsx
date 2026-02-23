@@ -57,7 +57,7 @@ interface ServiceApiResponse {
 
 export default function ServicesPage() {
   useEffect(() => {
-    document.title = "Our Services - Qcell"
+    document.title = "Our Services - QCell"
     // Ensure body and html allow scrolling
     const html = document.documentElement
     const body = document.body

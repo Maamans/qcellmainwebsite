@@ -5,7 +5,7 @@ const heroContent = [
     {
         tag: 'promotions',
         title: "Unbeatable Offers Just for You!",
-        description: "Big offers. Bigger wins. Only from Qcell.",
+        description: "Big offers. Bigger wins. Only from QCell.",
     },
     {
         tag: 'Emergency Sites',
@@ -125,8 +125,8 @@ export default function SliderContent () {
                                     {heroContent[currentSlide].description.split(".")[1].split(" ")[2]}.
                                 </motion.p> 
                                 <motion.p className='block transition-all duration-75 hover:text-[#f98f1f] border-b-2 border-[#f98f1f] pb-2'>
-                                    {heroContent[currentSlide].description.split(".")[2].split(" ")[1] + " " + heroContent[currentSlide].description.split(".")[2].split(" ")[2]} <br /> {/*<motion.p className='inline-block text-[#F98F1F]'>Qcell.</motion.p>*/}
-                                    {heroContent[currentSlide].description.split(".")[2].split(" ")[3]} {/*<motion.p className='inline-block text-[#F98F1F]'>Qcell.</motion.p>*/}
+                                    {heroContent[currentSlide].description.split(".")[2].split(" ")[1] + " " + heroContent[currentSlide].description.split(".")[2].split(" ")[2]} <br /> {/*<motion.p className='inline-block text-[#F98F1F]'>QCell.</motion.p>*/}
+                                    {heroContent[currentSlide].description.split(".")[2].split(" ")[3]} {/*<motion.p className='inline-block text-[#F98F1F]'>QCell.</motion.p>*/}
                                 </motion.p>
                             </motion.p>
                         ) : (

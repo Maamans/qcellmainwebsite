@@ -24,7 +24,7 @@ interface InternetPlanCardProps {
 
 export default function InternetPlanCard({ plan, index, onClick }: InternetPlanCardProps) {
   const isFeatured = plan.id === "4g-lte"
-  const badgeText = isFeatured ? "Signature 4G LTE" : "Qcell Internet"
+  const badgeText = isFeatured ? "Signature 4G LTE" : "QCell Internet"
 
   return (
     <motion.div className="relative h-full min-h-[520px] w-full cursor-pointer md:min-h-[600px]">
@@ -67,7 +67,7 @@ export default function InternetPlanCard({ plan, index, onClick }: InternetPlanC
           <div className="mt-6 flex items-center justify-between">
             <div className="flex flex-col gap-1 text-white/80 text-sm">
               <span className="uppercase tracking-[0.25em] text-white/60">Powered by</span>
-              <span className="text-lg font-semibold text-white">{isFeatured ? "4G LTE Network" : "Qcell Internet"}</span>
+              <span className="text-lg font-semibold text-white">{isFeatured ? "4G LTE Network" : "QCell Internet"}</span>
             </div>
             <button
               type="button"
