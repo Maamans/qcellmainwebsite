@@ -388,9 +388,10 @@ export const api = {
   /**
    * Get the complete Devices page payload (NO AUTH NEEDED)
    * Returns heroSlides, sections, devices, featuredDevices
+   * Uses Next.js API route (same-origin) which proxies to backend and falls back when backend is down
    */
   getDevicesPage: async () => {
-    const response = await fetch(`${API_URL}/api/public/devices-page/`);
+    const response = await fetch('/api/public/devices-page/');
     if (!response.ok) {
       throw new Error(`Failed to fetch devices page: ${response.status} ${response.statusText}`);
     }

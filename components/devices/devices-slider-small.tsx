@@ -58,13 +58,13 @@ export default function DevicesSliderSmall({ devices }: DevicesSliderSmallProps 
   const scrollNext = () => emblaApi?.scrollNext()
 
   return (
-    <div className="relative w-full px-0 overflow-hidden py-2 pb-10 bg-transparent rounded-lg md:max-w-[110%] md:rounded-lg"> {/* py-16 */}
+    <div className="relative w-full px-0 overflow-hidden py-2 pb-10 bg-transparent rounded-lg md:rounded-lg">
       
-      <div className="relative mt-24"> {/* px-4 */}
+      <div className="relative mt-16 md:mt-8">
 
-        <div className="rounded-lg"> {/* px-4 */}
-          <div className="relative w-[80%] md:w-[50%] mx-auto rounded-lg">
-            <div className="block absolute left-0 top-1/2 z-10 -translate-x-4 lg:-translate-x-14 -translate-y-2/4">
+        <div className="rounded-lg">
+          <div className="relative w-[85%] md:w-full mx-auto rounded-lg">
+            <div className="block absolute left-0 top-1/2 z-10 -translate-x-2 md:-translate-x-4 -translate-y-2/4">
               <Button
                 variant="ghost"
                 size="icon"
@@ -76,7 +76,7 @@ export default function DevicesSliderSmall({ devices }: DevicesSliderSmallProps 
               </Button>
             </div>
 
-            <div className="block absolute right-0 top-1/2 z-10 translate-x-4 lg:translate-x-14 -translate-y-2/4 ">
+            <div className="block absolute right-0 top-1/2 z-10 translate-x-2 md:translate-x-4 -translate-y-2/4">
               <Button
                 variant="ghost"
                 size="icon"
@@ -93,11 +93,11 @@ export default function DevicesSliderSmall({ devices }: DevicesSliderSmallProps 
                 {slides.map((device) => (
                   <div
                     key={device.id}
-                    className="relative min-w-0 flex-[0_0_36%] sm:flex-[0_0_36%] md:flex-[0_0_24%] lg:flex-[0_0_26%] pl-2 pr-2 sm:pl-3 sm:pr-3 md:pl-4 md:pr-4"
+                    className="relative min-w-0 flex-[0_0_40%] sm:flex-[0_0_40%] md:flex-[0_0_28%] lg:flex-[0_0_30%] pl-0.5 pr-0.5 sm:pl-1 sm:pr-1 md:pl-1 md:pr-1"
                   >
                     <motion.div
                       className="relative h-full w-full cursor-pointer"
-                      style={{ minHeight: '150px' }}
+                      style={{ minHeight: '180px' }}
                     >
                       
                       <Card className="group relative h-full w-full overflow-hidden z-20 bg-transparent border-0 bg-gradient-to-r from-red-500/40 to-[#ff8400]/50 mix-blend-overlay" style={{ aspectRatio: '3/4' }}> {/* bg-gradient-to-br from-[#CD7F32] to-[#B87333] */}

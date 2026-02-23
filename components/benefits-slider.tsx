@@ -6,12 +6,12 @@ import { motion } from "framer-motion"
 
 export default function BenefitsSlider() {
   return (
-    <section className="w-full py-16 md:py-24 overflow-hidden bg-gradient-to-br from-blue-50 via-sky-50 to-white">
+    <section className="w-full py-8 md:py-12 overflow-hidden bg-gradient-to-br from-blue-50 via-sky-50 to-white -mt-4 md:-mt-6">
       <div className="max-w-[95%] lg:max-w-[92%] xl:max-w-[90%] mx-auto px-4 md:px-8 lg:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center">
           {/* Left Section - Image with Curved Shape */}
           <motion.div
-            className="relative h-[500px] md:h-[600px] lg:h-[700px] order-2 lg:order-1"
+            className="relative h-[420px] md:h-[500px] lg:h-[600px] order-2 lg:order-1"
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -51,13 +51,13 @@ export default function BenefitsSlider() {
 
           {/* Right Section - Text Content */}
           <motion.div
-            className="relative z-10 order-1 lg:order-2 h-[500px] md:h-[600px] lg:h-[700px] flex items-center"
+            className="relative z-10 order-1 lg:order-2 h-[420px] md:h-[500px] lg:h-[600px] flex items-center"
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <div className="space-y-4 md:space-y-5 lg:space-y-6 w-full">
+            <div className="space-y-3 md:space-y-4 lg:space-y-5 w-full">
               {/* Main Headline */}
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
                 Want To Go Faster? Upgrade to Premium Devices
@@ -69,7 +69,7 @@ export default function BenefitsSlider() {
               </p>
 
               {/* Feature Sections */}
-              <div className="space-y-3 md:space-y-4">
+              <div className="space-y-2 md:space-y-3">
                 {/* Feature 1: Reliable & Fast Devices */}
                 <div>
                   <div className="flex items-start gap-3">

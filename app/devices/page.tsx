@@ -285,16 +285,17 @@ export default function DevicesPage() {
     return (
         <>
             <Navigation page="devices" />
-            <motion.header className="relative h-auto min-h-[60vh] md:h-screen md:flex md:flex-row-reverse md:justify-center md:items-center bg-white">
-                <motion.div className="relative w-full">
-          <div className="relative w-full h-[45vh] md:h-screen flex items-center justify-center">
+            <motion.header className="relative h-auto min-h-[68vh] md:min-h-[95vh] md:flex md:flex-row-reverse md:justify-center md:items-stretch bg-white pb-12 md:pb-16">
+                {/* Image - narrower on desktop so slider fits below without overlap */}
+                <motion.div className="relative w-full md:w-[58%] md:min-h-[88vh] md:flex-shrink-0">
+          <div className="relative w-full h-[58vh] md:h-full md:min-h-[88vh] flex items-center justify-center overflow-hidden">
             {heroImage ? (
               <div className="relative w-full h-full">
                 <Image
                   src={heroImage}
                   alt={activeSlide?.title || activeSlide?.source === "image-only" ? "QCell featured device" : "QCell devices"}
                   fill
-                  className="object-cover object-right"
+                  className="object-cover object-center md:object-right"
                   priority={currentSlide === 0}
                   unoptimized
                   onError={(e) => {
@@ -313,7 +314,8 @@ export default function DevicesPage() {
                         <DevicesSliderSmall devices={featuredDevices.length ? featuredDevices : devices} />
                     </motion.div>
                 </motion.div>
-                <motion.div className="relative px-[45px] mx-auto md:pl-[80px] lg:pl-[100px] md:flex md:flex-col md:justify-center">
+                {/* Text + slider area - left side on desktop */}
+                <motion.div className="relative px-[45px] mx-auto md:pl-[60px] lg:pl-[80px] md:w-[42%] md:flex md:flex-col md:justify-center md:flex-shrink-0">
           {showTextContent ? (
             <>
               <motion.h1 className="mt-[70px] text-5xl font-bold md:text-6xl md:mt-0">
@@ -342,7 +344,7 @@ export default function DevicesPage() {
                         </Link>
                     </motion.div>
           {heroSlides.length > 1 ? (
-            <div className="flex gap-2 mt-6">
+            <div className="flex gap-2 mt-8 md:mt-10 md:mr-8">
               {heroSlides.map((_, index) => (
                 <button
                   key={index}
@@ -357,12 +359,13 @@ export default function DevicesPage() {
           ) : null}
                 </motion.div>
 
-                <motion.div id="devices" className="absolute -bottom-5 left-0 right-0 z-20 hidden md:block">
+                {/* Desktop: slider aligned with left content, slight space from image */}
+                <motion.div id="devices" className="absolute bottom-0 md:bottom-8 left-0 md:left-[60px] lg:left-[80px] right-0 md:right-auto md:w-[calc(42%-60px)] lg:w-[calc(41%-80px)] md:mr-2 z-20 hidden md:block">
                     <DevicesSliderSmall devices={featuredDevices.length ? featuredDevices : devices} />
                 </motion.div>
             </motion.header>
 
-            <motion.div className="md:mt-8">
+            <motion.div className="md:mt-0">
                 <DevicesSlider devices={devices} />
             </motion.div>
 

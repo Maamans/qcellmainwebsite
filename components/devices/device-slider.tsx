@@ -1,11 +1,8 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useMemo } from "react"
 import { motion } from "framer-motion"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import useEmblaCarousel from "embla-carousel-react"
 
-import { Button } from "@/components/ui/button"
 import DeviceCard from "./device-card"
 import DeviceModal from "./device-modal"
 import type { DeviceContent } from "@/types/devices"
@@ -112,12 +109,6 @@ export default function DevicesSlider({
   subheading = "Tap on a card to explore full specs, pricing, and purchase options.",
 }: DevicesSliderProps) {
   const [selectedDevice, setSelectedDevice] = useState<DeviceContent | null>(null)
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true,
-    align: "center",
-    containScroll: "trimSnaps",
-  })
   const slides = useMemo(() => {
     const provided = Array.isArray(devices) ? devices : []
     if (!provided.length) return fallbackDevices
@@ -138,83 +129,43 @@ export default function DevicesSlider({
     return Array.from(unique.values())
   }, [devices])
 
-  useEffect(() => {
-    if (emblaApi) {
-      emblaApi.on("select", () => {
-        setCurrentIndex(emblaApi.selectedScrollSnap())
-      })
-    }
-  }, [emblaApi])
-
-  const scrollPrev = () => emblaApi?.scrollPrev()
-  const scrollNext = () => emblaApi?.scrollNext()
-
   return (
-    <div className="relative w-full px-0 overflow-hidden py-2 pb-10 bg-white rounded-lg shadow-lg backdrop-blur-sm md:max-w-[110%] md:rounded-lg"> {/* py-16 */}
+    <div className="relative w-full px-0 overflow-hidden py-0 pb-8 bg-white rounded-lg shadow-lg backdrop-blur-sm md:max-w-[110%] md:rounded-lg -mt-4 md:-mt-6">
       
-      <div className="relative sm:ml-24 mt-4 md:mt-20"> {/* px-4 */}
+      <div className="relative sm:ml-24 mt-0"> {/* px-4 */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="ml-4 space-y-2">
-          <p className="mt-3 ml-4 sm:ml-0 text-sm uppercase tracking-wide text-orange-400">{eyebrow}</p>
+          <p className="mt-0 ml-4 sm:ml-0 text-sm uppercase tracking-wide text-orange-400">{eyebrow}</p>
           <h2 className="ml-4 sm:ml-0 max-w-2xl text-3xl font-semibold text-gray-900 md:text-4xl">
             {heading}
           </h2>
           <p className="ml-4 sm:ml-0 text-base text-gray-500">{subheading}</p>
         </motion.div>
 
-        <div > {/* px-4 */}
-          <div className="relative">
-            <div className="hidden sm:block absolute left-0 top-1/2 z-10 -translate-x-4 -translate-y-2/4">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-12 w-12 rounded-full border border-gray-200 bg-white/80 shadow-lg backdrop-blur-sm"
-                onClick={scrollPrev}
-              >
-                <ChevronLeft className="h-6 w-6" />
-                <span className="sr-only">Previous slide</span>
-              </Button>
-            </div>
-
-            <div className="hidden sm:block absolute right-0 top-1/2 z-10 -translate-y-1/2 ">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-12 w-12 rounded-full border border-gray-200 bg-white/80 shadow-lg backdrop-blur-sm"
-                onClick={scrollNext}
-              >
-                <ChevronRight className="h-6 w-6" />
-                <span className="sr-only">Next slide</span>
-              </Button>
-            </div>
-
-            <div className="overflow-hidden" ref={emblaRef}>
-              <div className="flex touch-pan-y w-full rounded-lg sm:ml-[150px] md:-ml-14">
-                {slides.map((device, index) => (
-                  <div
-                    key={device.id}
-                    className="relative min-w-0 flex-[0_0_50%] sm:flex-[0_0_35%] md:flex-[0_0_30%] lg:flex-[0_0_22%] pl-2 pr-2 sm:pl-3 sm:pr-3"
-                  >
-                    <DeviceCard
-                      device={device}
-                      isActive={currentIndex === index}
-                      onClick={() => setSelectedDevice(device)}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-8 flex justify-center gap-2">
-              {slides.map((_, index) => (
-                <button
-                  key={index}
-                  className={`h-2 w-2 rounded-full transition-all ${
-                    currentIndex === index ? "bg-[#CD7F32] w-4" : "bg-gray-300"
-                  }`}
-                  onClick={() => emblaApi?.scrollTo(index)}
+        <div className="mt-4">
+          {/* Mobile: horizontal scrollable row */}
+          <div className="flex md:hidden gap-2 overflow-x-auto pb-2 -mx-4 px-4 no-scrollbar snap-x snap-mandatory">
+            {slides.map((device) => (
+              <div key={device.id} className="relative flex-shrink-0 w-[48%] min-w-[48%] snap-center">
+                <DeviceCard
+                  device={device}
+                  isActive={true}
+                  onClick={() => setSelectedDevice(device)}
                 />
-              ))}
-            </div>
+              </div>
+            ))}
+          </div>
+          
+          {/* Desktop: 5-column grid */}
+          <div className="hidden md:grid md:grid-cols-4 lg:grid-cols-5 gap-2 w-full">
+            {slides.map((device) => (
+              <div key={device.id} className="relative w-full min-w-0">
+                <DeviceCard
+                  device={device}
+                  isActive={true}
+                  onClick={() => setSelectedDevice(device)}
+                />
+              </div>
+            ))}
           </div>
         </div>
       </div>
