@@ -228,7 +228,7 @@ export default function EnhancedCoverageMap() {
   }
 
   return (
-    <div className="relative h-[700px] w-full overflow-hidden rounded-xl bg-white shadow-2xl">
+  <div className="relative w-full overflow-hidden rounded-xl bg-white shadow-2xl h-[420px] sm:h-[520px] md:h-[620px] lg:h-[700px] xl:h-[760px]">
       <style jsx global>{`
         .coverage-marker {
           width: 30px;

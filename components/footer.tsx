@@ -329,9 +329,9 @@ export default function Footer() {
       <div className="container mx-auto px-4 py-12 md:px-6 md:py-16">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-6">
           {/* Desktop Footer - 6 columns for all sections inline */}
-          {footerSections.map((section) => (
+          {footerSections.map((section, index) => (
             <motion.div
-              key={section.title}
+              key={`${section.title}-${index}`}
               className="hidden lg:block"
               initial="hidden"
               animate={isInView ? "visible" : "hidden"}
@@ -382,8 +382,8 @@ export default function Footer() {
 
           {/* Mobile Footer Accordions */}
           <div className="z-40 col-span-full lg:hidden">
-            {footerSections.map((section) => (
-              <div key={section.title} className="border-b border-gray-200">
+          {footerSections.map((section, index) => (
+            <div key={`${section.title}-${index}`} className="border-b border-gray-200">
                 <button
                   onClick={() => toggleSection(section.title)}
                   className="flex w-full items-center justify-between py-4 text-left"

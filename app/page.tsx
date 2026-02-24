@@ -25,23 +25,27 @@ export default function Home() {
           className="main-content"
         >
           <Cursor />
+          {/* Hero / Coverage Map */}
           <section className="relative w-full bg-white">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="w-full py-16 md:py-24"
+              className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20 lg:py-24"
             >
               <EnhancedCoverageMap />
             </motion.div>
           </section>
 
-          <section className="py-16 md:py-24 bg-gray-50">
+          {/* Offerings slider */}
+          <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gray-50">
             <OfferingsSlider />
           </section>
-          <section className="bg-white">
+          {/* Download app section */}
+          <section className="bg-white py-12 sm:py-16 md:py-20 lg:py-24">
             <DownloadApp />
           </section>
+          {/* Footer */}
           <section className="bg-gray-50">
             <Footer />
           </section>
