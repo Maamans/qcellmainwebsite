@@ -19,30 +19,51 @@ export async function GET() {
       return NextResponse.json([], { status: 200 });
     }
     
-    // Forward request to backend API
-    const response = await fetch(`${API_URL}/api/public/promotions-offerings`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      cache: 'no-store', // Always fetch fresh data
-    });
+    // Fetch from backend with timeout (short, to avoid Netlify edge function timeouts)
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1500);
 
-    if (!response.ok) {
+    try {
+      const response = await fetch(`${API_URL}/api/public/promotions-offerings`, {
+        signal: controller.signal,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cache: 'no-store', // Always fetch fresh data
+      });
+
+      clearTimeout(timeoutId);
+
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Return the data (could be array or object with promotions array)
+        const promotions = Array.isArray(data) ? data : (data.promotions || data.offerings || []);
+        
+        return NextResponse.json(promotions, { status: 200 });
+      }
+
       // If backend is not available, return empty array (will use fallback)
       if (response.status === 404 || response.status >= 500) {
         return NextResponse.json([], { status: 200 });
       }
-      throw new Error(`Backend API error: ${response.status}`);
+      
+      console.warn(`[Promotions Offerings API] Backend returned ${response.status}`);
+      return NextResponse.json([], { status: 200 });
+    } catch (fetchError) {
+      clearTimeout(timeoutId);
+      
+      // Network error or timeout - return empty array (frontend will use fallback)
+      if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+        console.warn('[Promotions Offerings API] Backend timeout');
+      } else {
+        console.warn('[Promotions Offerings API] Backend unavailable, using fallback:', fetchError instanceof Error ? fetchError.message : fetchError);
+      }
+      return NextResponse.json([], { status: 200 });
     }
-
-    const data = await response.json();
-    
-    // Return the data (could be array or object with promotions array)
-    const promotions = Array.isArray(data) ? data : (data.promotions || data.offerings || []);
-    
-    return NextResponse.json(promotions, { status: 200 });
-  } catch {
+  } catch (error) {
+    console.error('[Promotions Offerings API] Error:', error);
     // Silently return empty array on error so frontend can use fallback
     return NextResponse.json([], { status: 200 });
   }
