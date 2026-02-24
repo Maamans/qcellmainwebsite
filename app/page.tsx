@@ -31,7 +31,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20 lg:py-24"
+              className="w-full px-0 py-12 sm:py-16 md:py-20 lg:py-24"
             >
               <EnhancedCoverageMap />
             </motion.div>

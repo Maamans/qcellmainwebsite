@@ -279,7 +279,7 @@ export default function DevicesPage() {
     return (
         <>
             <Navigation page="devices" />
-            <motion.header className="relative h-auto min-h-[68vh] md:min-h-[95vh] md:flex md:flex-row-reverse md:justify-center md:items-stretch bg-white pb-12 md:pb-16">
+            <motion.header className="relative h-auto min-h-[68vh] md:min-h-[95vh] md:flex md:flex-row-reverse md:justify-center md:items-stretch bg-white pt-12 md:pt-24 lg:pt-28 pb-12 md:pb-16">
                 {/* Image - narrower on desktop so slider fits below without overlap */}
                 <motion.div className="relative w-full md:w-[58%] md:min-h-[88vh] md:flex-shrink-0">
           <div className="relative w-full h-[58vh] md:h-full md:min-h-[88vh] flex items-center justify-center overflow-hidden">

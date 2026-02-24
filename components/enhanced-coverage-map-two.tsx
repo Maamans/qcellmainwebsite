@@ -323,8 +323,161 @@ export default function EnhancedCoverageMap() {
         </div>
       </div>
 
-      {/* Right sidebar - light cream/white with orange accents */}
-      <div className="absolute inset-y-0 right-0 z-10 w-80 sm:w-96 bg-white/95 backdrop-blur-md shadow-xl overflow-y-auto border-l border-[#FF8C00]/30">
+      <div className="hidden md:block absolute inset-y-0 right-0 z-10 w-80 sm:w-96 bg-white/95 backdrop-blur-md shadow-xl overflow-y-auto border-l border-[#FF8C00]/30">
+        <div className="p-6">
+          <div className="mb-6 flex gap-4">
+            <button
+              onClick={() => setActiveTab("map")}
+              className={cn(
+                "flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors",
+                activeTab === "map"
+                  ? "bg-[#FF8C00] text-white shadow-md"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-800",
+              )}
+            >
+              <Map className="mr-2 inline-block h-4 w-4" />
+              Map View
+            </button>
+            <button
+              onClick={() => setActiveTab("list")}
+              className={cn(
+                "flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors",
+                activeTab === "list"
+                  ? "bg-[#CD7F32] text-white shadow-md"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-800",
+              )}
+            >
+              <Signal className="mr-2 inline-block h-4 w-4" />
+              Coverage List
+            </button>
+          </div>
+
+          <AnimatePresence mode="wait">
+            {activeTab === "map" ? (
+              <motion.div
+                key="map-panel"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-6"
+              >
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-[#FF8C00]">Coverage Statistics</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="rounded-lg bg-[#FFF7ED] p-4 border border-[#FF8C00]/30">
+                      <div className="text-2xl font-bold text-[#FF8C00]">{coverageStats.total}</div>
+                      <div className="text-sm text-slate-600">Coverage Areas</div>
+                    </div>
+                    <div className="rounded-lg bg-[#FFF7ED] p-4 border border-[#FF8C00]/30">
+                      <div className="text-2xl font-bold text-[#FF8C00]">
+                        {(coverageStats.totalPopulation / 1000000).toFixed(1)}M
+                      </div>
+                      <div className="text-sm text-slate-600">People Covered</div>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Signal className="h-4 w-4 text-[#FF8C00]" />
+                        <span className="text-sm text-slate-700">4G Coverage</span>
+                      </div>
+                      <span className="font-mono text-sm text-slate-500">{coverageStats.fourG} areas</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Wifi className="h-4 w-4 text-[#FFA500]" />
+                        <span className="text-sm text-slate-700">3G Coverage</span>
+                      </div>
+                      <span className="font-mono text-sm text-slate-500">{coverageStats.threeG} areas</span>
+                    </div>
+                  </div>
+                </div>
+
+                {selectedArea && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="rounded-lg bg-[#FFF7ED] p-4 border border-[#FF8C00]/30"
+                  >
+                    <div className="mb-2 flex items-center justify-between">
+                      <h3 className="text-lg font-semibold text-slate-800">{selectedArea.name}</h3>
+                      <span
+                        className={cn(
+                          "rounded-full px-2 py-1 text-xs font-medium",
+                          selectedArea.type === "4G"
+                            ? "bg-[#FF8C00]/20 text-[#FF8C00]"
+                            : "bg-[#FFA500]/20 text-[#FFA500]",
+                        )}
+                      >
+                        {selectedArea.type}
+                      </span>
+                    </div>
+                    <div className="mt-4 space-y-4">
+                      <div>
+                        <div className="mb-1 flex items-center justify-between text-sm">
+                          <span className="text-slate-600">Signal Strength</span>
+                          <span className="font-mono text-[#FF8C00]">{selectedArea.signalStrength}%</span>
+                        </div>
+                        <div className="h-2 overflow-hidden rounded-full bg-slate-200">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${selectedArea.signalStrength}%` }}
+                            transition={{ duration: 1, type: "spring" }}
+                            className="h-full bg-gradient-to-r from-[#FF8C00] to-[#FFA500]"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-slate-600">Population Covered</span>
+                        <span className="font-mono text-slate-800">{selectedArea.population.toLocaleString()} people</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setShowList(true)}
+                  className="w-full rounded-lg bg-gradient-to-r from-[#FF8C00] to-[#FFA500] px-4 py-2 text-sm font-medium text-white transition-colors hover:from-[#FFA500] hover:to-[#FF8C00]"
+                >
+                  List of Roaming Partners
+                </motion.button>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="list-panel"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-4"
+              >
+                <div className="space-y-2">
+                  {coverageAreas.map((area) => (
+                    <motion.button
+                      key={area.id}
+                      onClick={() => {
+                        setSelectedArea(area)
+                        setActiveTab("map")
+                        flyToArea(area)
+                      }}
+                      className="flex w-full items-center justify-between rounded-lg bg-slate-50 border border-[#FF8C00]/20 p-4 text-left transition-colors hover:bg-[#FFF7ED] hover:border-[#FF8C00]/40"
+                    >
+                      <div>
+                        <h3 className="font-medium text-slate-800">{area.name}</h3>
+                        <p className="text-sm text-slate-500">{area.type} Coverage</p>
+                      </div>
+                      <ChevronRight className="h-4 w-4 text-slate-400" />
+                    </motion.button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+      {/* Right sidebar - light cream/white with orange accents (desktop and up) */}
+      <div className="hidden md:block absolute inset-y-0 right-0 z-10 w-80 sm:w-96 bg-white/95 backdrop-blur-md shadow-xl overflow-y-auto border-l border-[#FF8C00]/30">
         <div className="p-6">
           <div className="mb-6 flex gap-4">
             <button
@@ -523,6 +676,165 @@ export default function EnhancedCoverageMap() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Coverage panel below the map (small screens only) */}
+      <div className="relative z-10 mt-4 px-4 pb-4 md:hidden">
+        <div className="bg-white/95 backdrop-blur-md shadow-xl overflow-y-auto border border-[#FF8C00]/30 rounded-xl">
+          <div className="p-6">
+            <div className="mb-6 flex gap-4">
+              <button
+                onClick={() => setActiveTab("map")}
+                className={cn(
+                  "flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors",
+                  activeTab === "map"
+                    ? "bg-[#FF8C00] text-white shadow-md"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-800",
+                )}
+              >
+                <Map className="mr-2 inline-block h-4 w-4" />
+                Map View
+              </button>
+              <button
+                onClick={() => setActiveTab("list")}
+                className={cn(
+                  "flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors",
+                  activeTab === "list"
+                    ? "bg-[#CD7F32] text-white shadow-md"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-800",
+                )}
+              >
+                <Signal className="mr-2 inline-block h-4 w-4" />
+                Coverage List
+              </button>
+            </div>
+
+            <AnimatePresence mode="wait">
+              {activeTab === "map" ? (
+                <motion.div
+                  key="map-panel-mobile"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="space-y-6"
+                >
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-[#FF8C00]">Coverage Statistics</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="rounded-lg bg-[#FFF7ED] p-4 border border-[#FF8C00]/30">
+                        <div className="text-2xl font-bold text-[#FF8C00]">{coverageStats.total}</div>
+                        <div className="text-sm text-slate-600">Coverage Areas</div>
+                      </div>
+                      <div className="rounded-lg bg-[#FFF7ED] p-4 border border-[#FF8C00]/30">
+                        <div className="text-2xl font-bold text-[#FF8C00]">
+                          {(coverageStats.totalPopulation / 1000000).toFixed(1)}M
+                        </div>
+                        <div className="text-sm text-slate-600">People Covered</div>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Signal className="h-4 w-4 text-[#FF8C00]" />
+                          <span className="text-sm text-slate-700">4G Coverage</span>
+                        </div>
+                        <span className="font-mono text-sm text-slate-500">{coverageStats.fourG} areas</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Wifi className="h-4 w-4 text-[#FFA500]" />
+                          <span className="text-sm text-slate-700">3G Coverage</span>
+                        </div>
+                        <span className="font-mono text-sm text-slate-500">{coverageStats.threeG} areas</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {selectedArea && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="rounded-lg bg-[#FFF7ED] p-4 border border-[#FF8C00]/30"
+                    >
+                      <div className="mb-2 flex items-center justify-between">
+                        <h3 className="text-lg font-semibold text-slate-800">{selectedArea.name}</h3>
+                        <span
+                          className={cn(
+                            "rounded-full px-2 py-1 text-xs font-medium",
+                            selectedArea.type === "4G"
+                              ? "bg-[#FF8C00]/20 text-[#FF8C00]"
+                              : "bg-[#FFA500]/20 text-[#FFA500]",
+                          )}
+                        >
+                          {selectedArea.type}
+                        </span>
+                      </div>
+                      <div className="mt-4 space-y-4">
+                        <div>
+                          <div className="mb-1 flex items-center justify-between text-sm">
+                            <span className="text-slate-600">Signal Strength</span>
+                            <span className="font-mono text-[#FF8C00]">{selectedArea.signalStrength}%</span>
+                          </div>
+                          <div className="h-2 overflow-hidden rounded-full bg-slate-200">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${selectedArea.signalStrength}%` }}
+                              transition={{ duration: 1, type: "spring" }}
+                              className="h-full bg-gradient-to-r from-[#FF8C00] to-[#FFA500]"
+                            />
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-slate-600">Population Covered</span>
+                          <span className="font-mono text-slate-800">
+                            {selectedArea.population.toLocaleString()} people
+                          </span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setShowList(true)}
+                    className="w-full rounded-lg bg-gradient-to-r from-[#FF8C00] to-[#FFA500] px-4 py-2 text-sm font-medium text-white transition-colors hover:from-[#FFA500] hover:to-[#FF8C00]"
+                  >
+                    List of Roaming Partners
+                  </motion.button>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="list-panel-mobile"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="space-y-4"
+                >
+                  <div className="space-y-2">
+                    {coverageAreas.map((area) => (
+                      <motion.button
+                        key={area.id}
+                        onClick={() => {
+                          setSelectedArea(area)
+                          setActiveTab("map")
+                          flyToArea(area)
+                        }}
+                        className="flex w-full items-center justify-between rounded-lg bg-slate-50 border border-[#FF8C00]/20 p-4 text-left transition-colors hover:bg-[#FFF7ED] hover:border-[#FF8C00]/40"
+                      >
+                        <div>
+                          <h3 className="font-medium text-slate-800">{area.name}</h3>
+                          <p className="text-sm text-slate-500">{area.type} Coverage</p>
+                        </div>
+                        <ChevronRight className="h-4 w-4 text-slate-400" />
+                      </motion.button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
