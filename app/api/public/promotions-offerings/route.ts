@@ -12,7 +12,12 @@ import { NextResponse } from 'next/server';
  */
 export async function GET() {
   try {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    
+    // If no backend URL is configured, return empty array and let frontend use fallback data
+    if (!API_URL) {
+      return NextResponse.json([], { status: 200 });
+    }
     
     // Forward request to backend API
     const response = await fetch(`${API_URL}/api/public/promotions-offerings`, {
@@ -37,9 +42,8 @@ export async function GET() {
     const promotions = Array.isArray(data) ? data : (data.promotions || data.offerings || []);
     
     return NextResponse.json(promotions, { status: 200 });
-  } catch (error) {
-    console.error('Error fetching promotions offerings:', error);
-    // Return empty array on error so frontend can use fallback
+  } catch {
+    // Silently return empty array on error so frontend can use fallback
     return NextResponse.json([], { status: 200 });
   }
 }

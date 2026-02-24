@@ -39,16 +39,21 @@ export async function GET(request: NextRequest) {
     const sanitizedCategory = category ? sanitizeCategory(category) : undefined;
 
     // Build backend URL
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    // If no backend is configured, return empty list so frontend uses fallback FAQs.
+    if (!backendUrl) {
+      return NextResponse.json([], { status: 200 });
+    }
     let url = `${backendUrl}/api/public/support`;
     
     if (sanitizedCategory) {
       url += `?category=${encodeURIComponent(sanitizedCategory)}`;
     }
 
-    // Fetch from backend with timeout
+    // Fetch from backend with timeout (short, to avoid slow navigation)
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 1500);
 
     try {
       const response = await fetch(url, {

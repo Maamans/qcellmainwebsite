@@ -42,65 +42,147 @@ export default function Footer() {
   ]
 
   const customerCareShopsColumnB = [
-    "New England Ville (Police Post), Freetown",
+    "Deaf school Wilkinson road, Freetown",
+    "8 Wilberforce Street, Freetown",
+    "26A Kingharman Road, Freetown",
+    "59 Bai Bureh Road, Kissy Shell, Freetown",
+    "109 Lumpa Road, Waterloo",
+    "Aberdeen Beach Road (Adjacent to Warehouse)",
+  ]
+
+  const customerCareShopsColumnC = [
     "Brookfields (Bus Halt), Freetown",
     "31A Liverpool Street, Freetown",
     "6 Bojon Street, Bo",
     "29 Mabanta Road, Makeni",
     "20 Blama Road, Jacoba Junction, Kenema",
+    "New England Ville (Police Post), Freetown",
   ]
 
-  const customerCareShopsColumnC = [
-    "10 Bomboli Street, Masiaka",
-    "1 Sawanah Street, Moyamba",
-    "1 Council Road, Kailahun",
-    "Kaikordu Road, Koidu",
-    "109 Lumpa Road, Waterloo",
+  const customerCareShopsColumnD = [
+    "Mofindor Road, Kailahun",
+    "Konomani Road, Koidu",
     "Lungi Airport",
     "Lungi Port Loko Road (Lungi)",
+    "10 Bomboli Street, Masiaka",
+    "1 Sawaneh Street, Moyamba",
   ]
 
   const footerSections = [
-    {
-      title: "Customer Care Shops (Freetown)",
-      links: customerCareShopsColumnA.map((shop) => ({ name: shop, href: "#" })),
-    },
     {
       title: "Customer Care Shops (Nationwide)",
       links: customerCareShopsColumnB.map((shop) => ({ name: shop, href: "#" })),
     },
     {
-      title: "Customer Care Shops (Upcountry)",
+      title: "Customer Care Shops (Nationwide)",
+      links: customerCareShopsColumnA.map((shop) => ({ name: shop, href: "#" })),
+    },
+    {
+      title: "Customer Care Shops (Nationwide)",
       links: customerCareShopsColumnC.map((shop) => ({ name: shop, href: "#" })),
     },
     {
-      title: "QCell Values",
-      links: [
-        { name: "Accessibility", href: "#" },
-        { name: "Environment", href: "#" },
-        { name: "Privacy", href: "#" },
-        { name: "Corporate Responsibility", href: "#" },
-        { name: "Supplier Responsibility", href: "#" },
-      ],
+      title: "Customer Care Shops (Nationwide)",
+      links: customerCareShopsColumnD.map((shop) => ({ name: shop, href: "#" })),
     },
     {
-      title: "For Business",
+      title: "How To",
       links: [
-        { name: "QCell for Business", href: "#" },
-        { name: "Shop for Business", href: "#" },
-        { name: "Business Solutions", href: "#" },
-        { name: "Enterprise Connectivity", href: "#" },
-        { name: "Corporate Accounts", href: "#" },
+        {
+          name: (
+            <>
+              Check main voice balance{" "}
+              <span className="font-bold ml-1">*101#</span>
+            </>
+          ),
+          href: "#",
+        },
+        {
+          name: (
+            <>
+              Buy Bundle{" "}
+              <span className="font-bold ml-1">*303#</span>
+            </>
+          ),
+          href: "#",
+        },
+        {
+          name: (
+            <>
+              Know your Number{" "}
+              <span className="font-bold ml-1">*160#</span>
+            </>
+          ),
+          href: "#",
+        },
+        {
+          name: (
+            <>
+              Transfer Credit{" "}
+              <span className="font-bold ml-1">*141*Number*Amount#</span>
+            </>
+          ),
+          href: "#",
+        },
+        {
+          name: (
+            <>
+              Loan Credit{" "}
+              <span className="font-bold ml-1">*393#</span>
+            </>
+          ),
+          href: "#",
+        },
       ],
     },
     {
       title: "How To",
       links: [
-        { name: <><span className="font-bold">*303#</span> Check Balance</>, href: "#" },
-        { name: <><span className="font-bold">*124#</span> Check Data Balance</>, href: "#" },
-        { name: <><span className="font-bold">*122#</span> Buy Data Bundle</>, href: "#" },
-        { name: <><span className="font-bold">*133#</span> Borrow Credit</>, href: "#" },
-        { name: <><span className="font-bold">*100#</span> Customer Care</>, href: "#" },
+        {
+          name: (
+            <>
+              Send Please call me{" "}
+              <span className="font-bold ml-1">*444*Number#</span>
+            </>
+          ),
+          href: "#",
+        },
+        {
+          name: (
+            <>
+              Access QPower{" "}
+              <span className="font-bold ml-1">*363#</span>
+            </>
+          ),
+          href: "#",
+        },
+        {
+          name: (
+            <>
+              Access last call info{" "}
+              <span className="font-bold ml-1">*102#</span>
+            </>
+          ),
+          href: "#",
+        },
+        {
+          name: (
+            <>
+              Self activate 4G LTE{" "}
+              <span className="font-bold ml-1">*335#</span>
+            </>
+          ),
+          href: "#",
+        },
+        {
+          name: (
+            <>
+              Access all short codes{" "}
+              <span className="font-bold ml-1">*343#</span>
+            </>
+          ),
+          href: "#",
+        },
       ],
     },
   ]
@@ -367,7 +449,7 @@ export default function Footer() {
                 whileHover={{ x: 5 }}
               >
                 <MapPin className="mr-3 h-5 w-5 text-[#F98F1F]" />
-                <span className="text-sm text-gray-600">QCell House, 16 Wilkinson Road, Freetown, Sierra Leone</span>
+                <span className="text-sm text-gray-600">QCell House, 26A Kingharman Road, Freetown, Sierra Leone</span>
               </motion.li>
               <motion.li
                 className="flex items-center"

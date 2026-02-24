@@ -44,16 +44,21 @@ export async function GET(request: NextRequest) {
     }
 
     // Build backend URL
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    // If no backend is configured, return empty array so frontend sliders use local fallback slides.
+    if (!backendUrl) {
+      return NextResponse.json([], { status: 200 });
+    }
     let url = `${backendUrl}/api/public/hero-slides`;
     
     if (page && page !== '/') {
       url += `?page=${encodeURIComponent(page)}`;
     }
 
-    // Fetch from backend with timeout
+    // Fetch from backend with timeout (short, to keep page loads responsive)
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 1500);
 
     try {
       const response = await fetch(url, {

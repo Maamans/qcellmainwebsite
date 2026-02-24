@@ -26,11 +26,19 @@ const FALLBACK_PAYLOAD = {
 
 export async function GET() {
   try {
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    // If no backend URL is configured, immediately return fallback payload.
+    // This avoids slow timeouts in local/dev environments and still works with static data.
+    if (!backendUrl) {
+      return NextResponse.json(FALLBACK_PAYLOAD, { status: 200 });
+    }
+
     const url = `${backendUrl}/api/public/devices-page/`;
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    // Keep the timeout short so navigation is never blocked for long if backend is slow/unreachable.
+    const timeoutId = setTimeout(() => controller.abort(), 1500);
 
     try {
       const response = await fetch(url, {

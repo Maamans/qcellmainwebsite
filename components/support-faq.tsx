@@ -14,69 +14,96 @@ interface SupportItem {
 }
 
 // Fallback FAQ items (used if backend unavailable)
+// These are the default questions and answers shown on the Support page.
 const fallbackSupportItems: SupportItem[] = [
   {
     id: 1,
-    title: "How do I check my account balance?",
-    description: "You can check your account balance by dialing *123# and selecting 'Check Balance', or by using the QCell mobile app.",
+    title: "How much is a QCell SIM card?",
+    description:
+      "A QCell SIM Card costs NLe10. Just visit a QCell Customer Care Centre with a valid national ID (such as National ID card, International Passport, Driver's Licence or Voter's card) for SIM card registration.",
     category: "customer-care",
     order: 1,
     isActive: true,
   },
   {
     id: 2,
-    title: "How do I buy a data bundle?",
-    description: "To buy a data bundle, dial *123# and select 'Buy Bundle', or use the QCell mobile app. You can also purchase bundles online through our website.",
-    category: "buy-bundle",
-    order: 1,
-    isActive: true,
-  },
-  {
-    id: 3,
-    title: "How do I contact customer care?",
-    description: "You can contact customer care by calling our 24/7 helpline at *123#, using live chat on our website, or emailing support@qcell.com.sl.",
+    title: "Why do I have to register my QCell line?",
+    description:
+      "It is a mandate from the Government of Sierra Leone to register all SIM cards for security reasons and to reduce phone‑related crime.",
     category: "customer-care",
     order: 2,
     isActive: true,
   },
   {
-    id: 4,
-    title: "How do I activate my SIM card?",
-    description: "To activate your SIM card, insert it into your phone and follow the on-screen instructions. You may need to dial *123# to complete activation.",
+    id: 3,
+    title: "What documents do I need to register my QCell SIM card?",
+    description:
+      "You will need an International Passport, a National ID card, Driver's Licence or Voter's card. Non‑Sierra Leoneans can use their International Passport to register.",
     category: "customer-care",
     order: 3,
     isActive: true,
   },
   {
-    id: 5,
-    title: "What are your business hours?",
-    description: "Our customer care is available 24/7. Our physical stores are open Monday to Saturday from 8:00 AM to 6:00 PM.",
-    category: "customer-care",
-    order: 4,
-    isActive: true,
-  },
-  {
-    id: 6,
-    title: "How do I top up my account?",
-    description: "You can top up your account using scratch cards, mobile money, bank transfer, or online payment. Dial *123# and select 'Top Up', or use the QCell mobile app for convenient top-ups.",
+    id: 4,
+    title: "How do I know that my data bundle is about to expire?",
+    description:
+      "Dial *303# and reply with option 5 (Check Balance) to see your bundle status and validity. You can also dial *101# for information on your main account balance.",
     category: "check-balance",
     order: 1,
     isActive: true,
   },
   {
+    id: 5,
+    title: "What happens when my data bundle expires?",
+    description:
+      "Bundles have different validity periods from the date of purchase. When your bundle expires and you still have credit, dial *303#, reply with 1 to buy bundle, then choose 2 for data bundle and select the bundle of your choice to continue browsing.",
+    category: "buy-bundle",
+    order: 2,
+    isActive: true,
+  },
+  {
+    id: 6,
+    title: "Can I continue using the internet with my credit when I exhaust my data bundle?",
+    description:
+      "No. You will not be able to continue browsing when your data bundle is exhausted. You must subscribe to another bundle by dialing *303#, replying with 1 to buy bundle, then choosing 2 for data bundle and selecting your preferred bundle.",
+    category: "buy-bundle",
+    order: 3,
+    isActive: true,
+  },
+  {
     id: 7,
-    title: "What should I do if I lose my phone?",
-    description: "If you lose your phone, immediately contact customer care to block your SIM card. You can also dial *123# to temporarily suspend your line. Visit our nearest store with valid ID to get a replacement SIM.",
-    category: "customer-care",
-    order: 5,
+    title: "How can I subscribe to Tok Boku Bundle?",
+    description:
+      "Dial *303#, reply with 1 to buy bundle, then choose 1 for Tok Boku Bundle and select the bundle of your choice.",
+    category: "buy-bundle",
+    order: 4,
     isActive: true,
   },
   {
     id: 8,
-    title: "How do I check my data usage?",
-    description: "Check your data usage by dialing *123# and selecting 'Data Usage', or through the QCell mobile app. You'll see your remaining data balance and usage history.",
-    category: "check-balance",
-    order: 2,
+    title: "How can I subscribe to Qnite?",
+    description:
+      "Dial *303#, reply with 3, then press 1 to confirm Qnite subscription. Note: subscription MUST be done after midnight (12:00am).",
+    category: "buy-bundle",
+    order: 5,
+    isActive: true,
+  },
+  {
+    id: 9,
+    title: "I subscribed to Qnite but I cannot access the internet, even after 12:00am. Why?",
+    description:
+      "You can only enjoy Qnite unlimited internet browsing between 12:00am and 7:00am. Outside this time window, Qnite will not be active and you will need a regular data bundle to browse.",
+    category: "customer-care",
+    order: 6,
+    isActive: true,
+  },
+  {
+    id: 10,
+    title: "How can I enjoy 4G LTE on my device?",
+    description:
+      "First, your device must be 4G‑enabled. Then dial *335# and reply with 1 to self‑activate 4G LTE. Go to your data settings and select 4G or LTE (you may also keep it on Auto). Finally, switch your mobile data off and on again.",
+    category: "customer-care",
+    order: 7,
     isActive: true,
   },
 ]

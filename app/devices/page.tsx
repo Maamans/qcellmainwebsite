@@ -7,7 +7,6 @@ import { motion } from "framer-motion"
 
 import Navigation from "@/components/nav"
 import DevicesSlider from "@/components/devices/device-slider"
-import DevicesSliderSmall from "@/components/devices/devices-slider-small"
 import SliderImages from "@/components/devices/slider-images"
 import Footer from "@/components/footer"
 import BenefitsSlider from "@/components/benefits-slider"
@@ -123,7 +122,6 @@ export default function DevicesPage() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [imageOnlyHeroSlidesPayload, setImageOnlyHeroSlidesPayload] = useState<ImageOnlyHeroSlidePayload[]>([])
   const [devices, setDevices] = useState<DeviceContent[]>([])
-  const [featuredDevices, setFeaturedDevices] = useState<DeviceContent[]>([])
   const [isPaused, setIsPaused] = useState(false)
 
   useEffect(() => {
@@ -148,11 +146,7 @@ export default function DevicesPage() {
           )
 
           const payloadDevices = normalizeDevices(payload?.devices)
-          const payloadFeatured = normalizeDevices(payload?.featuredDevices)
-          const fallbackFeatured = payloadDevices.slice(0, 6)
-
           setDevices(payloadDevices)
-          setFeaturedDevices(payloadFeatured.length ? payloadFeatured : fallbackFeatured)
         }
       } catch (error) {
         console.error("Failed to fetch devices hero slides:", error)
@@ -310,9 +304,6 @@ export default function DevicesPage() {
                         <SliderImages />
             )}
                     </div>
-                    <motion.div className="absolute -bottom-20 left-0 right-0 z-20 mx-auto md:hidden">
-                        <DevicesSliderSmall devices={featuredDevices.length ? featuredDevices : devices} />
-                    </motion.div>
                 </motion.div>
                 {/* Text + slider area - left side on desktop */}
                 <motion.div className="relative px-[45px] mx-auto md:pl-[60px] lg:pl-[80px] md:w-[42%] md:flex md:flex-col md:justify-center md:flex-shrink-0">
@@ -359,10 +350,6 @@ export default function DevicesPage() {
           ) : null}
                 </motion.div>
 
-                {/* Desktop: slider aligned with left content, slight space from image */}
-                <motion.div id="devices" className="absolute bottom-0 md:bottom-8 left-0 md:left-[60px] lg:left-[80px] right-0 md:right-auto md:w-[calc(42%-60px)] lg:w-[calc(41%-80px)] md:mr-2 z-20 hidden md:block">
-                    <DevicesSliderSmall devices={featuredDevices.length ? featuredDevices : devices} />
-                </motion.div>
             </motion.header>
 
             <motion.div className="md:mt-0">

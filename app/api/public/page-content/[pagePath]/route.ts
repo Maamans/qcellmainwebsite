@@ -42,12 +42,17 @@ export async function GET(
     }
 
     // Build backend URL
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    // If no backend is configured, return empty content so frontend can use its own fallbacks.
+    if (!backendUrl) {
+      return NextResponse.json([], { status: 200 });
+    }
     const url = `${backendUrl}/api/public/page-content/${encodeURIComponent(decodedPagePath)}`;
 
-    // Fetch from backend with timeout
+    // Fetch from backend with timeout (short, so navigation stays snappy)
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 1500);
 
     try {
       const response = await fetch(url, {
