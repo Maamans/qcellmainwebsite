@@ -156,7 +156,7 @@ export default function PromotionsCarousel({
                       key={`${promotion.id}-${index}`}
                       className="relative min-w-0 flex-[0_0_70%] pl-4 sm:flex-[0_0_50%] lg:flex-[0_0_30.333%]"
                     >
-                      <div className="relative h-full min-h-[360px] w-full cursor-pointer md:min-h-[520px]">
+                      <div className="relative h-full min-h-[480px] w-full cursor-pointer md:min-h-[700px]">
                         <div className="group relative h-full overflow-hidden bg-gradient-to-br from-[#CD7F32] to-[#B87333] z-20 rounded-lg">
                           <div className="absolute inset-0 bg-black/20" />
                           <div className="relative flex h-full flex-col items-start justify-between p-6">
