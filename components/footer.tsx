@@ -117,10 +117,12 @@ export default function Footer() {
         },
         {
           name: (
-            <>
-              Transfer Credit{" "}
-              <span className="font-bold ml-1">*141*Number*Amount#</span>
-            </>
+            <span className="flex flex-col leading-snug">
+              <span>Transfer Credit</span>
+              <span className="font-bold text-xs sm:text-sm mt-0.5 whitespace-nowrap">
+                *141*Number*Amount#
+              </span>
+            </span>
           ),
           href: "#",
         },
@@ -140,10 +142,12 @@ export default function Footer() {
       links: [
         {
           name: (
-            <>
-              Send Please call me{" "}
-              <span className="font-bold ml-1">*444*Number#</span>
-            </>
+            <span className="flex flex-col leading-snug">
+              <span>Send Please Call Me</span>
+              <span className="font-bold text-xs sm:text-sm mt-0.5 whitespace-nowrap">
+                *444*Number#
+              </span>
+            </span>
           ),
           href: "#",
         },

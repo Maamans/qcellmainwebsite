@@ -228,7 +228,8 @@ export default function EnhancedCoverageMap() {
   }
 
   return (
-  <div className="relative w-full overflow-hidden rounded-xl bg-white shadow-2xl h-[420px] sm:h-[520px] md:h-[620px] lg:h-[700px] xl:h-[760px]">
+    <div className="w-full">
+      <div className="relative w-full overflow-hidden rounded-xl bg-white shadow-2xl h-[420px] sm:h-[520px] md:h-[620px] lg:h-[700px] xl:h-[760px]">
       <style jsx global>{`
         .coverage-marker {
           width: 30px;
@@ -637,48 +638,55 @@ export default function EnhancedCoverageMap() {
         style={{ minHeight: "700px" }}
       />
 
-      <AnimatePresence>
-        {showList && (
-          <motion.div
-            initial={{ opacity: 0, y: "100%" }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: "100%" }}
-            className="absolute inset-0 z-20 overflow-y-auto bg-white/98 p-8 backdrop-blur-md"
-          >
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-[#FF8C00]">Roaming Partners</h2>
-              <button
-                onClick={() => setShowList(false)}
-                className="rounded-full bg-slate-100 p-2 text-slate-600 hover:bg-slate-200 hover:text-slate-800 border border-[#FF8C00]/30"
-              >
-                <ChevronDown className="h-6 w-6" />
-              </button>
-            </div>
-            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {roamingPartners.map((partner, i) => (
-                <motion.div
+        <AnimatePresence>
+          {showList && (
+            <motion.div
+              initial={{ opacity: 0, y: "100%" }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: "100%" }}
+              className="absolute inset-0 z-20 overflow-y-auto bg-white/98 p-8 backdrop-blur-md"
+            >
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-[#FF8C00]">Roaming Partners</h2>
+                <button
+                  onClick={() => setShowList(false)}
+                  className="rounded-full bg-slate-100 p-2 text-slate-600 hover:bg-slate-200 hover:text-slate-800 border border-[#FF8C00]/30"
+                >
+                  <ChevronDown className="h-6 w-6" />
+                </button>
+              </div>
+              <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {roamingPartners.map((partner, i) => (
+                  <motion.div
                   key={partner.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
                   className="rounded-lg bg-slate-50 border border-[#FF8C00]/20 p-4"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="text-4xl">{partner.flag}</div>
-                    <div>
-                      <h3 className="font-medium text-slate-800">{partner.country}</h3>
-                      <p className="mt-1 text-sm text-slate-500">{partner.operator}</p>
+                    <div className="flex items-center gap-3">
+                      <div className="text-4xl">{partner.flag}</div>
+                      <div>
+                        <h3 className="font-medium text-slate-800">{partner.country}</h3>
+                        <p className="mt-1 text-sm text-slate-500">{partner.operator}</p>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div
+          ref={mapContainer}
+          className="absolute inset-0 z-0 h-full w-full rounded-xl"
+          style={{ minHeight: "700px" }}
+        />
+      </div>
 
       {/* Coverage panel below the map (small screens only) */}
-      <div className="relative z-10 mt-4 px-4 pb-4 md:hidden">
+      <div className="mt-8 px-4 pb-4 md:hidden">
         <div className="bg-white/95 backdrop-blur-md shadow-xl overflow-y-auto border border-[#FF8C00]/30 rounded-xl">
           <div className="p-6">
             <div className="mb-6 flex gap-4">
@@ -717,7 +725,7 @@ export default function EnhancedCoverageMap() {
                   exit={{ opacity: 0, x: -20 }}
                   className="space-y-6"
                 >
-                  <div className="space-y-4">
+                  <div className="mt-6 space-y-4">
                     <h3 className="text-lg font-semibold text-[#FF8C00]">Coverage Statistics</h3>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="rounded-lg bg-[#FFF7ED] p-4 border border-[#FF8C00]/30">

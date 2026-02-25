@@ -128,7 +128,7 @@ export default function DownloadApp() {
     <motion.section
       id="download-app-section"
       ref={containerRef}
-      className="relative overflow-hidden py-24 md:py-32 bg-white"
+      className="relative overflow-hidden py-4 md:py-6 bg-white"
       style={{
         opacity: opacitySection,
         scale,
@@ -206,7 +206,7 @@ export default function DownloadApp() {
               </div>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-6 pt-4">
+            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-6 pt-2">
               <motion.div
                 className="flex flex-col items-center"
                 variants={qrCodeVariants}
@@ -310,7 +310,7 @@ export default function DownloadApp() {
 
               {/* Phone frame */}
               <motion.div
-                className="relative overflow-hidden rounded-3xl border-[6px] border-[#F98F1F] bg-white shadow-xl w-[250px] h-[500px] md:w-[300px] md:h-[600px]"
+                className="relative overflow-hidden rounded-3xl border-[6px] border-[#F98F1F] bg-white shadow-xl w-[230px] h-[440px] md:w-[280px] md:h-[520px]"
                 whileHover={{
                   rotateY: 5,
                   scale: 1.02,

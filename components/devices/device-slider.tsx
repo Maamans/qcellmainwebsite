@@ -128,7 +128,7 @@ export default function DevicesSlider({
 
     return Array.from(unique.values())
   }, [devices])
-
+      
   return (
     <div className="relative w-full px-0 overflow-hidden py-0 pb-8 bg-white rounded-lg shadow-lg backdrop-blur-sm md:max-w-[110%] md:rounded-lg -mt-4 md:-mt-6">
       
@@ -155,6 +155,7 @@ export default function DevicesSlider({
             ))}
           </div>
           
+        
           {/* Desktop: 5-column grid */}
           <div className="hidden md:grid md:grid-cols-4 lg:grid-cols-5 gap-2 w-full">
             {slides.map((device) => (

@@ -31,18 +31,18 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="w-full px-0 py-12 sm:py-16 md:py-20 lg:py-24"
+              className="w-full px-0 pt-8 pb-4 sm:pt-10 sm:pb-4 md:pt-12 md:pb-4 lg:pt-14 lg:pb-4"
             >
               <EnhancedCoverageMap />
             </motion.div>
           </section>
 
           {/* Offerings slider */}
-          <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gray-50">
+          <section className="pt-0 sm:pt-1 md:pt-1 lg:pt-1 pb-4 sm:pb-6 md:pb-8 lg:pb-10 bg-gray-50">
             <OfferingsSlider />
           </section>
           {/* Download app section */}
-          <section className="bg-white py-12 sm:py-16 md:py-20 lg:py-24">
+          <section className="bg-white pt-0 sm:pt-1 md:pt-2 lg:pt-2 pb-8 sm:pb-10 md:pb-12 lg:pb-14">
             <DownloadApp />
           </section>
           {/* Footer */}
