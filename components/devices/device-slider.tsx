@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useRef } from "react"
 import { motion } from "framer-motion"
 
 import DeviceCard from "./device-card"
@@ -109,6 +109,8 @@ export default function DevicesSlider({
   subheading = "Tap on a card to explore full specs, pricing, and purchase options.",
 }: DevicesSliderProps) {
   const [selectedDevice, setSelectedDevice] = useState<DeviceContent | null>(null)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const mobileScrollRef = useRef<HTMLDivElement | null>(null)
   const slides = useMemo(() => {
     const provided = Array.isArray(devices) ? devices : []
     if (!provided.length) return fallbackDevices
@@ -128,6 +130,17 @@ export default function DevicesSlider({
 
     return Array.from(unique.values())
   }, [devices])
+
+  const handleMobileScroll = () => {
+    if (!mobileScrollRef.current || slides.length === 0) return
+    const el = mobileScrollRef.current
+    const total = slides.length
+    const cardWidth = el.scrollWidth / total
+    if (!cardWidth) return
+    const index = Math.round(el.scrollLeft / cardWidth)
+    const clamped = Math.max(0, Math.min(total - 1, index))
+    setActiveIndex(clamped)
+  }
       
   return (
     <div className="relative w-full px-0 overflow-hidden py-0 pb-8 bg-white rounded-lg shadow-lg backdrop-blur-sm md:max-w-[110%] md:rounded-lg -mt-4 md:-mt-6">
@@ -143,7 +156,11 @@ export default function DevicesSlider({
 
         <div className="mt-4">
           {/* Mobile: horizontal scrollable row */}
-          <div className="flex md:hidden gap-2 overflow-x-auto pb-2 -mx-4 px-4 no-scrollbar snap-x snap-mandatory">
+          <div
+            ref={mobileScrollRef}
+            onScroll={handleMobileScroll}
+            className="flex md:hidden gap-2 overflow-x-auto pb-2 -mx-4 px-4 no-scrollbar snap-x snap-mandatory"
+          >
             {slides.map((device) => (
               <div key={device.id} className="relative flex-shrink-0 w-[48%] min-w-[48%] snap-center">
                 <DeviceCard
@@ -154,6 +171,33 @@ export default function DevicesSlider({
               </div>
             ))}
           </div>
+
+          {/* Mobile: slide indicator dots */}
+          {slides.length > 1 && (
+            <div className="mt-2 flex md:hidden justify-center gap-2">
+              {slides.slice(0, 5).map((_, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className={`h-2 rounded-full transition-all ${
+                    activeIndex === index ? "w-4 bg-[#CD7F32]" : "w-2 bg-gray-300"
+                  }`}
+                  aria-label={`Go to device ${index + 1}`}
+                  onClick={() => {
+                    if (!mobileScrollRef.current || slides.length === 0) return
+                    const el = mobileScrollRef.current
+                    const total = slides.length
+                    const cardWidth = el.scrollWidth / total
+                    el.scrollTo({
+                      left: cardWidth * index,
+                      behavior: "smooth",
+                    })
+                    setActiveIndex(index)
+                  }}
+                />
+              ))}
+            </div>
+          )}
           
         
           {/* Desktop: 5-column grid */}

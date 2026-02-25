@@ -6,7 +6,7 @@ import { motion } from "framer-motion"
 
 export default function BenefitsSlider() {
   return (
-    <section className="w-full py-8 md:py-12 overflow-hidden bg-gradient-to-br from-blue-50 via-sky-50 to-white -mt-4 md:-mt-6">
+    <section className="w-full py-8 md:py-12 overflow-hidden bg-gradient-to-br from-blue-50 via-sky-50 to-white mt-2 md:-mt-4 lg:-mt-6">
       <div className="max-w-[95%] lg:max-w-[92%] xl:max-w-[90%] mx-auto px-4 md:px-8 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center">
           {/* Left Section - Image with Curved Shape */}
@@ -59,13 +59,14 @@ export default function BenefitsSlider() {
           >
             <div className="space-y-3 md:space-y-4 lg:space-y-5 w-full">
               {/* Main Headline */}
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
-                Want To Go Faster? Upgrade to Premium Devices
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
+                Want To Go Faster?
               </h2>
 
               {/* Introductory Paragraph */}
-              <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                Upgrade to the latest smartphones and gadgets and unlock a world of seamless connectivity with QCell&apos;s premium device solutions.
+              <p className="text-sm md:text-base lg:text-lg text-gray-800 leading-relaxed max-w-2xl font-medium">
+                Upgrade to the latest QFiber packages and unlock a world of seamless connectivity with QCell&apos;s QFiber
+                business and home solutions.
               </p>
 
               {/* Feature Sections */}

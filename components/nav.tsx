@@ -561,13 +561,16 @@ useEffect(() => {
                         item.content ? (
                           <>
                             <div className="flex w-full items-center justify-between">
-                              <Link 
-                                href={item.href} 
-                                onClick={() => setMobileMenuOpen(false)}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setMobileMenuOpen(false)
+                                  router.push(item.href)
+                                }}
                                 className="flex-1 text-left text-base font-medium text-white py-2"
                               >
                                 {item.title}
-                              </Link>
+                              </button>
                               <motion.button
                                 className="p-2 -mr-2"
                                 onClick={(e) => {

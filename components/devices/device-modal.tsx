@@ -35,9 +35,14 @@ export default function DeviceModal({ device, isOpen, onClose }: DeviceModalProp
       ? `Le ${new Intl.NumberFormat("en").format(device.price)}`
       : device.price
 
+  // Hide CTA buttons for marketing-only/fallback devices where we don't want "Explore QSmart", "Discover QSmart Plus",
+  // "Get MiFi", "View QMobile", "View Tariffs", etc.
+  const nonPurchasableIds = new Set(["qsmart", "qsmart-plus", "qmobile", "mifi", "tariff"])
+  const hidePurchaseCta = device.id ? nonPurchasableIds.has(String(device.id)) : false
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="mx-auto w-full max-w-5xl overflow-hidden border-0 bg-white text-black p-0">
+      <DialogContent className="mx-auto w-full max-w-5xl max-h-[90vh] overflow-y-auto border-0 bg-white text-black p-0">
         <div className="grid h-full grid-cols-1 md:grid-cols-2">
           <div className="relative min-h-[360px] md:min-h-[520px] bg-gradient-to-br from-orange-50 via-white to-orange-100">
             {priceLabel ? (
@@ -92,11 +97,12 @@ export default function DeviceModal({ device, isOpen, onClose }: DeviceModalProp
               </div>
             </motion.div>
 
-            <div className="mt-8 flex flex-wrap justify-end gap-3">
+          <div className="mt-8 flex flex-wrap justify-end gap-3">
               <Button variant="ghost" onClick={onClose} className="text-gray-700 hover:bg-gray-100">
                 Close
               </Button>
-              {ctaAction ? (
+            {!hidePurchaseCta &&
+              (ctaAction ? (
                 <Button asChild className="bg-[#F98F1F] text-white hover:bg-[#ff9c33]">
                   <a href={ctaAction} target="_blank" rel="noreferrer">
                     {ctaText ?? "Buy Now"}
@@ -106,7 +112,7 @@ export default function DeviceModal({ device, isOpen, onClose }: DeviceModalProp
                 <Button className="bg-[#F98F1F] text-white" disabled>
                   {ctaText ?? "Buy Now"}
                 </Button>
-              )}
+              ))}
             </div>
           </div>
         </div>
