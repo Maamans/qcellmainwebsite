@@ -6,15 +6,7 @@ import Image from "next/image"
 import { Clock } from "lucide-react"
 import Navigation from "@/components/nav"
 import Footer from "@/components/footer"
-import { api, getImageUrl } from "@/lib/api"
-
-interface HeroSlide {
-  id?: string | number
-  image?: string
-  title?: string
-  description?: string
-  isActive?: boolean
-}
+import { api } from "@/lib/api"
 
 interface PageSection {
   id?: string | number
@@ -26,25 +18,13 @@ interface PageSection {
 }
 
 export default function CareersApplyPage() {
-  const [heroSlide, setHeroSlide] = useState<HeroSlide | null>(null)
   const [pageContent, setPageContent] = useState<PageSection[]>([])
 
   // Load hero slide and page content from backend (non-blocking)
   const loadPageData = useCallback(async () => {
     try {
-      // Fetch hero slide and page content in parallel
-      const [heroSlides, content] = await Promise.all([
-        api.getHeroSlides('/careers/apply'),
-        api.getPageContent('/careers/apply')
-      ])
+      const content = await api.getPageContent('/careers/apply')
 
-      // Process hero slide (use first active slide)
-      if (Array.isArray(heroSlides) && heroSlides.length > 0) {
-        const activeSlide = heroSlides.find((slide: HeroSlide) => slide.isActive !== false) || heroSlides[0]
-        setHeroSlide(activeSlide)
-      }
-
-      // Process page content
       if (Array.isArray(content) && content.length > 0) {
         const activeContent = content.filter((item: PageSection) => item.isActive !== false)
         setPageContent(activeContent)
