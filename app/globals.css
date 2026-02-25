@@ -217,4 +217,9 @@ nav::after,
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
+
+  /* Make centered text align to the left on mobile across all pages */
+  .text-center {
+    text-align: left !important;
+  }
 }

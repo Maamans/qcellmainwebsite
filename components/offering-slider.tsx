@@ -254,7 +254,7 @@ export default function OfferingsSlider({ offerings: offeringsProp }: OfferingsS
                 {slides.map((offering) => (
                   <div
                     key={offering.id}
-                    className="relative min-w-0 flex-[0_0_70%] pl-4 sm:flex-[0_0_50%] lg:flex-[0_0_30.333%]"
+                    className="relative min-w-0 flex-[0_0_80%] pl-0 pr-4 sm:flex-[0_0_50%] sm:pl-4 sm:pr-0 lg:flex-[0_0_30.333%]"
                   >
                       <OfferingCard
                         offering={offering}

@@ -305,8 +305,8 @@ export default function DevicesPage() {
             )}
                     </div>
                 </motion.div>
-                {/* Text + slider area - left side on desktop */}
-                <motion.div className="relative px-[45px] mx-auto md:pl-[60px] lg:pl-[80px] md:w-[42%] md:flex md:flex-col md:justify-center md:flex-shrink-0">
+                {/* Text + slider area - left side on desktop, edge-aligned on mobile */}
+                <motion.div className="relative px-4 sm:px-6 md:pl-[60px] lg:pl-[80px] md:w-[42%] md:flex md:flex-col md:justify-center md:flex-shrink-0">
           {showTextContent ? (
             <>
               <motion.h1 className="mt-[70px] text-5xl font-bold md:text-6xl md:mt-0">

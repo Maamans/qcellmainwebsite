@@ -145,13 +145,13 @@ export default function DevicesSlider({
   return (
     <div className="relative w-full px-0 overflow-hidden py-0 pb-8 bg-white rounded-lg shadow-lg backdrop-blur-sm md:max-w-[110%] md:rounded-lg -mt-4 md:-mt-6">
       
-      <div className="relative sm:ml-24 mt-0"> {/* px-4 */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="ml-4 space-y-2">
-          <p className="mt-0 ml-4 sm:ml-0 text-sm uppercase tracking-wide text-orange-400">{eyebrow}</p>
-          <h2 className="ml-4 sm:ml-0 max-w-2xl text-3xl font-semibold text-gray-900 md:text-4xl">
+      <div className="relative px-3 sm:px-0 sm:ml-24 mt-0">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-2">
+          <p className="mt-0 text-sm uppercase tracking-wide text-orange-400">{eyebrow}</p>
+          <h2 className="max-w-2xl text-3xl font-semibold text-gray-900 md:text-4xl">
             {heading}
           </h2>
-          <p className="ml-4 sm:ml-0 text-base text-gray-500">{subheading}</p>
+          <p className="text-base text-gray-500">{subheading}</p>
         </motion.div>
 
         <div className="mt-4">

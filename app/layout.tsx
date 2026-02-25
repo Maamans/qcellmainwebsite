@@ -29,6 +29,7 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/images/logo.png" type="image/x-icon" />
       </head>
       <body
+        suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
