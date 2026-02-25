@@ -220,7 +220,7 @@ export default function OfferingsSlider({ offerings: offeringsProp }: OfferingsS
   return (
     <div className="relative w-full px-0 overflow-hidden py-8 md:py-12">
       <div className="relative mx-auto max-w-full -ml-3 sm:px-6 lg:px-8 md:max-w-[110%]">
-        <div className="mb-6 px-4 sm:px-0">
+        <div className="mb-6 px-5 sm:px-0">
           <p className="text-2xl font-medium text-black uppercase tracking-wider">List of Our Offerings</p>
         </div>
         <div>

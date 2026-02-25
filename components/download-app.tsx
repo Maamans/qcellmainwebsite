@@ -155,7 +155,7 @@ export default function DownloadApp() {
                 Mobile Experience
               </motion.span>
               <h2 className="text-3xl font-bold tracking-tighter text-gray-900 sm:text-4xl md:text-5xl">
-                Ready to experience the QCell difference?
+                Ready to experience the difference with QCell?
               </h2>
             </motion.div>
 
@@ -287,7 +287,7 @@ export default function DownloadApp() {
           </div>
 
           <motion.div
-            className="relative flex justify-start md:justify-end pl-2 sm:pl-0 mt-4 md:mt-0"
+            className="relative flex justify-center md:justify-end mt-4 md:mt-0"
             style={{ y: phoneY }}
             variants={phoneVariants}
             initial="hidden"
