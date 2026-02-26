@@ -126,7 +126,7 @@ export const offerings: Offering[] = [
     id: "qcell-music",
     title: "QCell Music",
     description: "Stream and download your favorite songs with QCell Music!",
-    image: "/images/off5.jpg",
+    image: "/images/qtunes.jpeg",
     features: ["Unlimited music", "No ads", "Offline listening"],
     cta: {
       text: "Try Now",
@@ -142,7 +142,7 @@ export const offerings: Offering[] = [
       ctas: [
         { text: "Start Listening", action: "/services/alternative-two" },
       ],
-      image: "/images/off5.jpg",
+      image: "/images/qtunes.jpeg",
     },
   },
   {

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
-import { motion, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion"
+import { motion } from "framer-motion"
 import Navigation from "@/components/nav"
 import Footer from "@/components/footer"
 import useEmblaCarousel from "embla-carousel-react"
@@ -111,203 +111,12 @@ export default function ServicesPage() {
   }, [])
 
   const containerRef = useRef<HTMLDivElement>(null)
-  const heroRef = useRef<HTMLDivElement>(null)
   const [selectedService, setSelectedService] = useState<Service | null>(null)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [services, setServices] = useState<Service[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [heroSlides, setHeroSlides] = useState<Array<{ id: number; image: string; imageUrl?: string | null }>>([])
-  const [isMobile, setIsMobile] = useState(false)
-  const [autoPlayProgress, setAutoPlayProgress] = useState(0)
-  const [isScrolling, setIsScrolling] = useState(false)
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  
-  // Detect mobile/tablet devices
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024)
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
-  
-  // Auto-play functionality - cycles through images automatically
-  useEffect(() => {
-    if (isScrolling) return // Pause auto-play when scrolling
-    
-    const interval = setInterval(() => {
-      setAutoPlayProgress((prev) => {
-        const next = prev + 0.005 // Increment by 0.5% each interval (slower)
-        return next >= 1 ? 0 : next // Loop back to 0 when reaching 1
-      })
-    }, 200) // Update every 200ms for smoother, slower animation (40 seconds for full cycle)
-    
-    return () => clearInterval(interval)
-  }, [isScrolling])
-  
-  // Detect scrolling to pause auto-play
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolling(true)
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current)
-      }
-      scrollTimeoutRef.current = setTimeout(() => {
-        setIsScrolling(false)
-      }, 1500) // Resume auto-play 1.5 seconds after scrolling stops
-    }
-    
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current)
-      }
-    }
-  }, [])
-  
-  // Get scroll progress for hero section scroll (all screen sizes)
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"]
-  })
-
-  // Create spring-based animations for smooth movement (all screen sizes)
-  const smoothScrollYProgress = useSpring(scrollYProgress, {
-    stiffness: 150,
-    damping: 25,
-    restDelta: 0.001,
-  })
-  
-  // Create combined progress value that blends scroll and auto-play
-  const combinedProgress = useMotionValue(0)
-  
-  // Update combined progress based on scroll and auto-play
-  useEffect(() => {
-    const unsubscribeScroll = smoothScrollYProgress.on('change', (latest) => {
-      if (isScrolling) {
-        combinedProgress.set(latest)
-      }
-    })
-    
-    return () => unsubscribeScroll()
-  }, [isScrolling, smoothScrollYProgress, combinedProgress])
-  
-  // Update combined progress with auto-play when not scrolling
-  useEffect(() => {
-    if (!isScrolling) {
-      combinedProgress.set(autoPlayProgress)
-    }
-  }, [autoPlayProgress, isScrolling, combinedProgress])
-  
-  // Create spring-based combined progress for smooth animations
-  const smoothCombinedProgress = useSpring(combinedProgress, {
-    stiffness: 150,
-    damping: 25,
-    restDelta: 0.001,
-  })
-
-  // Mobile/Tablet animations - better spread across scroll progress for visibility
-  // Each image gets ~11% of scroll progress (0.11) for better visibility
-  // Use combined progress (scroll + auto-play)
-  const mobileService1Opacity = useTransform(smoothCombinedProgress, [0, 0.05, 0.08, 0.11], [1, 1, 1, 0])
-  const mobileService1Y = useTransform(smoothCombinedProgress, [0, 0.05, 0.08, 0.11], [0, 0, 0, -20])
-  const mobileService1Scale = useTransform(smoothCombinedProgress, [0, 0.05, 0.08, 0.11], [1, 1, 1, 0.95])
-
-  const mobileService2Opacity = useTransform(smoothCombinedProgress, [0.08, 0.11, 0.19, 0.22], [0, 1, 1, 0])
-  const mobileService2Y = useTransform(smoothCombinedProgress, [0.08, 0.11, 0.19, 0.22], [20, 0, 0, -20])
-  const mobileService2Scale = useTransform(smoothCombinedProgress, [0.08, 0.11, 0.19, 0.22], [0.95, 1, 1, 0.95])
-
-  const mobileService3Opacity = useTransform(smoothCombinedProgress, [0.19, 0.22, 0.30, 0.33], [0, 1, 1, 0])
-  const mobileService3Y = useTransform(smoothCombinedProgress, [0.19, 0.22, 0.30, 0.33], [20, 0, 0, -20])
-  const mobileService3Scale = useTransform(smoothCombinedProgress, [0.19, 0.22, 0.30, 0.33], [0.95, 1, 1, 0.95])
-
-  const mobileService4Opacity = useTransform(smoothCombinedProgress, [0.30, 0.33, 0.41, 0.44], [0, 1, 1, 0])
-  const mobileService4Y = useTransform(smoothCombinedProgress, [0.30, 0.33, 0.41, 0.44], [20, 0, 0, -20])
-  const mobileService4Scale = useTransform(smoothCombinedProgress, [0.30, 0.33, 0.41, 0.44], [0.95, 1, 1, 0.95])
-
-  const mobileService5Opacity = useTransform(smoothCombinedProgress, [0.41, 0.44, 0.52, 0.55], [0, 1, 1, 0])
-  const mobileService5Y = useTransform(smoothCombinedProgress, [0.41, 0.44, 0.52, 0.55], [20, 0, 0, -20])
-  const mobileService5Scale = useTransform(smoothCombinedProgress, [0.41, 0.44, 0.52, 0.55], [0.95, 1, 1, 0.95])
-
-  const mobileService6Opacity = useTransform(smoothCombinedProgress, [0.52, 0.55, 0.63, 0.66], [0, 1, 1, 0])
-  const mobileService6Y = useTransform(smoothCombinedProgress, [0.52, 0.55, 0.63, 0.66], [20, 0, 0, -20])
-  const mobileService6Scale = useTransform(smoothCombinedProgress, [0.52, 0.55, 0.63, 0.66], [0.95, 1, 1, 0.95])
-
-  const mobileService7Opacity = useTransform(smoothCombinedProgress, [0.63, 0.66, 0.74, 0.77], [0, 1, 1, 0])
-  const mobileService7Y = useTransform(smoothCombinedProgress, [0.63, 0.66, 0.74, 0.77], [20, 0, 0, -20])
-  const mobileService7Scale = useTransform(smoothCombinedProgress, [0.63, 0.66, 0.74, 0.77], [0.95, 1, 1, 0.95])
-
-  const mobileService8Opacity = useTransform(smoothCombinedProgress, [0.74, 0.77, 0.85, 0.88], [0, 1, 1, 0])
-  const mobileService8Y = useTransform(smoothCombinedProgress, [0.74, 0.77, 0.85, 0.88], [20, 0, 0, -20])
-  const mobileService8Scale = useTransform(smoothCombinedProgress, [0.74, 0.77, 0.85, 0.88], [0.95, 1, 1, 0.95])
-
-  const mobileService9Opacity = useTransform(smoothCombinedProgress, [0.85, 0.88, 0.95, 1], [0, 1, 1, 1])
-  const mobileService9Y = useTransform(smoothCombinedProgress, [0.85, 0.88, 0.95, 1], [20, 0, 0, 0])
-  const mobileService9Scale = useTransform(smoothCombinedProgress, [0.85, 0.88, 0.95, 1], [0.95, 1, 1, 1])
-
-  // Desktop animations - original ranges
-  // Use combined progress (scroll + auto-play)
-  const desktopService1Opacity = useTransform(smoothCombinedProgress, [0, 0.02, 0.04, 0.06], [1, 1, 1, 0])
-  const desktopService1Y = useTransform(smoothCombinedProgress, [0, 0.02, 0.04, 0.06], [0, 0, 0, -20])
-  const desktopService1Scale = useTransform(smoothCombinedProgress, [0, 0.02, 0.04, 0.06], [1, 1, 1, 0.95])
-
-  const desktopService2Opacity = useTransform(smoothCombinedProgress, [0.02, 0.04, 0.10, 0.12], [0, 1, 1, 0])
-  const desktopService2Y = useTransform(smoothCombinedProgress, [0.02, 0.04, 0.10, 0.12], [20, 0, 0, -20])
-  const desktopService2Scale = useTransform(smoothCombinedProgress, [0.02, 0.04, 0.10, 0.12], [0.95, 1, 1, 0.95])
-
-  const desktopService3Opacity = useTransform(smoothCombinedProgress, [0.08, 0.10, 0.16, 0.18], [0, 1, 1, 0])
-  const desktopService3Y = useTransform(smoothCombinedProgress, [0.08, 0.10, 0.16, 0.18], [20, 0, 0, -20])
-  const desktopService3Scale = useTransform(smoothCombinedProgress, [0.08, 0.10, 0.16, 0.18], [0.95, 1, 1, 0.95])
-
-  const desktopService4Opacity = useTransform(smoothCombinedProgress, [0.14, 0.16, 0.22, 0.24], [0, 1, 1, 0])
-  const desktopService4Y = useTransform(smoothCombinedProgress, [0.14, 0.16, 0.22, 0.24], [20, 0, 0, -20])
-  const desktopService4Scale = useTransform(smoothCombinedProgress, [0.14, 0.16, 0.22, 0.24], [0.95, 1, 1, 0.95])
-
-  const desktopService5Opacity = useTransform(smoothCombinedProgress, [0.20, 0.22, 0.28, 0.30], [0, 1, 1, 0])
-  const desktopService5Y = useTransform(smoothCombinedProgress, [0.20, 0.22, 0.28, 0.30], [20, 0, 0, -20])
-  const desktopService5Scale = useTransform(smoothCombinedProgress, [0.20, 0.22, 0.28, 0.30], [0.95, 1, 1, 0.95])
-
-  const desktopService6Opacity = useTransform(smoothCombinedProgress, [0.26, 0.28, 0.34, 0.36], [0, 1, 1, 0])
-  const desktopService6Y = useTransform(smoothCombinedProgress, [0.26, 0.28, 0.34, 0.36], [20, 0, 0, -20])
-  const desktopService6Scale = useTransform(smoothCombinedProgress, [0.26, 0.28, 0.34, 0.36], [0.95, 1, 1, 0.95])
-
-  const desktopService7Opacity = useTransform(smoothCombinedProgress, [0.32, 0.34, 0.40, 0.42], [0, 1, 1, 0])
-  const desktopService7Y = useTransform(smoothCombinedProgress, [0.32, 0.34, 0.40, 0.42], [20, 0, 0, -20])
-  const desktopService7Scale = useTransform(smoothCombinedProgress, [0.32, 0.34, 0.40, 0.42], [0.95, 1, 1, 0.95])
-
-  const desktopService8Opacity = useTransform(smoothCombinedProgress, [0.38, 0.40, 0.46, 0.48], [0, 1, 1, 0])
-  const desktopService8Y = useTransform(smoothCombinedProgress, [0.38, 0.40, 0.46, 0.48], [20, 0, 0, -20])
-  const desktopService8Scale = useTransform(smoothCombinedProgress, [0.38, 0.40, 0.46, 0.48], [0.95, 1, 1, 0.95])
-
-  const desktopService9Opacity = useTransform(smoothCombinedProgress, [0.44, 0.46, 0.55, 1], [0, 1, 1, 1])
-  const desktopService9Y = useTransform(smoothCombinedProgress, [0.44, 0.46, 0.55, 1], [20, 0, 0, 0])
-  const desktopService9Scale = useTransform(smoothCombinedProgress, [0.44, 0.46, 0.55, 1], [0.95, 1, 1, 1])
-  
-  // Choose animations based on device type
-  const serviceAnimations = isMobile ? [
-    { opacity: mobileService1Opacity, y: mobileService1Y, scale: mobileService1Scale },
-    { opacity: mobileService2Opacity, y: mobileService2Y, scale: mobileService2Scale },
-    { opacity: mobileService3Opacity, y: mobileService3Y, scale: mobileService3Scale },
-    { opacity: mobileService4Opacity, y: mobileService4Y, scale: mobileService4Scale },
-    { opacity: mobileService5Opacity, y: mobileService5Y, scale: mobileService5Scale },
-    { opacity: mobileService6Opacity, y: mobileService6Y, scale: mobileService6Scale },
-    { opacity: mobileService7Opacity, y: mobileService7Y, scale: mobileService7Scale },
-    { opacity: mobileService8Opacity, y: mobileService8Y, scale: mobileService8Scale },
-    { opacity: mobileService9Opacity, y: mobileService9Y, scale: mobileService9Scale },
-  ] : [
-    { opacity: desktopService1Opacity, y: desktopService1Y, scale: desktopService1Scale },
-    { opacity: desktopService2Opacity, y: desktopService2Y, scale: desktopService2Scale },
-    { opacity: desktopService3Opacity, y: desktopService3Y, scale: desktopService3Scale },
-    { opacity: desktopService4Opacity, y: desktopService4Y, scale: desktopService4Scale },
-    { opacity: desktopService5Opacity, y: desktopService5Y, scale: desktopService5Scale },
-    { opacity: desktopService6Opacity, y: desktopService6Y, scale: desktopService6Scale },
-    { opacity: desktopService7Opacity, y: desktopService7Y, scale: desktopService7Scale },
-    { opacity: desktopService8Opacity, y: desktopService8Y, scale: desktopService8Scale },
-    { opacity: desktopService9Opacity, y: desktopService9Y, scale: desktopService9Scale },
-  ]
+  const [heroImage, setHeroImage] = useState<string>("/images/expand your world (1).jpg")
   
   // Carousel for services section
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -351,12 +160,11 @@ export default function ServicesPage() {
     return getImageUrl(service.image)
   }
 
-  // Fetch hero slides for services page
+  // Fetch hero image for services page
   useEffect(() => {
-    const fetchHeroSlides = async () => {
+    const fetchHeroImage = async () => {
       try {
         // Try both '/services' and 'services' as page parameter
-        // Fetch hero slides for services page - try both formats
         let slides = null
         try {
           slides = await api.getHeroSlides('/services')
@@ -367,36 +175,28 @@ export default function ServicesPage() {
             // If both fail, slides will remain null
           }
         }
-        console.log('Fetched hero slides for services page:', slides)
         if (slides && Array.isArray(slides) && slides.length > 0) {
-          const activeSlides = slides
+          const activeSlide = slides
             .filter((slide: { isActive?: boolean }) => slide.isActive !== false)
             .sort((a: { order?: number; id?: number }, b: { order?: number; id?: number }) => {
-              // Sort by order if available, then by ID
               if (typeof a.order === 'number' && typeof b.order === 'number') {
                 return a.order - b.order
               }
               return (a.id || 0) - (b.id || 0)
-            })
-            .map((slide: { id: number; image: string; imageUrl?: string | null }) => ({
-              id: slide.id,
-              image: slide.image,
-              imageUrl: slide.imageUrl || null
-            }))
-          console.log('Active hero slides after processing:', activeSlides.length, activeSlides)
-          if (activeSlides.length > 0) {
-            setHeroSlides(activeSlides)
+            })[0]
+          
+          if (activeSlide) {
+            const imageUrl = activeSlide.imageUrl || getImageUrl(activeSlide.image)
+            setHeroImage(imageUrl)
           }
-        } else {
-          console.log('No hero slides found - will use service images')
         }
       } catch (err) {
-        console.error('Failed to fetch hero slides:', err)
-        // Keep empty array, will use service images as fallback
+        console.error('Failed to fetch hero image:', err)
+        // Keep default image
       }
     }
 
-    fetchHeroSlides()
+    fetchHeroImage()
   }, [])
 
   // Initialize with hardcoded services, then fetch from API and merge
@@ -503,37 +303,12 @@ export default function ServicesPage() {
           width: 100% !important;
           overflow-x: hidden !important;
           overflow-y: auto !important;
-          background-color: #F98F1F !important;
         }
         #__next {
           margin: 0 !important;
           padding: 0 !important;
         }
-        /* Base styles - Desktop only (1024px+) */
-        @media (min-width: 1024px) {
-          [data-hero-container] {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            z-index: 0 !important;
-            overflow: hidden !important;
-            background-color: #F98F1F !important;
-          }
-        }
-        /* Base styles for all screens - will be overridden by media queries */
-        [data-hero-container] > div {
-          background-color: transparent !important;
-        }
-        [data-hero-container] > * {
-          width: 100% !important;
-          height: 100% !important;
-        }
-        /* Extra Small Devices (Mobile Phones) - 0-480px */
-        @media (max-width: 480px) {
+        @media (max-width: 640px) {
           .services-nav-wrapper {
             position: relative !important;
             z-index: 100 !important;
@@ -542,213 +317,6 @@ export default function ServicesPage() {
           nav.fixed,
           .nav.fixed {
             margin-top: 15px !important;
-          }
-          section[class*="relative"][class*="h-"] {
-            width: 100% !important;
-            max-width: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-          }
-          [data-hero-container] {
-            position: relative !important;
-            height: 100% !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            overflow: hidden !important;
-            left: 0 !important;
-            right: 0 !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            z-index: 0 !important;
-          }
-          [data-hero-container] > div {
-            height: 100% !important;
-            width: 100% !important;
-            position: absolute !important;
-            left: 0 !important;
-            right: 0 !important;
-            top: 0 !important;
-            bottom: 0 !important;
-          }
-          [data-hero-container] > div > div {
-            width: 100% !important;
-            height: 100% !important;
-          }
-          .hero-image-container {
-            height: 153% !important;
-            min-height: 153% !important;
-            transform: translateY(-14%) !important;
-          }
-          .hero-image-responsive {
-            object-fit: contain !important;
-            object-position: center center !important;
-            width: 100% !important;
-            height: 100% !important;
-            max-width: 100% !important;
-            position: relative !important;
-          }
-          [data-hero-container] img {
-            object-fit: contain !important;
-            object-position: center center !important;
-            width: 100% !important;
-            height: 100% !important;
-            max-width: 100% !important;
-            position: relative !important;
-          }
-        }
-        /* Small Devices (Large Phones / Small Tablets) - 481-768px */
-        @media (min-width: 481px) and (max-width: 768px) {
-          .services-nav-wrapper {
-            position: relative !important;
-            z-index: 100 !important;
-          }
-          header > div[class*="fixed"],
-          nav.fixed,
-          .nav.fixed {
-            margin-top: 15px !important;
-          }
-          section[class*="relative"][class*="h-"] {
-            width: 100% !important;
-            max-width: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-          }
-          [data-hero-container] {
-            position: relative !important;
-            height: 100% !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            overflow: hidden !important;
-            left: 0 !important;
-            right: 0 !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            z-index: 0 !important;
-          }
-          [data-hero-container] > div {
-            height: 100% !important;
-            width: 100% !important;
-            position: absolute !important;
-            left: 0 !important;
-            right: 0 !important;
-            top: 0 !important;
-            bottom: 0 !important;
-          }
-          [data-hero-container] > div > div {
-            width: 100% !important;
-            height: 100% !important;
-          }
-          .hero-image-container {
-            height: 153% !important;
-            min-height: 153% !important;
-            transform: translateY(-14%) !important;
-          }
-          .hero-image-responsive {
-            object-fit: contain !important;
-            object-position: center center !important;
-            width: 100% !important;
-            height: 100% !important;
-            max-width: 100% !important;
-            position: relative !important;
-          }
-          [data-hero-container] img {
-            object-fit: contain !important;
-            object-position: center center !important;
-            width: 100% !important;
-            height: 100% !important;
-            max-width: 100% !important;
-            position: relative !important;
-          }
-        }
-        /* Medium Devices (Tablets) - 769-1023px */
-        @media (min-width: 769px) and (max-width: 1023px) {
-          section[class*="relative"][class*="h-"] {
-            width: 100% !important;
-            max-width: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-          }
-          [data-hero-container] {
-            position: relative !important;
-            height: 100% !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            overflow: hidden !important;
-            left: 0 !important;
-            right: 0 !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            z-index: 0 !important;
-          }
-          [data-hero-container] > div {
-            height: 100% !important;
-            width: 100% !important;
-            position: absolute !important;
-            left: 0 !important;
-            right: 0 !important;
-            top: 0 !important;
-            bottom: 0 !important;
-          }
-          [data-hero-container] > div > div {
-            width: 100% !important;
-            height: 100% !important;
-          }
-          .hero-image-container {
-            height: 153% !important;
-            min-height: 153% !important;
-            transform: translateY(-14%) !important;
-          }
-          [data-hero-container] img {
-            object-fit: contain !important;
-            object-position: center center !important;
-            width: 100% !important;
-            height: 100% !important;
-            max-width: 100% !important;
-            position: relative !important;
-          }
-        }
-        /* Desktop/Web - 1024px and above (keep original fixed positioning) */
-        @media (min-width: 1024px) {
-          [data-hero-container] {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            z-index: 0 !important;
-            overflow: hidden !important;
-            background-color: #F98F1F !important;
-          }
-          [data-hero-container] > div {
-            width: 100% !important;
-          }
-          .hero-image-container {
-            height: 100% !important;
-            min-height: 100% !important;
-          }
-          .hero-image-responsive {
-            object-fit: cover !important;
-            object-position: center center !important;
-            width: 100% !important;
-            height: 100% !important;
-            max-width: 100% !important;
-            position: relative !important;
-          }
-          [data-hero-container] img {
-            object-fit: cover !important;
-            object-position: center center !important;
-            width: 100% !important;
-            height: 100% !important;
-            max-width: 100% !important;
-            position: relative !important;
           }
         }
       `}} />
@@ -757,119 +325,76 @@ export default function ServicesPage() {
         <Navigation page="services" />
         </div>
 
-        {/* Hero Section - Scroll Animation for All Screen Sizes */}
-        <motion.section
-          ref={heroRef}
-          className="relative h-[36vh] sm:h-[44vh] md:h-[52vh] lg:h-[200vh] xl:h-[250vh] w-full overflow-hidden"
-          style={{ 
-            margin: 0, 
-            padding: 0, 
-            position: 'relative', 
-            width: '100%'
-          }}>
-          {/* Background Images - Scroll Animation for All Screens */}
-          <div 
-            data-hero-container
-            className="bg-[#F98F1F] h-full w-full relative"
-            style={{ 
-              backgroundColor: '#F98F1F',
-              width: '100%',
-              height: '100%'
-            }}
-          >
-            {(() => {
-              interface ImageItem {
-                id: number | string
-                image: string
-                alt: string
-              }
-
-              // Combine hero slides with service images
-              // Hero slides first, then fill remaining slots with service images (up to 9 total)
-              const maxImages = 9
-              const heroSlideImages: ImageItem[] = heroSlides.slice(0, maxImages).map((slide, idx) => ({
-                id: `hero-${slide.id}`,
-                image: slide.imageUrl || getImageUrl(slide.image),
-                alt: `Hero slide ${idx + 1}`
-              }))
+        {/* Hero Section - Static Image with Text Overlay */}
+        <section className="relative h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh] w-full overflow-hidden">
+          <div className="relative w-full h-full">
+            <Image
+              src={heroImage}
+              alt="Services"
+              fill
+              className="object-cover object-center"
+              sizes="100vw"
+              priority
+              unoptimized
+              onError={(e) => {
+                const target = e.target as HTMLImageElement
+                target.src = "/images/expand your world (1).jpg"
+              }}
+            />
+            {/* Gradient overlay for better text readability */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/60" />
+            
+            {/* Text Overlay */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center z-10 px-4 sm:px-6 md:px-8 text-center">
+              {/* Main Title */}
+              <motion.h1
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  duration: 1, 
+                  delay: 0.3,
+                  ease: [0.25, 0.46, 0.45, 0.94]
+                }}
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold mb-3 text-white tracking-tight"
+                style={{
+                  textShadow: '0 4px 20px rgba(0, 0, 0, 0.5), 0 2px 10px rgba(0, 0, 0, 0.3)',
+                  letterSpacing: '-0.02em'
+                }}
+              >
+                Services
+              </motion.h1>
               
-              const remainingSlots = maxImages - heroSlideImages.length
-              const serviceImages: ImageItem[] = remainingSlots > 0
-                ? services.slice(0, remainingSlots).map((service) => ({
-                    id: service.id,
-                    image: getServiceImageUrl(service),
-                    alt: service.name
-                  }))
-                : []
+              {/* Accent Line */}
+              <motion.div
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: "80px", opacity: 1 }}
+                transition={{ 
+                  duration: 0.8, 
+                  delay: 0.7,
+                  ease: "easeOut"
+                }}
+                className="h-1 bg-gradient-to-r from-[#F98F1F] to-[#FF8400] mb-3 rounded-full"
+              />
               
-              // If no hero slides, use service images (up to 9)
-              const imagesToShow: ImageItem[] = heroSlideImages.length > 0
-                ? [...heroSlideImages, ...serviceImages].slice(0, maxImages)
-                : services.slice(0, maxImages).map((service) => ({
-                    id: service.id,
-                    image: getServiceImageUrl(service),
-                    alt: service.name
-                  }))
-
-              console.log('Total images to render:', imagesToShow.length, imagesToShow.map(img => img.alt))
-              
-              return imagesToShow.map((item, index) => {
-                // Use animation if available, otherwise use first animation
-                const animation = serviceAnimations[index] || serviceAnimations[0]
-                console.log(`Rendering image ${index + 1}/${imagesToShow.length}:`, item.alt)
-                
-                return (
-                <motion.div
-                    key={`bg-${item.id || index}-${index}`}
-                  className="absolute inset-0 w-full h-full"
-                  style={{
-                      opacity: animation.opacity,
-                      y: animation.y,
-                      scale: animation.scale,
-                    zIndex: index + 1,
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    width: "100%",
-                    height: "100%",
-                      pointerEvents: 'none',
-                  }}
-                >
-                    <div 
-                      className="relative w-full overflow-hidden flex items-center justify-center hero-image-container" 
-                      style={{ 
-                        width: "100%", 
-                        height: "153%",
-                        minHeight: "153%",
-                        position: "relative",
-                        backgroundColor: "#F98F1F"
-                      }}
-                    >
-                      <Image
-                        src={item.image || "/images/expand your world (1).jpg"}
-                        alt={item.alt}
-                        fill
-                        className="hero-image-responsive"
-                        style={{
-                          objectPosition: "center center",
-                        }}
-                        sizes="(max-width: 480px) 100vw, (max-width: 768px) 100vw, (max-width: 1024px) 100vw, 100vw"
-                        priority={index < 3}
-                        unoptimized
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement
-                          target.src = "/images/expand your world (1).jpg"
-                        }}
-                      />
-                    </div>
-                </motion.div>
-                )
-              })
-            })()}
+              {/* Subtitle */}
+              <motion.p
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  duration: 1, 
+                  delay: 0.5,
+                  ease: "easeOut"
+                }}
+                className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white/95 font-light max-w-4xl leading-relaxed tracking-wide"
+                style={{
+                  textShadow: '0 2px 15px rgba(0, 0, 0, 0.4)'
+                }}
+              >
+                Enjoy the list of our services
+              </motion.p>
+            </div>
           </div>
-        </motion.section>
+        </section>
 
         {/* Services Carousel Section */}
         <div className="relative z-30 bg-white py-8 md:py-12">
