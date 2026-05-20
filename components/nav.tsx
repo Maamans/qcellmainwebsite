@@ -14,7 +14,7 @@ import { motion, AnimatePresence, useAnimation } from "framer-motion"
 
 import Image from "next/image"
 
-import { ChevronDown, ChevronRight, Menu, X } from "lucide-react"
+import { ChevronDown, Menu, X } from "lucide-react"
 
 
 
@@ -119,41 +119,41 @@ visible: {
 },
 }
 
-const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: {
-        duration: 0.5,
-        ease: [0.04, 0.62, 0.23, 0.98],
-        },
-    },
-}
+// const itemVariants = {
+//     hidden: { opacity: 0, y: 20 },
+//     visible: {
+//         opacity: 1,
+//         y: 0,
+//         transition: {
+//         duration: 0.5,
+//         ease: [0.04, 0.62, 0.23, 0.98],
+//         },
+//     },
+// }
 
-const linkVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: {
-        opacity: 1,
-        x: 0,
-        transition: {
-        duration: 0.3,
-        ease: [0.04, 0.62, 0.23, 0.98],
-        },
-    },
-}
+// const linkVariants = {
+//     hidden: { opacity: 0, x: -20 },
+//     visible: {
+//         opacity: 1,
+//         x: 0,
+//         transition: {
+//         duration: 0.3,
+//         ease: [0.04, 0.62, 0.23, 0.98],
+//         },
+//     },
+// }
 
-const imageVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: {
-        opacity: 1,
-        scale: 1,
-        transition: {
-        duration: 0.5,
-        ease: [0.04, 0.62, 0.23, 0.98],
-        },
-    },
-}
+// const imageVariants = {
+//     hidden: { opacity: 0, scale: 0.8 },
+//     visible: {
+//         opacity: 1,
+//         scale: 1,
+//         transition: {
+//         duration: 0.5,
+//         ease: [0.04, 0.62, 0.23, 0.98],
+//         },
+//     },
+// }
 
 export default function Navigation({page}: {page: string}) {
   const router = useRouter();

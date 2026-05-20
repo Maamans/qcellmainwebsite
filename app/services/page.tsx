@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
-import { motion, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion"
+import { motion } from "framer-motion"
 import Navigation from "@/components/navigation-two"
 import Footer from "@/components/footer"
 import useEmblaCarousel from "embla-carousel-react"
