@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { motion, useInView, AnimatePresence } from "framer-motion"
 import Image from "next/image"
-import Navigation from "@/components/nav"
+import Navigation from "@/components/navigation-two"
 import Footer from "@/components/footer"
 import { GraduationCap, Heart, Users, Leaf, ChevronLeft, ChevronRight } from "lucide-react"
 import { api, getImageUrl } from "@/lib/api"
@@ -342,7 +342,7 @@ export default function OurImpactPage() {
 
   return (
     <>
-      <Navigation page="our-impact" />
+      <Navigation />
       
       {/* Hero Section */}
       <section className="relative h-screen w-full overflow-hidden">

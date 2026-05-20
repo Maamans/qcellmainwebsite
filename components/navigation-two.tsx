@@ -1,1189 +1,2113 @@
 "use client"
+
 import { useState, useEffect, useRef } from "react"
+
 import type React from "react"
 
+import { usePathname } from "next/navigation"
+
 import Link from "next/link"
+
 import { motion, AnimatePresence, useAnimation } from "framer-motion"
+
 import Image from "next/image"
+
 import { ChevronDown, ChevronRight, Menu, Search, X } from "lucide-react"
+
 import { api, getImageUrl } from "@/lib/api"
 
+
+
 // Placeholder for images
+
 const QcellLogo = "/images/01-e1725631236883.png"
 
+
+
 // Helper function to conditionally join classNames
+
 function cn(...classes: (string | false | null | undefined)[]) {
+
   return classes.filter(Boolean).join(" ");
+
 }
+
+
 
 const staticHeroSlides = [
+
   {
+
     image: "/images/weeks.jpg",
+
     content: { title: "", description: "", cta: "" },
+
   },
+
   {
+
     image: "/images/app.jpg",
+
     content: { title: "", description: "", cta: "" },
+
   },
+
   {
+
     image: "/images/final poll.jpg",
+
     content: { title: "", description: "", cta: "" },
+
   },
+
 ]
 
+
+
 // Animation variants
+
 const dropdownVariants = {
+
   hidden: {
+
     opacity: 0,
+
     height: 0,
+
     transition: {
+
       duration: 0.3,
+
       ease: [0.04, 0.62, 0.23, 0.98],
+
     },
+
   },
+
   visible: {
+
     opacity: 1,
+
     height: "auto",
+
     transition: {
+
       duration: 0.5,
+
       ease: [0.04, 0.62, 0.23, 0.98],
+
       staggerChildren: 0.07,
+
       delayChildren: 0.1,
+
     },
+
   },
+
 };
+
 const navItems = [
+
     {
+
         title: "Home",
+
         href: "/",
+
     },
+
   {
+
     title: "About us",
+
     content: {
+
       heading: "About QCell",
+
       subheading: "Learn about our mission, leadership, and impact on Sierra Leone",
+
       links: [
+
         { title: "About QCell", href: "/about-us" },
+
         { title: "Our Impact", href: "/our-impact" },
+
         { title: "Careers", href: "/careers" },
+
         { title: "Business", href: "/business" }
+
       ]
+
     },
+
     href: 'about-us'
+
   },
+
     {
+
         title: "Tarriffs",
+
         href: '/tariffs'
+
     },
+
     {
+
         title: "Devices",
+
         href: 'devices'
+
     },
+
     {
+
         title: "Internet",
+
         href: '/internet'
+
     },
+
     {
+
         title: "Services",
+
+        content: {
+
+          heading: "Our Services",
+
+          subheading: "Explore our comprehensive range of services",
+
+          links: [
+
+            { title: "CUG", href: "/services/cug" },
+
+            { title: "SMB", href: "/services/smb" },
+
+            { title: "ESIM", href: "/services/esim" },
+
+            { title: "QTUNES", href: "/services/qtunes" },
+
+            { title: "QPOWER", href: "/services/qpower" },
+
+            { title: "TROS-MI-TOP", href: "/services/trosmitopup" },
+
+            { title: "NEW-SIM-PACK", href: "/services/newsimpack" },
+
+            { title: "VAS OFFERS", href: "/services/vas-offers" },
+
+           { title: "TOK-BOKU-BOKU BUNDLE", href: "/services/tokbokuboku" }
+
+
+
+
+
+
+          ]
+
+        },
+
         href: 'services'
+
     },
+
   {
+
     title: "Promotions",
+
     href: 'promotions'
+
   },
+
     {
+
         title: "Support",
+
         href: '/support'
+
     }
+
 ];
+
 const itemVariants = {
+
   hidden: { opacity: 0, y: 20 },
+
   visible: {
+
     opacity: 1,
+
     y: 0,
+
     transition: {
+
       duration: 0.5,
+
       ease: [0.04, 0.62, 0.23, 0.98],
+
     },
+
   },
+
 }
+
+
 
 const linkVariants = {
+
   hidden: { opacity: 0, x: -20 },
+
   visible: {
+
     opacity: 1,
+
     x: 0,
+
     transition: {
+
       duration: 0.3,
+
       ease: [0.04, 0.62, 0.23, 0.98],
+
     },
+
   },
+
 }
+
+
 
 const imageVariants = {
+
   hidden: { opacity: 0, scale: 0.8 },
+
   visible: {
+
     opacity: 1,
+
     scale: 1,
+
     transition: {
+
       duration: 0.5,
+
       ease: [0.04, 0.62, 0.23, 0.98],
+
     },
+
   },
+
 }
 
+
+
 export default function Navigation() {
+
+  const pathname = usePathname()
   const [activeItem, setActiveItem] = useState<string | null>(null)
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
   const [mobileSubmenu, setMobileSubmenu] = useState<string | null>(null)
+
   const [currentSlide, setCurrentSlide] = useState(0)
+
   const [isScrolled, setIsScrolled] = useState(false)
+
   const navRef = useRef<HTMLDivElement>(null)
+
   const heroRef = useRef<HTMLDivElement>(null)
+
   const dropdownRef = useRef<HTMLDivElement>(null)
+
   const controls = useAnimation()
+
   // Add a new state for the search overlay
+
   const [searchOpen, setSearchOpen] = useState(false)
+
   
+
   // Hero slides from API
+
   const [heroSlides, setHeroSlides] = useState<Array<{
+
     id: number;
+
     title: string | null;
+
     description: string | null;
+
     image: string;
+
     ctaText: string | null;
+
     ctaLink: string | null;
+
     order: number;
+
     isActive: boolean;
+
   }>>([])
+
   
+
   const staticFallbackImage = getImageUrl(staticHeroSlides[0].image)
+
   const [displayedImage, setDisplayedImage] = useState<string>(staticFallbackImage)
+
   
+
   // Fetch hero slides from API
+
   useEffect(() => {
+
     const fetchHeroSlides = async () => {
+
       try {
+
         const slides = await api.getHeroSlides('/')
+
         // Filter only active slides and sort by ID descending (newest first)
+
         const activeSlides = (slides as Array<{
+          
           id: number;
+
           title: string | null;
+
           description: string | null;
+
           image: string;
+
           ctaText: string | null;
+
           ctaLink: string | null;
+
           order: number;
+
           isActive: boolean;
+
           createdAt?: string;
+
         }>)
+
           .filter((slide) => slide.isActive)
+
           .sort((a, b) => {
+
             // Sort by createdAt if available (newest first), otherwise by ID (newest first)
+
             if (a.createdAt && b.createdAt) {
+
               return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+
             }
+
             return b.id - a.id
+
           })
+
         
+
         if (activeSlides.length > 0) {
+
           setHeroSlides(activeSlides)
+
         }
+
       } catch (error) {
+
         console.error('Failed to fetch hero slides:', error)
+
         // Use fallback data on error
+
       }
+
     }
+
+
 
     fetchHeroSlides()
+
   }, [])
+
+
 
   // Process backend slides - they will appear first
+
   const sanitizedBackendSlides = heroSlides.map((slide) => {
+
     const sanitizedTitle = (slide.title || "").trim()
+
     const hideTitle = sanitizedTitle.toLowerCase() === "homepage slide"
 
+
+
     return {
+
       image: getImageUrl(slide.image),
+
       content: {
+
         title: hideTitle ? "" : sanitizedTitle,
+
         description: (slide.description || "").trim(),
+
         cta: (slide.ctaText || "").trim(),
+
       },
+
     }
+
   })
 
+
+
   // Merge backend slides with static slides: backend first, then static to fill up to 3 total
+
   const resolvedSlides = (() => {
+
     const staticSlides = staticHeroSlides.map((slide) => ({
+
       image: getImageUrl(slide.image),
+
       content: slide.content,
+
     }))
+
     
+
     // Filter backend slides to only include those with valid images
+
     const validBackendSlides = sanitizedBackendSlides.filter(
+
       (slide) => slide.image && slide.image.trim() !== ""
+
     )
+
     
+
     if (validBackendSlides.length > 0) {
+
       // Use all backend slides first, then fill remaining slots with static slides
+
       const backendSlidesWithContent = validBackendSlides.map((backendSlide, index) => {
+
         // If backend slide has no content, use content from corresponding static slide if available
+
         const hasContent = backendSlide.content?.title || backendSlide.content?.description || backendSlide.content?.cta
+
         const staticSlide = staticSlides[index] || staticSlides[0]
+
         
+
         return {
+
           image: backendSlide.image,
+
           content: hasContent ? backendSlide.content : staticSlide.content,
+
         }
+
       })
+
       
+
       // Merge: backend slides first, then static slides to fill up to 3 total
+
       const merged = [...backendSlidesWithContent, ...staticSlides].slice(0, 3)
+
       return merged
+
     }
+
     
+
     return staticSlides
+
   })()
 
+
+
   const heroImages = resolvedSlides.map((slide) => slide.image).filter(Boolean)
+
   const heroContent = resolvedSlides.map((slide) => slide.content)
 
+
+
   // Log images for debugging
+
   useEffect(() => {
+
     if (heroImages.length > 0) {
+
       console.log('Hero images loaded:', heroImages)
+
       console.log('Current slide:', currentSlide, 'Image:', heroImages[currentSlide])
+
     }
+
   }, [heroImages, currentSlide])
 
+
+
   // Get current image with fallback
+
   const getCurrentImage = () => {
+
     if (displayedImage && displayedImage.trim() !== "") {
+
       return displayedImage
+
     }
+
     return staticFallbackImage
+
   }
+
+
 
   const handleImageError = (imageSrc: string) => {
+
     console.error('Failed to load hero image:', imageSrc)
+
   }
 
+
+
   // Handle scroll effect
+
   useEffect(() => {
+
     const handleScroll = () => {
+
       if (window.scrollY > 50) {
+
         setIsScrolled(true)
+
         if (window.innerWidth > 768) {
+
             setSearchOpen(false)
+
             setActiveItem(null)
 
+
+
         }
+
         
+
       } else {
+
         setIsScrolled(false)
+
       }
+
     }
+
+
 
     window.addEventListener("scroll", handleScroll)
+
     return () => {
+
       window.removeEventListener("scroll", handleScroll)
+
     }
+
   }, [])
 
+
+
   // Update displayed image when slide changes; keep showing previous image until new image loads
+
   useEffect(() => {
+
     if (!heroImages.length) {
+
       setDisplayedImage(staticFallbackImage)
+
       return
+
     }
+
+
 
     const targetImage = heroImages[currentSlide]
+
     if (!targetImage || targetImage === displayedImage) {
+
       return
+
     }
+
+
 
     let isCancelled = false
+
     const img = document.createElement("img")
+
     img.onload = () => {
+
       if (!isCancelled) {
+
         setDisplayedImage(targetImage)
+
       }
+
     }
+
     img.onerror = () => {
+
       if (!isCancelled) {
+
         const fallbackForSlide =
+
           staticHeroSlides[currentSlide % staticHeroSlides.length]?.image || staticFallbackImage
+
         setDisplayedImage(getImageUrl(fallbackForSlide))
+
       }
+
     }
+
     img.src = targetImage
 
+
+
     if (img.complete && img.naturalHeight !== 0) {
+
       setDisplayedImage(targetImage)
+
     }
+
+
 
     return () => {
+
       isCancelled = true
+
     }
+
   }, [currentSlide, heroImages, displayedImage, staticFallbackImage])
 
+
+
   // Auto-advance slider
+
   useEffect(() => {
+
     if (heroImages.length === 0) return
+
     
+
     const interval = setInterval(() => {
+
       setCurrentSlide((prev) => (prev + 1) % heroImages.length)
+
     }, 10000)
 
+
+
     return () => clearInterval(interval)
+
   }, [heroImages.length])
+
+
 
   const currentContent = heroContent[currentSlide]
 
+
+
   // Close dropdown when clicking outside
+
   useEffect(() => {
+
     const handleClickOutside = (event: MouseEvent) => {
+
       if (
+
         navRef.current &&
+
         !navRef.current.contains(event.target as Node) &&
+
         dropdownRef.current &&
+
         !dropdownRef.current.contains(event.target as Node)
+
       ) {
+
         setActiveItem(null)
+
       }
+
     }
+
+
 
     document.addEventListener("mousedown", handleClickOutside)
+
     return () => {
+
       document.removeEventListener("mousedown", handleClickOutside)
+
     }
+
   }, [])
 
+
+
   // Handle dropdown animation
+
   useEffect(() => {
+
     if (activeItem) {
+
       controls.start("visible")
-      document.querySelector('.backdrop-filter')?.classList.remove("hidden")
-      document.querySelector('.backdrop-filter')?.classList.add("backdrop-blur-md")
-      //return () => {
-      //  document.body.classList.remove("backdrop-blur-sm")
-      //}
+
     } else {
+
       controls.start("hidden")
 
-      document.querySelector('.backdrop-filter')?.classList.add("hidden")
-      document.querySelector('.backdrop-filter')?.classList.remove("backdrop-blur-md")
     }
+
   }, [activeItem, controls])
 
+
+
   useEffect(() => {
+
     if (mobileMenuOpen) {
+
       document.querySelector('.backdrop-filter')?.classList.remove("hidden")
+
       document.querySelector('.backdrop-filter')?.classList.add("backdrop-blur-md")
+
     } else {
 
+
+
       document.querySelector('.backdrop-filter')?.classList.add("hidden")
+
       document.querySelector('.backdrop-filter')?.classList.remove("backdrop-blur-md")
+
     }
+
   }, [mobileMenuOpen])
 
+
+
   useEffect(() => {
+
     if (searchOpen) {
+
   
+
       document.querySelector('.backdrop-filter')?.classList.remove("hidden")
+
       document.querySelector('.backdrop-filter')?.classList.add("backdrop-blur-md")
+
     } else {
 
+
+
       document.querySelector('.backdrop-filter')?.classList.add("hidden")
+
       document.querySelector('.backdrop-filter')?.classList.remove("backdrop-blur-md")
+
     }
+
   }, [searchOpen])
 
+
+
   // Add this function to handle search submission
+
   const handleSearchSubmit = (e: React.FormEvent) => {
+
     e.preventDefault()
+
     // Handle search logic here
+
     setSearchOpen(false)
+
   }
 
+
+
   // Add this right before the return statement
+
   {/*const toggleSearch = () => {
+
     setSearchOpen(!searchOpen)
+
     if (!searchOpen) {
+
       // When opening search, close any open navigation items
+
       setActiveItem(null)
+
     }
+
   }*/}
 
+
+
   return (
+
     <>
+
       {/* Desktop Navigation */}
+
       <motion.header
+
         ref={navRef}
+
         className="fixed top-0 left-0 right-0 z-50 nav mx-auto text-white w-[90%] mt-[20px] pr-3 py-0 rounded-none"
+
         initial={{ y: -100 }}
+
         animate={{ y: 0 }}
+
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+
         style={{
+
             marginTop: isScrolled ? "0" : "20px",
+
             width: isScrolled ? "100%" : "90%",
+
             borderRadius: isScrolled ? "0" : "0.3rem",
+
             backgroundColor: "#077aca",
+
             transition: "all 0.5s",
+
             backdropFilter: isScrolled ? "blur(10px)" : "blur(5px)",
+
         }}
+
       >
+
         {/*style={{
+
           backgroundColor: isScrolled ? "rgba(205, 127, 50, 0.85)" : "rgba(0, 0, 0, 0.3)",
+
           backdropFilter: isScrolled ? "backdrop-blur(10px)" : "backdrop-blur(5px)",
+
         }} */}
+
         
+
         <motion.div
+
           className="container mx-auto flex items-center justify-between"
+
           
+
         >
+
             {/*style={{
+
             paddingTop: isScrolled ? "0.75rem" : "1.5rem",
+
             paddingBottom: isScrolled ? "0.75rem" : "1.5rem",
+
           }}*/}
+
           <div className="flex items-center z-40 space-x-5">
+
             <motion.div
+
               style={{ scale: isScrolled ? 1 : 1 }}
+
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+
             >
+
               <Link href="/" className="flex items-center">
+
                 <Image
+
                   src={QcellLogo || "/placeholder.svg"}
+
                   alt="QCell Logo"
+
                   width={64}
+
                   height={64}
+
                   className="h-[52px] w-auto object-contain rounded-md rounded-tr-none rounded-br-none xl:rounded-none"
+
                   style={{
+
                     borderBottomLeftRadius: activeItem && !isScrolled ? "0px" : "8px",
+
                     borderTopLeftRadius: activeItem && !isScrolled ? "0px" : "8px"
+
                   }}
+
                   priority
+
                   unoptimized
+
                 /> 
+
               </Link>
+
             </motion.div>
+
             <p className="ml-3 text-[#fad4ab] md:hidden">Expand Your World</p>
+
           </div>
 
+
+
             <nav className="ml-8 hidden items-center justify-between lg:flex">
+
               <ul className="flex space-x-8 items-center justify-center">
+
                 {navItems.map((item, index) => (
+
                   <motion.li
+
                     key={item.title}
+
                     className="relative"
+
                     initial={{ opacity: 0, y: -20 }}
+
                     animate={{ opacity: 1, y: 0 }}
+
                     transition={{
+
                       delay: 0.1 + index * 0.05,
+
                       duration: 0.5,
+
                       ease: [0.22, 1, 0.36, 1],
+
                     }}
+
                   >
+
                     {item.title === "Promotions" || !item.content ? (
+
                       <Link href={item.href}>
-                        <span className="group flex items-center py-2 text-sm font-medium text-white transition-colors hover:text-white/80">
-                          {item.title}
-                        </span>
-                      </Link>
-                    ) : (
-                      <Link href={item.href ? item.href : "#"}>
-                        <motion.button
-                          className={cn(
-                            "group flex items-center py-2 text-sm font-medium text-white transition-colors",
-                            activeItem === item.title ? "text-white font-bold" : "hover:text-white/80",
-                          )}
-                          onClick={() => setActiveItem(activeItem === item.title ? null : item.title)}
-                          onMouseEnter={() => setActiveItem(item.title)}
-                          whileHover={{
-                            scale: 1.05,
-                            transition: { duration: 0.2, ease: "easeOut" },
-                          }}
-                          whileTap={{ scale: 0.98 }}
+
+                        <span 
+
+                          className="group flex items-center py-2 text-sm font-medium text-white transition-colors hover:text-white/80"
+
+                          onMouseEnter={() => setActiveItem(null)}
+
                         >
-                          <span className="relative">
-                            {item.title}
-                            {activeItem === item.title && (
-                              <motion.div
-                                className="absolute -bottom-1 left-0 h-0.5 w-full bg-white"
-                                layoutId="navUnderline"
-                                transition={{ duration: 0.3, ease: "easeOut" }}
-                              />
-                            )}
-                          </span>
-                          {/* Only show dropdown chevron if item has dropdown content */}
-                          {item.content && (
-                            <motion.div
-                              animate={{
-                                rotate: activeItem === item.title ? 180 : 0,
-                                transition: { duration: 0.3, ease: "easeInOut" },
-                              }}
-                            >
-                              <ChevronDown
-                                className={cn(
-                                  "ml-1 h-4 w-4 transition-transform",
-                                  activeItem === item.title ? "text-white" : "",
-                                )}
-                              />
-                            </motion.div>
-                          )}
-                        </motion.button>
+
+                          {item.title}
+
+                        </span>
+
                       </Link>
+
+                    ) : (
+
+                      <Link href={item.href ? item.href : "#"}>
+
+                        <motion.button
+
+                          className={cn(
+
+                            "group flex items-center py-2 text-sm font-medium text-white transition-colors",
+
+                            activeItem === item.title ? "text-white font-bold" : "hover:text-white/80",
+
+                          )}
+
+                          onClick={() => setActiveItem(activeItem === item.title ? null : item.title)}
+
+                          onMouseEnter={() => setActiveItem(item.title)}
+
+                          whileHover={{
+
+                            scale: 1.05,
+
+                            transition: { duration: 0.2, ease: "easeOut" },
+
+                          }}
+
+                          whileTap={{ scale: 0.98 }}
+
+                        >
+
+                          <span className="relative">
+
+                            {item.title}
+
+                            {activeItem === item.title && (
+
+                              <motion.div
+
+                                className="absolute -bottom-1 left-0 h-0.5 w-full bg-white"
+
+                                layoutId="navUnderline"
+
+                                transition={{ duration: 0.3, ease: "easeOut" }}
+
+                              />
+
+                            )}
+
+                          </span>
+
+                          {/* Only show dropdown chevron if item has dropdown content */}
+
+                          {item.content && (
+
+                            <motion.div
+
+                              animate={{
+
+                                rotate: activeItem === item.title ? 180 : 0,
+
+                                transition: { duration: 0.3, ease: "easeInOut" },
+
+                              }}
+
+                            >
+
+                              <ChevronDown
+
+                                className={cn(
+
+                                  "ml-1 h-4 w-4 transition-transform",
+
+                                  activeItem === item.title ? "text-white" : "",
+
+                                )}
+
+                              />
+
+                            </motion.div>
+
+                          )}
+
+                        </motion.button>
+
+                      </Link>
+
                     )}
+
                   </motion.li>
+
                 ))}
+
               </ul>
+
             </nav>
 
+
+
           {/*<div className="hidden items-center space-x-4 z-40 lg:flex">
+
             <motion.button
+
               className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white transition-colors hover:bg-white/30"
+
               onClick={toggleSearch}
+
               whileHover={{
+
                 scale: 1.1,
+
                 boxShadow: "0 0 15px rgba(255, 255, 255, 0.5)",
+
                 transition: { duration: 0.2, ease: "easeOut" },
+
               }}
+
               whileTap={{ scale: 0.95 }}
+
             >
+
               <Search className="h-5 w-5" />
+
             </motion.button>
+
             <motion.div
+
               whileHover={{
+
                 scale: 1.05,
+
                 boxShadow: "0 5px 15px rgba(0, 0, 0, 0.1)",
+
                 transition: { duration: 0.2, ease: "easeOut" },
+
               }}
+
               whileTap={{ scale: 0.95 }}
+
             >
+
               <Link
+
                 href="#"
+
                 className="rounded-full bg-white px-5 py-2 text-sm font-medium text-[#F98F1F] transition-all hover:bg-white/90"
+
               >
+
                 Get Started
+
               </Link>
+
             </motion.div>
+
           </div> */}
 
+
+
           <motion.button
+
             className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white lg:hidden"
+
             onClick={() => setMobileMenuOpen(true)}
+
             whileHover={{ scale: 1.1, backgroundColor: "rgba(255, 255, 255, 0.3)" }}
+
             whileTap={{ scale: 0.9 }}
+
           >
+
             <Menu className="h-5 w-5" />
+
           </motion.button>
+
         </motion.div>
 
-        {/* Mega Menu Dropdown */}
+
+
+        {/* Simple Dropdown */}
+
         <AnimatePresence>
-          {activeItem && (
+
+          {activeItem && activeItem !== "Promotions" && activeItem !== "Support" && (
+
             <motion.div
-              ref={dropdownRef}
-              className="absolute left-0 w-full overflow-hidden px-5"
-              variants={dropdownVariants}
-              initial="hidden"
-              animate="visible"
-              exit="hidden"
-              style={{
-                backgroundColor: "rgba(7, 122, 202, 0.1)",
-                backdropFilter: "backdrop-blur(20px)",
-                WebkitBackdropFilter: "backdrop-blur(20px)",
-                boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)",
-                borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-                borderBottomLeftRadius: "20px",
-                borderBottomRightRadius: "20px",
-              }}
-            >
-              {navItems.map(
-                (item) =>
-                  activeItem === item.title && item.content && (
-                    <div key={item.title} className="container mx-auto py-8">
-                      <div className="grid gap-8 md:grid-cols-2">
-                        <div className="space-y-6">
-                          <motion.h2 className="text-2xl font-semibold text-white" variants={itemVariants}>
-                            {item.content.heading}
-                          </motion.h2>
 
-                          {item.content.subheading && (
-                            <motion.p className="text-sm text-white/90" variants={itemVariants}>
-                              {item.content.subheading}
-                            </motion.p>
-                          )}
+                ref={dropdownRef}
 
-                          {item.content.links && (
-                            <motion.div className="mt-6 grid grid-cols-3 gap-x-8 gap-y-4" variants={itemVariants}>
-                              {item.content.links
-                                .filter(link => link.title !== "Home")
-                                .map((link, index) => (
-                                  <motion.div key={link.title + link.href} variants={linkVariants} custom={index}>
-                                    <Link
-                                      href={link.href}
-                                      className="group flex items-center text-sm text-white transition-colors hover:text-white/80 hover:underline"
-                                    >
-                                      <motion.div
-                                        initial={{ x: -5, opacity: 0 }}
-                                        whileHover={{ x: 0, opacity: 1 }}
-                                        transition={{ duration: 0.2 }}
-                                      >
-                                        <ChevronRight className="mr-2 h-4 w-4 text-white" />
-                                      </motion.div>
-                                      <span className="relative overflow-hidden">
-                                        {link.title}
-                                        <motion.span
-                                          className="absolute bottom-0 left-0 h-[1px] w-full bg-white/70"
-                                          initial={{ scaleX: 0, originX: 0 }}
-                                          whileHover={{ scaleX: 1 }}
-                                          transition={{ duration: 0.3 }}
-                                        />
-                                      </span>
-                                    </Link>
-                                  </motion.div>
-                                ))}
-                            </motion.div>
-                          )}
+                className="absolute overflow-hidden z-20"
+
+                variants={dropdownVariants}
+
+                initial="hidden"
+
+                animate="visible"
+                exit="hidden"
+                onMouseLeave={() => setActiveItem(null)}
+                style={{
+                  backgroundColor: "white",
+                  borderBottomLeftRadius: "12px",
+                  borderBottomRightRadius: "12px",
+                  width: "180px",
+                  left: activeItem === "About us" ? "56%" : 
+                         activeItem === "Services" ? "76%" : 
+                         activeItem === "Tarriffs" ? "50%" :
+                         activeItem === "Devices" ? "50%" :
+                         activeItem === "Internet" ? "50%" : "50%",
+                }}
+
+              >
+
+                {navItems.map(
+
+                  (item) =>
+
+                    activeItem === item.title && item.content && (
+
+                      <div key={item.title} className="p-3">
+
+                        <h3 className="font-semibold text-sm mb-2 text-[#077aca]">{item.title}</h3>
+
+                        <div className="space-y-1">
+
+                          {item.content.links && item.content.links.map((link) => (
+
+                            <Link
+
+                              key={link.title + link.href}
+
+                              href={link.href}
+
+                              className="block py-1 px-2 hover:bg-gray-100 rounded transition-colors text-xs text-gray-700"
+
+                              onClick={() => setActiveItem(null)}
+
+                            >
+
+                              {link.title}
+
+                            </Link>
+
+                          ))}
+
                         </div>
 
-                        {item.content && 'image' in item.content && typeof item.content.image === 'string' && (
-                          <motion.div className="flex items-center justify-center" variants={imageVariants}>
-                            <motion.div
-                              className="overflow-hidden rounded-lg"
-                              whileHover={{ scale: 1.03 }}
-                              transition={{ duration: 0.4, ease: "easeOut" }}
-                            >
-                              <Image
-                                src={item.content.image || "/placeholder.svg"}
-                                alt={item.title}
-                                width={400}
-                                height={200}
-                                className="object-contain transition-transform duration-700 hover:scale-105"
-                              />
-                            </motion.div>
-                          </motion.div>
-                        )}
                       </div>
-                    </div>
-                  ),
-              )}
-            </motion.div>
-          )}
+
+                    )
+
+                )}
+
+              </motion.div>
+
+            )}
+
         </AnimatePresence>
+
         {/* Search Overlay */}
+
         <AnimatePresence>
+
           {searchOpen && (
+
             <motion.div
+
               className="fixed left-0 right-0 top-[50px] z-[100] w-full overflow-hidden px-5"
+
               initial={{ height: 0, opacity: 0 }}
+
               animate={{ height: "auto", opacity: 1 }}
+
               exit={{ height: 0, opacity: 0 }}
+
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+
               style={{
+
                 backgroundColor: "rgba(7, 122, 202, 0.1)",
+
                 backdropFilter: "backdrop-blur(10px)",
+
                 WebkitBackdropFilter: "backdrop-blur(10px)",
+
                 boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)",
+
               }}
+
             >
+
               <div className="container mx-auto py-8">
+
                 <div className="flex items-center justify-between pb-6">
+
                   <motion.h2
+
                     className="text-2xl font-semibold text-white"
+
                     initial={{ opacity: 0, y: 20 }}
+
                     animate={{ opacity: 1, y: 0 }}
+
                     transition={{ delay: 0.1, duration: 0.4 }}
+
                   >
+
                     Search QCell
+
                   </motion.h2>
+
                   <motion.button
+
                     className="rounded-full bg-white/20 p-2 text-white"
+
                     onClick={() => setSearchOpen(false)}
+
                     whileHover={{ scale: 1.1, backgroundColor: "rgba(255, 255, 255, 0.3)" }}
+
                     whileTap={{ scale: 0.9 }}
+
                     initial={{ opacity: 0 }}
+
                     animate={{ opacity: 1 }}
+
                     transition={{ delay: 0.2 }}
+
                   >
+
                     <X className="h-5 w-5" />
+
                   </motion.button>
+
                 </div>
 
+
+
                 <motion.form
+
                   onSubmit={handleSearchSubmit}
+
                   className="relative"
+
                   initial={{ opacity: 0, y: 20 }}
+
                   animate={{ opacity: 1, y: 0 }}
+
                   transition={{ delay: 0.2, duration: 0.4 }}
+
                 >
+
                   <div className="relative">
+
                     <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-white/60" />
+
                     <input
+
                       type="text"
+
                       placeholder="Search for products, services, or support..."
+
                       className="w-full rounded-full border border-white/20 bg-white/10 py-4 pl-12 pr-4 text-white placeholder:text-white/60 focus:border-white/40 focus:outline-none focus:ring-1 focus:ring-white/40"
+
                       autoFocus
+
                     />
+
                   </div>
 
+
+
                   <motion.div
+
                     className="mt-8 grid gap-6 md:grid-cols-3"
+
                     initial={{ opacity: 0 }}
+
                     animate={{ opacity: 1 }}
+
                     transition={{ delay: 0.3, duration: 0.4 }}
+
                   >
+
                     <div>
+
                       <h3 className="mb-3 text-sm font-medium text-white/80">Popular Searches</h3>
+
                       <ul className="space-y-2">
+
                         {["Data bundles", "Roaming", "QFiber", "Recharge", "Mobile money"].map((item, i) => (
+
                           <motion.li
+
                             key={item}
+
                             initial={{ opacity: 0, x: -10 }}
+
                             animate={{ opacity: 1, x: 0 }}
+
                             transition={{ delay: 0.4 + i * 0.05, duration: 0.3 }}
+
                           >
+
                             <Link
+
                               href="#"
+
                               className="flex items-center text-sm text-white/70 transition-colors hover:text-white"
+
                               onClick={() => setSearchOpen(false)}
+
                             >
+
                               <ChevronRight className="mr-2 h-4 w-4 text-[#F98F1F]/80" />
+
                               {item}
+
                             </Link>
+
                           </motion.li>
+
                         ))}
+
                       </ul>
+
                     </div>
 
+
+
                     <div>
+
                       <h3 className="mb-3 text-sm font-medium text-white/80">Quick Links</h3>
+
                       <ul className="space-y-2 text-sm text-white/70">
+
                         {[
+
                           { label: "To check main voice balance", code: "*101#" },
+
                           { label: "To buy Bundle", code: "*303#" },
+
                           { label: "To know your Number", code: "*160#" },
+
                           { label: "To transfer Credit", code: "*141*Number*Amount#" },
+
                           { label: "To Loan Credit", code: "*393#" },
+
                           { label: "To send Please call me", code: "*444*Number#" },
+
                           { label: "To access free Website", code: "*303*6#" },
+
                           { label: "To Access last call info", code: "*102#" },
+
                           { label: "To self activate 4G LTE", code: "*335#" },
+
                           { label: "To access all short codes", code: "*343#" },
+
                         ].map((item, i) => (
+
                           <motion.li
+
                             key={item.label}
+
                             initial={{ opacity: 0, x: -10 }}
+
                             animate={{ opacity: 1, x: 0 }}
+
                             transition={{ delay: 0.5 + i * 0.05, duration: 0.3 }}
+
                             className="flex flex-col sm:flex-row sm:items-center sm:justify-between border border-white/10 rounded-lg px-3 py-2 bg-white/5"
+
                           >
+
                             <div className="flex items-center gap-2">
+
                               <ChevronRight className="h-4 w-4 text-[#F98F1F]/80" />
+
                               <span>{item.label}</span>
+
                             </div>
+
                             <span className="font-mono text-white text-sm sm:text-base">{item.code}</span>
+
                           </motion.li>
+
                         ))}
+
                       </ul>
+
                     </div>
 
+
+
                     <div>
+
                       <h3 className="mb-3 text-sm font-medium text-white/80">Featured</h3>
+
                       <div className="overflow-hidden rounded-lg border border-white/20">
+
                         <div className="relative h-32 w-full">
+
                           <Image
+
                             src="/placeholder.svg?height=200&width=400"
+
                             alt="Featured promotion"
+
                             fill
+
                             className="object-cover"
+
                           />
+
                           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+
                           <div className="absolute bottom-0 left-0 p-3">
+
                             <p className="text-sm font-medium text-white">Special Offer</p>
+
                             <p className="text-xs text-white/80">Limited time promotion</p>
+
                           </div>
+
                         </div>
+
                       </div>
+
                     </div>
+
                   </motion.div>
+
                 </motion.form>
+
               </div>
+
             </motion.div>
+
           )}
+
         </AnimatePresence>
+
       </motion.header>
 
+
+
       {/* Mobile Menu */}
+
       <AnimatePresence>
+
         {mobileMenuOpen && (
+
           <motion.div
+
             className="fixed overflow-y-scroll no-scrollbar inset-0 z-50 bg-gradient-to-b from-[#333333] to-[#CD7F32]/90 lg:hidden"
+
             initial={{ opacity: 0, x: "100%" }}
+
             animate={{ opacity: 1, x: 0 }}
+
             exit={{ opacity: 0, x: "100%" }}
+
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+
           >
+
             <div className="flex h-full flex-col overflow-y-auto z-40">
+
               <div className="flex items-center justify-between border-b border-white/20 px-4 py-4">
+
                 <Link href="/" className="flex items-center" onClick={() => setMobileMenuOpen(false)}>
+
                   <Image
+
                     src={QcellLogo || "/placeholder.svg"}
+
                     alt="QCell Logo"
+
                     width={48}
+
                     height={48}
+
                     className="h-12 w-auto object-contain rounded-md"
+
                     priority
+
                     unoptimized
+
                   /> <span className="ml-3 text-white">Expand Your World</span>
+
                 </Link>
+
                 <motion.button
+
                   className="rounded-full bg-white/20 p-2 text-white z-40"
+
                   onClick={() => setMobileMenuOpen(false)}
+
                   whileHover={{ scale: 1.1, backgroundColor: "rgba(255, 255, 255, 0.3)" }}
+
                   whileTap={{ scale: 0.9 }}
+
                 >
+
                   <X className="z-40 h-5 w-5" />
+
                 </motion.button>
+
               </div>
+
+
 
               <nav className="flex-1 px-4 py-6 overflow-y-scroll no-scrollbar">
+
                 <ul className="space-y-2">
+
                   {navItems.map((item, index) => (
+
                     <motion.li
+
                       key={item.title}
+
                       className="py-2"
+
                       initial={{ opacity: 0, x: 50 }}
+
                       animate={{ opacity: 1, x: 0 }}
+
                       transition={{
+
                         delay: 0.1 + index * 0.05,
+
                         duration: 0.4,
+
                         ease: [0.22, 1, 0.36, 1],
+
                       }}
+
                     >
+
                       
+
                       {item.content ? (
+
                         <>
+
                           <motion.button
+
                             className="flex w-full items-center justify-between text-left text-base font-medium text-white"
+
                             onClick={() => setMobileSubmenu(mobileSubmenu === item.title ? null : item.title)}
+
                             whileTap={{ scale: 0.98 }}
+
                           >
+
                             <span>{item.title}</span>
+
                             <motion.div
+
                               animate={{
+
                                 rotate: mobileSubmenu === item.title ? 180 : 0,
+
                                 transition: { duration: 0.3 },
+
                               }}
+
                             >
+
                               <ChevronDown className="h-5 w-5 text-white/80" />
+
                             </motion.div>
+
                           </motion.button>
 
+
+
                           <AnimatePresence>
+
                             {mobileSubmenu === item.title && (
+
                               <motion.div
+
                                 initial={{ height: 0, opacity: 0 }}
+
                                 animate={{ height: "auto", opacity: 1 }}
+
                                 exit={{ height: 0, opacity: 0 }}
+
                                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+
                                 className="overflow-hidden"
+
                               >
+
                                 <div className="mt-4 space-y-4 pl-4">
+
                                   {item.content && (
+
                                     <>
+
                                       <motion.p
+
                                         className="text-sm font-medium text-white"
+
                                         initial={{ opacity: 0, y: 10 }}
+
                                         animate={{ opacity: 1, y: 0 }}
+
                                         transition={{ delay: 0.1, duration: 0.3 }}
+
                                       >
+
                                         {item.content.heading}
+
                                       </motion.p>
 
+
+
                                       {item.content.subheading && (
+
                                         <motion.p
+
                                           className="text-xs text-white/80"
+
                                           initial={{ opacity: 0, y: 10 }}
+
                                           animate={{ opacity: 1, y: 0 }}
+
                                           transition={{ delay: 0.2, duration: 0.3 }}
+
                                         >
+
                                           {item.content.subheading}
+
                                         </motion.p>
+
                                       )}
+
+
 
                                       {item.content.links && (
+
                                         <ul className="mt-2 space-y-2 border-l border-white/30 pl-4">
+
                                           {item.content.links
+
                                             .filter(link => link.title !== "Home")
+
                                             .map((link, linkIndex) => (
+
                                               <motion.li
+
                                                 key={link.title + link.href}
+
                                                 initial={{ opacity: 0, x: -10 }}
+
                                                 animate={{ opacity: 1, x: 0 }}
+
                                                 transition={{
+
                                                   delay: 0.2 + linkIndex * 0.05,
+
                                                   duration: 0.3,
+
                                                 }}
+
                                                 whileHover={{ x: 5 }}
+
                                               >
+
                                                 <Link
+
                                                   href={link.href}
+
                                                   className="text-sm text-white/90 transition-colors hover:text-white"
+
                                                   onClick={() => setMobileMenuOpen(false)}
+
                                                 >
+
                                                   {link.title}
+
                                                 </Link>
+
                                               </motion.li>
+
                                             ))}
+
                                         </ul>
+
                                       )}
+
                                     </>
+
                                   )}
+
                                 </div>
+
                               </motion.div>
+
                             )}
+
                           </AnimatePresence>
+
                         </>
+
                       ) : (
+
                         <Link href={item.href} onClick={() => setMobileMenuOpen(false)}>
+
                           <span className="flex w-full items-center justify-between text-left text-base font-medium text-white py-2">{item.title}</span>
+
                         </Link>
+
                       )}
+
                     </motion.li>
+
                   ))}
+
                 </ul>
+
               </nav>
 
+
+
               <div className="border-t z-40 border-white/20 px-4 py-6">
+
                 <motion.div
+
                   initial={{ opacity: 0, y: 20 }}
+
                   animate={{ opacity: 1, y: 0 }}
+
                   transition={{ delay: 0.4, duration: 0.4 }}
+
                   whileHover={{
+
                     scale: 1.03,
+
                     boxShadow: "0 5px 15px rgba(0, 0, 0, 0.1)",
+
                   }}
+
                   whileTap={{ scale: 0.97 }}
+
                 >
+
                   <Link
+
                     href="#"
+
                     className="flex w-full items-center justify-center rounded-full bg-white px-5 py-3 text-base font-medium text-[#F98F1F]"
+
                     onClick={() => setMobileMenuOpen(false)}
+
                   >
+
                     Get Started
+
                   </Link>
+
                 </motion.div>
+
                 <motion.div
+
                   className="mt-4 flex items-center justify-center z-40"
+
                   initial={{ opacity: 0 }}
+
                   animate={{ opacity: 1 }}
+
                   transition={{ delay: 0.5, duration: 0.4 }}
+
                 >
+
                   {/*<motion.button
+
                     className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white"
+
                     onClick={() => {
+
                         setMobileMenuOpen(false)
+
                         toggleSearch()
+
                     }}
+
                     whileHover={{ scale: 1.1, backgroundColor: "rgba(255, 255, 255, 0.3)" }}
+
                     whileTap={{ scale: 0.9 }}
+
                   >
+
                     <Search className="h-5 w-5" />
+
                   </motion.button>*/}
+
                 </motion.div>
+
               </div>
+
             </div>
+
           </motion.div>
+
         )}
+
       </AnimatePresence>
 
-      {/* Hero Slider */}
-      <div
-        ref={heroRef}
-        className="relative w-full overflow-hidden h-[38vh] md:h-screen"
-        style={{
-          width: "100%",
-          margin: 0,
-          padding: 0,
-          maxWidth: "100vw",
-          backgroundColor: "#000",
-          backgroundImage: displayedImage ? `url("${encodeURI(displayedImage)}")` : undefined,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        {/* Slider Images */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentSlide}
-            className="absolute inset-0 z-0"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.4, ease: "linear" }}
-            style={{
+
+
+      {/* Hero Slider - Only show on homepage */}
+      {pathname === '/' && (
+        <div
+
+          ref={heroRef}
+
+          className="relative w-full overflow-hidden h-[38vh] md:h-screen"
+
+          style={{
+
+            width: "100%",
+
+            margin: 0,
+
+            padding: 0,
+
+            maxWidth: "100vw",
+
+            backgroundColor: "#000",
+
+            backgroundImage: displayedImage ? `url("${encodeURI(displayedImage)}")` : undefined,
+
+            backgroundSize: "cover",
+
+            backgroundPosition: "center",
+
+          }}
+
+        >
+
+          {/* Slider Images */}
+
+          <AnimatePresence mode="wait">
+
+            <motion.div
+              key={currentSlide}
+              className="absolute inset-0 z-0"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4, ease: "linear" }}
+              style={{
                 position: "absolute",
                 top: 0,
                 left: 0,
                 right: 0,
                 bottom: 0,
                 width: "100%",
-              height: "100%",
-              minWidth: "100%",
-              backgroundColor: "transparent",
-            }}
-          >
-            <div className="absolute inset-0 w-full h-full" style={{ width: "100%", minWidth: "100%" }}>
-              <Image
-                src={getCurrentImage()}
-                alt=""
-                fill
-                className="hero-slide-bg-image"
-                style={{
-                  objectPosition: "center center",
-                  filter: "blur(25px)",
-                  transform: "scale(1.2)",
-                  width: "100%",
-                  height: "100%",
-                  minWidth: "100%",
-                  backgroundColor: "transparent",
-                }}
-                sizes="100vw"
-                priority
-                unoptimized
-                aria-hidden
-                onError={() => {
-                  const currentImg = heroImages[currentSlide]
-                  if (currentImg) handleImageError(currentImg)
-                }}
-              />
-            </div>
-            <div className="absolute inset-0 w-full h-full" style={{ width: "100%", minWidth: "100%" }}>
-              <Image
-                src={getCurrentImage()}
-                alt={`Slide ${currentSlide + 1}`}
-                fill
-                className="hero-slide-image"
-                style={{
-                  objectPosition: "center center",
-                  width: "100%",
-                  height: "100%",
-                  minWidth: "100%",
-                  backgroundColor: "transparent",
-                }}
-                sizes="100vw"
-                priority
-                unoptimized
-                onError={() => {
-                  const currentImg = heroImages[currentSlide]
-                  if (currentImg) handleImageError(currentImg)
-                }}
-              />
-            </div>
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Slider Controls removed for mobile */}
-
-        {/* Slider Indicators absolute z-40 bottom-8 left-0 right-0 flex justify-center space-x-2*/}
-        <div className="absolute z-40 bottom-8 left-0 right-0 flex justify-center space-x-2 px-4">
-          {heroImages.map((_, index) => (
-            <motion.button
-              key={index}
-              className={`h-2 rounded-full transition-all ${
-                currentSlide === index ? "w-8 bg-[#ff8400]" : "w-2 bg-[#c3c3c3]/50"
-              }`}
-              onClick={() => setCurrentSlide(index)}
-              whileHover={{
-                scale: 1.2,
-                backgroundColor: currentSlide === index ? "rgba(255, 255, 255, 1)" : "rgba(255, 255, 255, 0.7)",
+                height: "100%",
+                minWidth: "100%",
+                backgroundColor: "transparent",
               }}
-              whileTap={{ scale: 0.9 }}
-              style={{ backgroundColor: currentSlide === index ? "#ff8400" : "#c3c3c3/50" }}
-            />
-          ))}
-        </div>
+            >
+              <div className="absolute inset-0 w-full h-full" style={{ width: "100%", minWidth: "100%" }}>
+                <Image
+                  src={getCurrentImage()}
+                  alt=""
+                  fill
+                  className="hero-slide-bg-image"
+                  style={{
+                    objectPosition: "center center",
+                    filter: "blur(25px)",
+                    transform: "scale(1.2)",
+                    width: "100%",
+                    height: "100%",
+                    minWidth: "100%",
+                    backgroundColor: "transparent",
+                  }}
+                  sizes="100vw"
+                  priority
+                  unoptimized
+                  aria-hidden
+                  onError={() => {
+                    const currentImg = heroImages[currentSlide]
+                    if (currentImg) handleImageError(currentImg)
+                  }}
+                />
+              </div>
+              <div className="absolute inset-0 w-full h-full" style={{ width: "100%", minWidth: "100%" }}>
+                <Image
+                  src={getCurrentImage()}
+                  alt={`Slide ${currentSlide + 1}`}
+                  fill
+                  className="hero-slide-image"
+                  style={{
+                    objectPosition: "center center",
+                    width: "100%",
+                    height: "100%",
+                    minWidth: "100%",
+                    backgroundColor: "transparent",
+                  }}
+                  sizes="100vw"
+                  priority
+                  unoptimized
+                  onError={() => {
+                    const currentImg = heroImages[currentSlide]
+                    if (currentImg) handleImageError(currentImg)
+                  }}
+                />
+              </div>
+            </motion.div>
+          </AnimatePresence>
 
-        {/* Slider Content */}
-        <div className="relative z-20 flex h-full items-center justify-center px-4 py-8 sm:py-16 md:py-24">
-          <div className="container mx-auto w-full max-w-3xl text-white text-center">
-            <AnimatePresence mode="wait">
-              {currentContent && (currentContent.title || currentContent.description || currentContent.cta) && (
-                <motion.div
-                  key={currentSlide}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  className="max-w-2xl text-center"
-                >
-                  {currentContent.title && (
-                    <motion.h1
-                      className="text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl leading-tight"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                      {currentContent.title}
-                    </motion.h1>
-                  )}
-                  {currentContent.description && (
-                    <motion.p
-                      className="mt-4 sm:mt-6 text-base sm:text-lg text-white/90 leading-relaxed"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.4, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                      {currentContent.description}
-                    </motion.p>
-                  )}
-                  {currentContent.cta && (
-                    <motion.div
-                      className="mt-6 sm:mt-8 flex flex-wrap gap-4"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.6, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    >
+          {/* Slider Controls removed for mobile */}
+
+          {/* Slider Indicators absolute z-40 bottom-8 left-0 right-0 flex justify-center space-x-2*/}
+          <div className="absolute z-40 bottom-8 left-0 right-0 flex justify-center space-x-2 px-4">
+            {heroImages.map((_, index) => (
+              <motion.button
+                key={index}
+                className={`h-2 rounded-full transition-all ${
+                  currentSlide === index ? "w-8 bg-[#ff8400]" : "w-2 bg-[#c3c3c3]/50"
+                }`}
+                onClick={() => setCurrentSlide(index)}
+                whileHover={{
+                  scale: 1.2,
+                  backgroundColor: currentSlide === index ? "rgba(255, 255, 255, 1)" : "rgba(255, 255, 255, 0.7)",
+                }}
+                whileTap={{ scale: 0.9 }}
+                style={{ backgroundColor: currentSlide === index ? "#ff8400" : "#c3c3c3/50" }}
+              />
+            ))}
+          </div>
+
+          {/* Slider Content */}
+          <div className="relative z-20 flex h-full items-center justify-center px-4 py-8 sm:py-16 md:py-24">
+            <div className="container mx-auto w-full max-w-3xl text-white text-center">
+              <AnimatePresence mode="wait">
+                {currentContent && (currentContent.title || currentContent.description || currentContent.cta) && (
+                  <motion.div
+                    key={currentSlide}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    className="max-w-2xl text-center"
+                  >
+                    {currentContent.title && (
+                      <motion.h1
+                        className="text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl leading-tight"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                      >
+                        {currentContent.title}
+                      </motion.h1>
+                    )}
+                    {currentContent.description && (
+                      <motion.p
+                        className="mt-4 sm:mt-6 text-base sm:text-lg text-white/90 leading-relaxed"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                      >
+                        {currentContent.description}
+                      </motion.p>
+                    )}
+                    {currentContent.cta && (
                       <motion.div
-                        whileHover={{
-                          scale: 1.05,
-                          boxShadow: "0 5px 15px rgba(0, 0, 0, 0.1)",
-                        }}
-                        whileTap={{ scale: 0.95 }}
+                        className="mt-6 sm:mt-8 flex flex-wrap gap-4"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                       >
-                        <Link
-                          href="#"
-                          className="rounded-full bg-[#F98F1F] px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-medium text-white transition-all hover:bg-white/90 hover:shadow-lg"
+                        <motion.div
+                          whileHover={{
+                            scale: 1.05,
+                            boxShadow: "0 5px 15px rgba(0, 0, 0, 0.1)",
+                          }}
+                          whileTap={{ scale: 0.95 }}
                         >
-                          {currentContent.cta}
-                        </Link>
+                          <Link
+                            href="#"
+                            className="rounded-full bg-[#F98F1F] px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-medium text-white transition-all hover:bg-white/90 hover:shadow-lg"
+                          >
+                            {currentContent.cta}
+                          </Link>
+                        </motion.div>
                       </motion.div>
-                      {/*<motion.div
-                        whileHover={{
-                          scale: 1.05,
-                          boxShadow: "0 5px 15px rgba(0, 0, 0, 0.1)",
-                        }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <Link
-                          href="#"
-                          className="rounded-full border border-white/50 bg-white/10 px-6 py-3 text-base font-medium text-white backdrop-blur-sm transition-all hover:bg-white/20"
-                        >
-                          Learn more about us
-                        </Link>
-                      </motion.div>*/}
-                    </motion.div>
-                  )}
-                </motion.div>
-              )}
-            </AnimatePresence>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
+          </div>
         </div>
-      </div>
+      )}
     </>
   )
 }
-

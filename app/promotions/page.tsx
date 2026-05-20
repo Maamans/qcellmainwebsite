@@ -1,7 +1,7 @@
 
 "use client";
 import { useState, useEffect } from 'react';
-import Navigation from '@/components/nav';
+import Navigation from "@/components/navigation-two"
 import Footer from '@/components/footer'
 import dynamic from 'next/dynamic'
 import MobileAppSection from '@/components/promotions/MobileAppSection'
@@ -97,7 +97,7 @@ export default function Promotions() {
   return (
     <>
       <motion.header className='w-full relative'>
-        <Navigation page='promotions' />
+        <Navigation />
         {/* Hero Slider with video and image support */}
         <PromotionsHeroSlider />
       </motion.header>

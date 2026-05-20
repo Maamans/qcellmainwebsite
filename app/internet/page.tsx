@@ -1,9 +1,9 @@
 "use client"
 
 import Image from "next/image"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import Navigation from "@/components/nav" 
+import Navigation from "@/components/navigation-two" 
 import Footer from "@/components/footer"
 import InternetPlansSlider from "@/components/internet/internet-plans-slider"
 import InternetBenefits from "@/components/internet/internet-benefits"
@@ -36,7 +36,7 @@ export default function InternetPage() {
   }, [])
 
   // Fallback slides if backend is unavailable
-  const fallbackSlides: HeroSlide[] = [
+  const fallbackSlides: HeroSlide[] = useMemo(() => [
     {
       image: "/images/qcell-network-two.png",
       title: "Speed. Freedom. Connection.",
@@ -54,8 +54,8 @@ export default function InternetPage() {
       title: "Fiber for Home & Business",
       subtitle: "Seamless connectivity for every device with QFiber and QFIBER.",
       cta: { text: "Discover Fiber", href: "#" },
-    },
-  ]
+    }
+  ], []) 
 
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>(fallbackSlides)
   const [currentHero, setCurrentHero] = useState(0)
@@ -135,7 +135,7 @@ export default function InternetPage() {
     }
 
     loadSlides()
-  }, [])
+  }, [fallbackSlides])
   
   useEffect(() => {
     if (heroSlides.length > 0) {
@@ -155,7 +155,7 @@ export default function InternetPage() {
   return (
     <div>
       {/* Navigation */}
-      <Navigation page="internet"/>
+      <Navigation />
       <header className="relative min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white overflow-hidden">
         {/* Hero Slider */}
         <div className="relative min-h-screen">

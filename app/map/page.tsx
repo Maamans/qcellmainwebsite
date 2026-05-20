@@ -469,6 +469,45 @@ export default function EnhancedCoverageMap() {
           cursor: pointer;
           z-index: 2;
         }
+        
+        .force-white-text {
+          color: white !important;
+          text-shadow: none !important;
+        }
+        
+        /* Ultra-specific override for the problematic text */
+        div.absolute.inset-x-0.top-0.z-10 h1.text-4xl.font-bold span.relative.text-white span,
+        div.absolute.inset-x-0.top-0.z-10 h1.text-4xl.font-bold span.relative.text-white,
+        div.absolute.inset-x-0.top-0.z-10 h1.text-4xl.font-bold span span,
+        div.absolute.inset-x-0.top-0.z-10 h1.text-4xl.font-bold span *,
+        span.force-white-text,
+        span.force-white-text *,
+        span[style*="white"] {
+          color: white !important;
+          text-shadow: none !important;
+          fill: white !important;
+        }
+        
+        /* Aggressive override targeting specific text content */
+        h1.text-4xl:has(span:contains("You're always")),
+        h1.text-4xl:has(span:contains("connected")),
+        span:has-text("You're always"),
+        span:has-text("connected"),
+        div[class*="absolute"] h1[class*="text-4xl"] span[class*="relative"] {
+          color: white !important;
+          text-shadow: none !important;
+          fill: white !important;
+        }
+        
+        /* Nuclear option - force all text in the header to white */
+        div[class*="absolute"][class*="inset-x-0"][class*="top-0"][class*="z-10"] h1[class*="text-4xl"] *,
+        div[class*="absolute"][class*="inset-x-0"][class*="top-0"][class*="z-10"] h1[class*="text-4xl"] span,
+        div[class*="absolute"][class*="inset-x-0"][class*="top-0"][class*="z-10"] h1[class*="text-4xl"] {
+          color: white !important;
+          text-shadow: none !important;
+          fill: white !important;
+          background: transparent !important;
+        }
 
         .coverage-marker .marker-container {
           position: relative;
@@ -584,12 +623,17 @@ export default function EnhancedCoverageMap() {
       `}</style>
 
       {/* Desktop title */}
-      <div className="absolute inset-x-0 top-0 z-10 bg-gradient-to-b from-black/60 to-transparent p-8 text-white hidden md:block">
-        <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-4xl font-bold">
-          With QCell, <br />
-          <span className="relative bg-gradient-to-r from-[#CD7F32] to-[#B87333] bg-clip-text text-transparent">
+      <div className="absolute inset-x-0 top-0 z-10 bg-gradient-to-b from-slate-800/60 to-transparent p-8 text-white flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <motion.h1
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-4xl font-bold"
+        >
+          <span className="text-white force-white-text">With QCell,</span>{" "}
+          <br />
+          <span className="relative text-white force-white-text" style={{ color: 'white !important', textShadow: 'none' }}>
             You&apos;re always{" "}
-            <span className="after:absolute after:w-[42%] after:h-1/6 after:bg-white after:right-0 after:-bottom-1">
+            <span className="after:absolute after:w-[42%] after:h-1/6 after:bg-white after:right-0 after:-bottom-1 force-white-text" style={{ color: 'white !important', textShadow: 'none' }}>
               connected
             </span>
           </span>

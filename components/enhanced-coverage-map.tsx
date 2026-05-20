@@ -271,11 +271,11 @@ export default function EnhancedCoverageMap() {
         }
       `}</style>
 
-      <div className="absolute inset-x-0 top-0 z-10 bg-gradient-to-b from-[#fff]/90 to-transparent p-8 text-[#CD7F32] flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="absolute inset-x-0 top-0 z-10 bg-gradient-to-b from-[#fff]/90 to-transparent p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <motion.h1 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-4xl font-bold">
-          With QCell,{" "}
+          <span className="text-white">With QCell,</span>{" "}
           <br />
-          <span className="relative bg-gradient-to-r from-[#CD7F32] to-[#B87333] bg-clip-text text-transparent">
+          <span className="relative text-white">
             You&apos;re always <span className="after:absolute after:w-[42%] after:h-1/6 after:bg-[#CD7F32] after:right-0 after:-bottom-1">connected</span>
           </span>
         </motion.h1>

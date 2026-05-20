@@ -5,13 +5,13 @@ import SupportCategories from "@/components/support-categories"
 import SupportFAQ from "@/components/support-faq"
 import SupportContact from "@/components/support-contact"
 {/*import SupportOptions from "@/components/support-options"*/}
-import Navigation from "@/components/nav"
+import Navigation from "@/components/navigation-two"
 import Footer from "@/components/footer"
 
 export default function SupportPage() {
   return (
     <>
-      <Navigation page="support" />
+      <Navigation />
       <main className="min-h-screen bg-white">
         <SupportHero />
         <SupportCategories />

@@ -1,15 +1,28 @@
 "use client"
+
 import { useState, useEffect, useRef } from "react"
+
 import { useRouter } from "next/navigation"
+
 import type React from "react"
 
+
+
 import Link from "next/link"
+
 import { motion, AnimatePresence, useAnimation } from "framer-motion"
+
 import Image from "next/image"
+
 import { ChevronDown, ChevronRight, Menu, X } from "lucide-react"
 
+
+
 // Placeholder for images
+
 const QcellLogo = "/images/01-e1725631236883.png"
+
+
 
 interface NavItem {
     title: string;
@@ -53,7 +66,17 @@ const navItems: NavItem[] = [
     },
     {
         title: "Services",
-        href: 'services'
+        content: {
+          heading: "Our Services",
+          subheading: "Discover the range of services we offer to keep you connected",
+          links: [
+            { title: "Mobile Services", href: "/services/mobile" },
+            { title: "Data Plans", href: "/services/data-plans" },
+            { title: "Roaming", href: "/services/roaming" },
+            { title: "Value Added Services", href: "/services/value-added" },
+          ],
+        },
+        href: '/services'
     },
   {
     title: "Tarriffs",
@@ -68,6 +91,7 @@ const navItems: NavItem[] = [
         href: '/support'
     },
 ]
+
 
 
 const cn = (...classes: (string | boolean | undefined)[]) => {
@@ -143,6 +167,8 @@ export default function Navigation({page}: {page: string}) {
   // Add a new state for the search overlay
   const [searchOpen, setSearchOpen] = useState(false)
 
+
+
   // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
@@ -165,6 +191,8 @@ export default function Navigation({page}: {page: string}) {
     }
   }, [])
 
+
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -184,20 +212,14 @@ export default function Navigation({page}: {page: string}) {
       }
   }, [])
 
-  // Handle dropdown animation
+
+
+
 useEffect(() => {
     if (activeItem) {
       controls.start("visible")
-      document.querySelector('.backdrop-filter')?.classList.remove("hidden")
-      document.querySelector('.backdrop-filter')?.classList.add("backdrop-blur-md")
-      //return () => {
-      //  document.body.classList.remove("backdrop-blur-sm")
-      //}
     } else {
       controls.start("hidden")
-
-      document.querySelector('.backdrop-filter')?.classList.add("hidden")
-      document.querySelector('.backdrop-filter')?.classList.remove("backdrop-blur-md")
     }
   }, [activeItem, controls])
 
@@ -224,22 +246,29 @@ useEffect(() => {
     }
   }, [searchOpen])
 
+
+
   // Add this function to handle search submission
 
+
+
   return (
+
     <>
-      {/* Desktop Navigation */}
+
+
       <motion.header className="mx-auto w-[90%]"
       >
+
       <motion.div
         ref={navRef}
-        className="fixed top-0 left-0 right-0 z-50 nav mx-auto text-white w-[90%] mt-[50px] pr-3 py-0 rounded-none"
+        className="fixed top-0 left-0 right-0 z-50 nav mx-auto text-white w-[90%] mt-[20px] pr-3 py-0 rounded-none"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         data-scrolled={isScrolled ? "true" : "false"}
         style={{
-            marginTop: isScrolled ? "0" : "50px",
+            marginTop: isScrolled ? "0" : "20px",
             width: isScrolled ? "100%" : "90%",
             borderRadius: isScrolled ? "0" : "0.3rem",
             backgroundColor: "#077aca",
@@ -247,19 +276,15 @@ useEffect(() => {
             backdropFilter: isScrolled ? "blur(10px)" : "blur(5px)",
         }}
       >
-        {/*style={{
-          backgroundColor: isScrolled ? "rgba(205, 127, 50, 0.85)" : "rgba(0, 0, 0, 0.3)",
-          backdropFilter: isScrolled ? "backdrop-blur(10px)" : "backdrop-blur(5px)",
-        }} */}
+
         
+
         <motion.div
           className="container mx-auto flex items-center justify-between"
           
         >
-            {/*style={{
-            paddingTop: isScrolled ? "0.75rem" : "1.5rem",
-            paddingBottom: isScrolled ? "0.75rem" : "1.5rem",
-          }}*/}
+
+            
           <div className="flex items-center z-40 space-x-5">
             <motion.div
               style={{ scale: isScrolled ? 1 : 1 }}
@@ -283,6 +308,8 @@ useEffect(() => {
             </motion.div>
             <p className="ml-3 text-[#fad4ab] md:hidden">{page !== 'about-us' ? 'QCELL' : ''} {page.charAt(0).toUpperCase() + page.slice(1)}</p>
           </div>
+
+
 
             <nav className="ml-8 hidden items-center justify-between lg:flex">
               <ul className="flex space-x-8 items-center justify-center">
@@ -311,6 +338,7 @@ useEffect(() => {
                             router.push("/");
                           }
                         }}
+                        onMouseEnter={() => setActiveItem(null)}
                         whileHover={{
                           scale: 1.05,
                           transition: { duration: 0.2, ease: "easeOut" },
@@ -321,7 +349,10 @@ useEffect(() => {
                       </motion.button>
                     ) : item.title === "Promotions" || item.title === "Support" ? (
                       <Link href={item.href}>
-                        <span className="group flex items-center py-2 text-sm font-medium text-white transition-colors hover:text-white/80">
+                        <span 
+                          className="group flex items-center py-2 text-sm font-medium text-white transition-colors hover:text-white/80"
+                          onMouseEnter={() => setActiveItem(null)}
+                        >
                           {item.title}
                         </span>
                       </Link>
@@ -342,6 +373,8 @@ useEffect(() => {
                           onMouseEnter={() => {
                             if (item.content) {
                               setActiveItem(item.title);
+                            } else {
+                              setActiveItem(null);
                             }
                           }}
                           whileHover={{
@@ -384,7 +417,10 @@ useEffect(() => {
               </ul>
             </nav>
 
+
+
           
+
           <motion.button
             className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white lg:hidden"
             onClick={() => setMobileMenuOpen(true)}
@@ -396,101 +432,57 @@ useEffect(() => {
         </motion.div>
 
 
-        {/* Mega Menu Dropdown */}
+
+
+
+        {/* Simple Dropdown */}
         <AnimatePresence>
           {activeItem && activeItem !== "Promotions" && activeItem !== "Support" && (
             <motion.div
               ref={dropdownRef}
-              className="absolute left-0 w-full overflow-hidden px-5"
+              className="absolute overflow-hidden z-20"
               variants={dropdownVariants}
               initial="hidden"
               animate="visible"
               exit="hidden"
+              onMouseLeave={() => setActiveItem(null)}
               style={{
-                backgroundColor: "rgba(7, 122, 202, 0.1)",
-                backdropFilter: "backdrop-blur(20px)",
-                WebkitBackdropFilter: "backdrop-blur(20px)",
-                boxShadow: "0 10px 25px rgba(0, 0, 0, 0.2)",
-                borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-                borderBottomLeftRadius: "20px",
-                borderBottomRightRadius: "20px",
+                backgroundColor: "white",
+                borderBottomLeftRadius: "12px",
+                borderBottomRightRadius: "12px",
+                width: "180px",
+                left: "980px",
               }}
             >
               {navItems.map(
                 (item) =>
                   activeItem === item.title && item.content && (
-                    <div key={item.title} className="container mx-auto py-8">
-                      <div className="grid gap-8 md:grid-cols-2">
-                        <div className="space-y-6">
-                          <motion.h2 className="text-2xl font-semibold text-white" variants={itemVariants}>
-                            {item.content.heading}
-                          </motion.h2>
-
-                          {item.content.subheading && (
-                            <motion.p className="text-sm text-white/90" variants={itemVariants}>
-                              {item.content.subheading}
-                            </motion.p>
-                          )}
-
-                          {item.content.links && (
-                            <motion.div className="mt-6 grid grid-cols-2 gap-x-8 gap-y-4" variants={itemVariants}>
-                              {item.content.links.map((link, index) => (
-                                <motion.div key={link.title} variants={linkVariants} custom={index}>
-                                  <Link
-                                    href={link.href}
-                                    className="group flex items-center text-sm text-white transition-colors hover:text-white/80 hover:underline"
-                                    onClick={() => setActiveItem(null)}
-                                  >
-                                    <motion.div
-                                      initial={{ x: -5, opacity: 0 }}
-                                      whileHover={{ x: 0, opacity: 1 }}
-                                      transition={{ duration: 0.2 }}
-                                    >
-                                      <ChevronRight className="mr-2 h-4 w-4 text-white" />
-                                    </motion.div>
-                                    <span className="relative overflow-hidden">
-                                      {link.title}
-                                      <motion.span
-                                        className="absolute bottom-0 left-0 h-[1px] w-full bg-white/70"
-                                        initial={{ scaleX: 0, originX: 0 }}
-                                        whileHover={{ scaleX: 1 }}
-                                        transition={{ duration: 0.3 }}
-                                      />
-                                    </span>
-                                  </Link>
-                                </motion.div>
-                              ))}
-                            </motion.div>
-                          )}
-                        </div>
-
-                        {item.content.image && (
-                          <motion.div className="flex items-center justify-center" variants={imageVariants}>
-                            <motion.div
-                              className="overflow-hidden rounded-lg"
-                              whileHover={{ scale: 1.03 }}
-                              transition={{ duration: 0.4, ease: "easeOut" }}
-                            >
-                              <Image
-                                src={item.content.image || "/placeholder.svg"}
-                                alt={item.title}
-                                width={400}
-                                height={200}
-                                className="object-contain transition-transform duration-700 hover:scale-105"
-                              />
-                            </motion.div>
-                          </motion.div>
-                        )}
+                    <div key={item.title} className="p-3">
+                      <h3 className="font-semibold text-sm mb-2 text-[#077aca]">{item.title}</h3>
+                      <div className="space-y-1">
+                        {item.content.links && item.content.links.map((link) => (
+                          <Link
+                            key={link.title + link.href}
+                            href={link.href}
+                            className="block py-1 px-2 hover:bg-gray-100 rounded transition-colors text-xs text-gray-700"
+                            onClick={() => setActiveItem(null)}
+                          >
+                            {link.title}
+                          </Link>
+                        ))}
                       </div>
                     </div>
-                  ),
+                  )
               )}
             </motion.div>
           )}
         </AnimatePresence>
         
+
       </motion.div>
       </motion.header>
+
+
 
       {/* Mobile Menu */}
       <AnimatePresence>
@@ -524,6 +516,8 @@ useEffect(() => {
                   <X className="z-40 h-5 w-5" />
                 </motion.button>
               </div>
+
+
 
               <nav className="flex-1 px-4 py-6 overflow-y-scroll no-scrollbar">
                 <ul className="space-y-2">
@@ -590,6 +584,8 @@ useEffect(() => {
                               </motion.button>
                             </div>
 
+
+
                             <AnimatePresence>
                               {mobileSubmenu === item.title && (
                                 <motion.div
@@ -611,6 +607,8 @@ useEffect(() => {
                                           <Link href={item.href}>{item.content.heading}</Link>
                                         </motion.p>
 
+
+
                                         {item.content.subheading && (
                                           <motion.p
                                             className="text-xs text-white/80"
@@ -621,6 +619,8 @@ useEffect(() => {
                                             {item.content.subheading}
                                           </motion.p>
                                         )}
+
+
 
                                         {item.content.links && (
                                           <ul className="mt-2 space-y-2 border-l border-white/30 pl-4">
@@ -666,6 +666,8 @@ useEffect(() => {
                 </ul>
               </nav>
 
+
+
               <div className="border-t z-40 border-white/20 px-4 py-6">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -690,8 +692,7 @@ useEffect(() => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5, duration: 0.4 }}
-                >
-                </motion.div>
+                />
               </div>
             </div>
           </motion.div>
@@ -700,4 +701,3 @@ useEffect(() => {
     </>
   )
 }
-

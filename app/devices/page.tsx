@@ -5,7 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
 
-import Navigation from "@/components/nav"
+import Navigation from "@/components/navigation-two"
 import DevicesSlider from "@/components/devices/device-slider"
 import SliderImages from "@/components/devices/slider-images"
 import Footer from "@/components/footer"
@@ -278,7 +278,7 @@ export default function DevicesPage() {
 
     return (
         <>
-            <Navigation page="devices" />
+            <Navigation />
             <motion.header className="relative h-auto min-h-[68vh] md:min-h-[95vh] md:flex md:flex-row-reverse md:justify-center md:items-stretch bg-white pt-12 md:pt-24 lg:pt-28 pb-12 md:pb-16">
                 {/* Image - narrower on desktop so slider fits below without overlap */}
                 <motion.div className="relative w-full md:w-[58%] md:min-h-[88vh] md:flex-shrink-0">

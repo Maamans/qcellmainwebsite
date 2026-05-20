@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react"
 import { motion, useInView } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
-import Navigation from "@/components/nav"
+import Navigation from "@/components/navigation-two"
 import Footer from "@/components/footer"
 
 export default function CareersPage() {
@@ -68,7 +68,7 @@ export default function CareersPage() {
 
   return (
     <>
-      <Navigation page="careers" />
+      <Navigation />
       
       {/* Hero Section */}
       <section className="relative h-screen w-full overflow-hidden">

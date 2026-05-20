@@ -2,7 +2,7 @@
 
 import TariffsHero from "@/components/tariffs-hero"
 import TariffNavigation from "@/components/tariff-navigation"
-import Navigation from "@/components/nav"
+import Navigation from "@/components/navigation-two"
 import Footer from "@/components/footer"
 import VoiceTariffs from "@/components/voice-tariffs"
 import { useEffect } from "react"
@@ -16,7 +16,7 @@ export default function TariffsPage() {
 
   return (
     <>
-      <Navigation page="tariffs"/>
+      <Navigation />
       <main className="min-h-screen bg-white">
         <TariffsHero />
         {/* Set Voice Tariffs as the default tab so content always shows */}

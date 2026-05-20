@@ -2,12 +2,12 @@
 
 import Image from "next/image"
 import Footer from "@/components/footer"
-import Navigation from "@/components/nav"
+import Navigation from "@/components/navigation-two"
 
 export default function BusinessPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <Navigation page="business" />
+      <Navigation />
       {/* Hero Section */}
       <section className="relative w-full h-[500px] md:h-[600px] flex items-center justify-center bg-gradient-to-br from-white via-blue-50 to-gray-100">
         <div className="absolute inset-0">

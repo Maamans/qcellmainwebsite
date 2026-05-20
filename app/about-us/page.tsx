@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react"
 import { motion, useScroll, useTransform, useSpring } from "framer-motion"
 import Image from "next/image"
-import Navigation from "@/components/nav"
+import Navigation from "@/components/navigation-two"
 import Timeline from "@/components/timeline/timeline"
 import QCellAboutSection from "@/components/qcell-about-section"
 import Footer from "@/components/footer"
@@ -93,7 +93,7 @@ export default function AboutPage() {
         />
       </motion.div>
     
-      <Navigation page="about-us"/>
+      <Navigation />
       {/* Hero Section */}
       <section className="relative w-full overflow-hidden">
         {/* Top section with white background */}

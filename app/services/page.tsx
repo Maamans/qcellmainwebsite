@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
-import { motion } from "framer-motion"
-import Navigation from "@/components/nav"
+import { motion, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion"
+import Navigation from "@/components/navigation-two"
 import Footer from "@/components/footer"
 import useEmblaCarousel from "embla-carousel-react"
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react"
@@ -322,7 +322,7 @@ export default function ServicesPage() {
       `}} />
       <div ref={containerRef} style={{ margin: 0, padding: 0, minHeight: '100vh' }}>
         <div className="services-nav-wrapper">
-        <Navigation page="services" />
+        <Navigation />
         </div>
 
         {/* Hero Section - Static Image with Text Overlay */}
