@@ -292,13 +292,13 @@ export function middleware(request: NextRequest) {
       
       // Permissions Policy (formerly Feature-Policy)
       'Permissions-Policy': 
-      'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+      'camera=(), microphone=(), interest-cohort=()',
     
     // Content Security Policy (Stricter)
     'Content-Security-Policy': [
       "default-src 'self'",
       "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
       "font-src 'self' https://fonts.gstatic.com data:",
       "img-src 'self' data: https: blob: http://localhost:4000 http://localhost:3000 http://localhost:3001 https://*.tile.openstreetmap.org https://cdnjs.cloudflare.com",
       "connect-src 'self' http://localhost:4000 http://localhost:3000 http://localhost:3001 https://api.mapbox.com https://*.tiles.mapbox.com https://*.tile.openstreetmap.org https://cdnjs.cloudflare.com ws://localhost:* wss://localhost:*",

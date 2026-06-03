@@ -1,0 +1,100 @@
+[
+  {
+    "id": 1,
+    "name": "QCell Deaf School",
+    "address": "Deaf School, Wilkinson Road, Freetown",
+    "latitude": 8.4763,
+    "longitude": -13.2737
+  },
+  {
+    "id": 2,
+    "name": "QCell Wilberforce Street",
+    "address": "8 Wilberforce Street, Freetown",
+    "latitude": 8.4896,
+    "longitude": -13.2321
+  },
+  {
+    "id": 3,
+    "name": "QCell Kingharman Road",
+    "address": "26A Kingharman Road, Freetown",
+    "latitude": 8.4733,
+    "longitude": -13.2481
+  },
+  {
+    "id": 4,
+    "name": "QCell Aberdeen Beach",
+    "address": "Aberdeen Beach Road, Freetown",
+    "latitude": 8.4900,
+    "longitude": -13.2860
+  },
+  {
+    "id": 5,
+    "name": "QCell Lungi Airport",
+    "address": "Lungi Airport",
+    "latitude": 8.6164,
+    "longitude": -13.1955
+  },
+  {
+    "id": 6,
+    "name": "QCell Lungi Port Loko Road",
+    "address": "Lungi, Port Loko Road, Lungi",
+    "latitude": 8.6200,
+    "longitude": -13.2100
+  },
+  {
+    "id": 7,
+    "name": "QCell Waterloo",
+    "address": "Waterloo (near Lumpa Road area)",
+    "latitude": 8.3380,
+    "longitude": -13.0710
+  },
+  {
+    "id": 8,
+    "name": "QCell Koidu",
+    "address": "Koidu (Konomani Road area)",
+    "latitude": 8.6440,
+    "longitude": -10.9710
+  },
+  {
+    "id": 9,
+    "name": "QCell Kailahun",
+    "address": "Kailahun (Mofindor Road area)",
+    "latitude": 8.2790,
+    "longitude": -10.5730
+  },
+  {
+    "id": 10,
+    "name": "QCell Makeni",
+    "address": "Makeni (Mabanta Road area)",
+    "latitude": 8.8860,
+    "longitude": -12.0450
+  },
+  {
+    "id": 11,
+    "name": "QCell Bo",
+    "address": "Bo (Bojon Street area)",
+    "latitude": 7.9640,
+    "longitude": -11.7380
+  },
+  {
+    "id": 12,
+    "name": "QCell Kenema",
+    "address": "Kenema (Blama Road/Jacoba Junction area)",
+    "latitude": 7.8770,
+    "longitude": -11.1900
+  },
+  {
+    "id": 13,
+    "name": "QCell Moyamba",
+    "address": "Moyamba (Sawaneh Street area)",
+    "latitude": 8.1580,
+    "longitude": -12.4310
+  },
+  {
+    "id": 14,
+    "name": "QCell Masiaka",
+    "address": "Masiaka (Bomboli Street area)",
+    "latitude": 8.3950,
+    "longitude": -12.5310
+  }
+]
